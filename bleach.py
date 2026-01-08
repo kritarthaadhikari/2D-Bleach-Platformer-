@@ -7,7 +7,7 @@ screen_width = 1200
 screen_height = 600
 win = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Bleach')
-
+pygame.mixer.init()
 # Background
 bg = pygame.transform.scale(pygame.image.load("bleach.jpeg"), (screen_width, screen_height))
 
@@ -51,7 +51,7 @@ class Player:
         self.stanceCount = 0
         self.stanceFinal=0
         self.stancephase=0
-        self.jumpCount = 10
+        self.jumpCount = 11
         self.spjumpCount=0
         self.isJump = False
         self.right = False
@@ -152,7 +152,8 @@ class Player:
                     self.stanceFinal=0
                     self.stanceCount=0
         # Draw sprite using feet position
-        pygame.draw.rect(win, (255,0,0), (self.x+10, self.feet_y-4,50, 52 ))
+        self.hitbox= pygame.Rect(self.x+10, self.feet_y-4,50, 52 )
+        pygame.draw.rect(win, (255,0,0), self.hitbox, 2)
         sprite_height = sprite.get_height()
         draw_y = self.feet_y - sprite_height+50
         win.blit(sprite, (self.x, draw_y))
@@ -171,11 +172,11 @@ class Enemy:
         self.vel=2
         self.facing=-1
         self.walkCount=0
-        self.end= [self.x,self.width-30]
+        self.end= [self.width+30,screen_width-230]
         self.attackCount=0
         self.lastattackTimer= time.time()
         self.attacking= False
-        self.hitbox= pygame.Rect(self.x+10, self.feet-100,85, 150 )
+        self.hitbox= pygame.Rect(self.x+10, self.feet-100,30, 125 )
     
     def draw(self,win):
         framesPerImg=4
@@ -203,19 +204,34 @@ class Enemy:
         self.walkCount+=1
         if self.walkCount+1>= limit:
             self.walkCount=0
-        pygame.draw.rect(win, (255,0,0), (self.x+10, self.feet-100,85, 150 ))
+
+        if not self.attacking:
+            if self.facing==1:
+                self.hitbox= pygame.Rect(self.x+50, self.feet-100,50, 135 )#Adding it here updates the self.hitbox
+            #when the character moves
+            elif self.facing==-1:
+                self.hitbox= pygame.Rect(self.x+10, self.feet-100,50, 135 )
+        else:
+            if self.facing==1:
+                self.hitbox= pygame.Rect(self.x+30, self.feet-40,80, 60 )
+            else:
+                self.hitbox= pygame.Rect(self.x+10, self.feet-40,80, 60 )
+        
+
+        pygame.draw.rect(win, (255,0,0), self.hitbox,2)#2 is for border thickness
         sprite_height= sprite.get_height()
         draw_y= self.feet- sprite_height+50
         win.blit(sprite , (self.x, draw_y))
     
     def move(self):
         if not self.attacking:
-            if self.x==self.end[0]:
+            if self.x==self.end[1]:
                 self.facing=-1
-            elif self.x==self.end[1]:
+            elif self.x==self.end[0]:
                 self.facing=1
             self.x+= self.facing* self.vel
         self.draw(win)
+    
 
 # Redraw function
 def redrawwindow():
@@ -229,14 +245,14 @@ def hit():
 
 # Clock and player initialization
 clock = pygame.time.Clock()
-player = Player(64, 64, 10, 410)
-enemy = Enemy(110, 149, 560, 410)
+player = Player(64, 64, 10, 500)
+enemy = Enemy(110, 149, 560, 500)
 
 # Main game loop
 def main():
     run = True
     while run:
-        clock.tick(24)
+        clock.tick(60)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -287,7 +303,7 @@ def main():
                 player.left = False
                 player.standing = False
         else:
-            if player.jumpCount >= -10:
+            if player.jumpCount >= -11:
                 neg = 1
                 if player.jumpCount < 0:
                     neg = -1
@@ -296,11 +312,17 @@ def main():
                 player.x+=player.facing*2
                 player.jumpCount -= 1
             else:
-                player.jumpCount = 10
+                player.jumpCount = 11
                 player.isJump = False
         
         if player.hitbox.colliderect(enemy.hitbox):
+            if enemy.attacking and player.facing!= enemy.facing:
                 player.hit()
+            else:
+                print("Hit") #detects player enemy collision 
+            # will be used for player health decrement
+        
+        
 
         redrawwindow()
 
