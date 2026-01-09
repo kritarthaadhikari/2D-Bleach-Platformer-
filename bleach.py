@@ -30,6 +30,8 @@ dashRight= pygame.image.load('dash2.png')
 dashLeft= pygame.transform.flip(dashRight, True, False)
 attackRight= [pygame.image.load(f'attack{i}.png') for i in range(1,7)]
 attackLeft= [pygame.transform.flip(img, True, False) for img in attackRight]
+getHitRight= [pygame.image.load(f'hit{i}.png') for i in range(0,10)]
+getHitLeft= [pygame.transform.flip(img, True, False) for img in getHitRight]
 
 #Enemy
 HwalkRight=[pygame.image.load(f'walk{i}.png') for i in range(2,10)]
@@ -38,6 +40,8 @@ HattackRight= [pygame.image.load(f'hattack{i}.png') for i in range(0,10)]
 HattackLeft= [pygame.transform.flip(img, True, False) for img in HattackRight]
 kickRight= [pygame.image.load(f'kick{i}.png') for i in range(0,3)]
 kickLeft= [pygame.transform.flip(img, True, False) for img in kickRight]
+attackSeenRight= [pygame.image.load(f'hattack{i}.png') for i in range(7,10)]
+attackSeenLeft= [pygame.transform.flip(img, True, False) for img in attackSeenRight]
 
 # Player class
 class Player:
@@ -64,12 +68,14 @@ class Player:
         self.attacking= False
         self.attackCount= 0
         self.hitbox= pygame.Rect(self.x+10, self.feet_y-4,50, 52 )
+        self.gotHit= False
+        self.getHitCount=0
 
     def draw(self, win):
         # Select current sprite
         framesPerImg = 3
         sprite = jumpLeft[0]
-
+        
         if not self.standing and not self.isJump and not self.attacking:
             self.stancephase=0
             if self.dashing:
@@ -125,7 +131,16 @@ class Player:
             if self.spjumpCount +1>= limit:
                 self.spjumpCount=0
             self.spjumpCount += 1
+        elif self.gotHit:
+            if self.facing==1:
+                limit= len(getHitRight)*framesPerImg
+                sprite= getHitRight[self.getHitCount//framesPerImg]
+            else:
+                limit= len(getHitLeft)*framesPerImg
+                sprite= getHitLeft[self.getHitCount//framesPerImg]
 
+            if self.getHitCount+1>=limit:
+                self.getHitCount=0
         else:
             if self.stancephase==0: 
                 if self.facing==-1:
@@ -151,15 +166,28 @@ class Player:
                 if self.stanceFinal+1>= limit:
                     self.stanceFinal=0
                     self.stanceCount=0
+
         # Draw sprite using feet position
         self.hitbox= pygame.Rect(self.x+10, self.feet_y-4,50, 52 )
         pygame.draw.rect(win, (255,0,0), self.hitbox, 2)
+        
+        # Calculate the center of your character (where his feet are horizontally)
+        center_x = self.x + (self.width // 2)
+
+        # Get the width and height of the current frame
+        sprite_width = sprite.get_width()
         sprite_height = sprite.get_height()
+        #didnt work sadly for the x coordinate
+        
+        draw_x = center_x- (sprite_width//2)
         draw_y = self.feet_y - sprite_height+50
-        win.blit(sprite, (self.x, draw_y))
+        win.blit(sprite, (draw_x, draw_y))
 
     def hit(self):
-        self.x=0
+        self.getHitCount+=1
+        print("hit")
+        self.gotHit=True
+        self.draw(win)
         
 
 #Enemy Class
@@ -177,33 +205,37 @@ class Enemy:
         self.lastattackTimer= time.time()
         self.attacking= False
         self.hitbox= pygame.Rect(self.x+10, self.feet-100,30, 125 )
+        self.hit= False
+        self.hitCount=0
     
     def draw(self,win):
         framesPerImg=4
         current= time.time()
         if current- self.lastattackTimer > 3.0:
             self.attacking= True
-            if self.facing==1:
-                limit= len(HattackRight)*framesPerImg
-                sprite= HattackRight[self.attackCount//framesPerImg]
-            elif self.facing==-1:
-                limit= len(HattackLeft)*framesPerImg
-                sprite= HattackLeft[self.attackCount//framesPerImg]
-            self.attackCount+=1
-            if self.attackCount+1>=limit:
-                self.attackCount=0 
-                self.attacking= False
-                self.lastattackTimer= time.time()
-
-        elif self.facing==-1:
-            limit= len(HwalkLeft)* framesPerImg
-            sprite= HwalkLeft[self.walkCount//framesPerImg]
-        elif self.facing==1:
-            limit= len(HwalkRight)*framesPerImg
-            sprite= HwalkRight[self.walkCount//framesPerImg]
-        self.walkCount+=1
-        if self.walkCount+1>= limit:
-            self.walkCount=0
+            if not self.hit:
+                if self.facing==1:
+                    limit= len(HattackRight)*framesPerImg
+                    sprite= HattackRight[self.attackCount//framesPerImg]
+                elif self.facing==-1:
+                    limit= len(HattackLeft)*framesPerImg
+                    sprite= HattackLeft[self.attackCount//framesPerImg]
+                self.attackCount+=1
+                if self.attackCount+1>=limit:
+                    self.attackCount=0 
+                    self.attacking= False
+                    self.lastattackTimer= time.time()
+            
+        else:       
+            if self.facing==-1:
+                limit= len(HwalkLeft)* framesPerImg
+                sprite= HwalkLeft[self.walkCount//framesPerImg]
+            elif self.facing==1:
+                limit= len(HwalkRight)*framesPerImg
+                sprite= HwalkRight[self.walkCount//framesPerImg]
+            self.walkCount+=1
+            if self.walkCount+1>= limit:
+                self.walkCount=0
 
         if not self.attacking:
             if self.facing==1:
@@ -213,10 +245,20 @@ class Enemy:
                 self.hitbox= pygame.Rect(self.x+10, self.feet-100,50, 135 )
         else:
             if self.facing==1:
-                self.hitbox= pygame.Rect(self.x+30, self.feet-40,80, 60 )
+                self.hitbox= pygame.Rect(self.x+40, self.feet-40,90, 60 )
             else:
-                self.hitbox= pygame.Rect(self.x+10, self.feet-40,80, 60 )
+                self.hitbox= pygame.Rect(self.x+10, self.feet-40,90, 60 )
         
+        if self.hit:
+            if self.facing==1:
+                limit= len(attackSeenRight)* framesPerImg
+                sprite= attackSeenRight[self.hitCount//framesPerImg]
+            else:
+                limit= len(attackSeenLeft)* framesPerImg
+                sprite= attackSeenLeft[self.hitCount//framesPerImg]
+            self.hitCount+=1
+            if self.hitCount+1 >=limit:
+                self.hitCount=0
 
         pygame.draw.rect(win, (255,0,0), self.hitbox,2)#2 is for border thickness
         sprite_height= sprite.get_height()
@@ -252,7 +294,7 @@ enemy = Enemy(110, 149, 560, 500)
 def main():
     run = True
     while run:
-        clock.tick(60)
+        clock.tick(24)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -316,14 +358,18 @@ def main():
                 player.isJump = False
         
         if player.hitbox.colliderect(enemy.hitbox):
-            if enemy.attacking and player.facing!= enemy.facing:
-                player.hit()
+            if enemy.attacking:
+                if enemy.attackCount>=21 and enemy.attackCount<24:
+                    enemy.hit= True
+                    player.hit()
             else:
-                print("Hit") #detects player enemy collision 
+                pass#detects player enemy collision 
             # will be used for player health decrement
-        
-        
-
+        else:
+            player.getHitCount=0
+            player.gotHit= False
+            enemy.hit= False
+    
         redrawwindow()
 
     pygame.quit()
