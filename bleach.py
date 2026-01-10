@@ -32,6 +32,8 @@ attackRight= [pygame.image.load(f'attack{i}.png') for i in range(1,7)]
 attackLeft= [pygame.transform.flip(img, True, False) for img in attackRight]
 getHitRight= [pygame.image.load(f'hit{i}.png') for i in range(0,10)]
 getHitLeft= [pygame.transform.flip(img, True, False) for img in getHitRight]
+hitRight= [pygame.image.load(f'hit{i}.png') for i in range(5,10)]
+hitLeft=[pygame.transform.flip(img, True, False) for img in hitRight]
 
 #Enemy
 HwalkRight=[pygame.image.load(f'walk{i}.png') for i in range(2,10)]
@@ -70,6 +72,8 @@ class Player:
         self.hitbox= pygame.Rect(self.x+10, self.feet_y-4,50, 52 )
         self.gotHit= False
         self.getHitCount=0
+        self.stationaryPhase= False
+        self.stationaryPhaseCount=0
 
     def draw(self, win):
         # Select current sprite
@@ -141,6 +145,22 @@ class Player:
 
             if self.getHitCount+1>=limit:
                 self.getHitCount=0
+                self.gotHit= False
+                self.stationaryPhase= True
+                self.stationaryPhaseCount=0
+            self.getHitCount+=1
+
+        elif self.stationaryPhase:
+            if self.facing==-1:
+                limit= len(hitLeft)*framesPerImg
+                sprite= hitLeft[self.stationaryPhaseCount// framesPerImg]
+            else:
+                limit= len(hitRight)*framesPerImg
+                sprite= hitRight[self.stationaryPhaseCount// framesPerImg]
+            if self.stationaryPhaseCount+1>= framesPerImg:
+                self.stationaryPhaseCount=0
+            self.stationaryPhaseCount+=1
+
         else:
             if self.stancephase==0: 
                 if self.facing==-1:
@@ -184,10 +204,13 @@ class Player:
         win.blit(sprite, (draw_x, draw_y))
 
     def hit(self):
-        self.getHitCount+=1
         print("hit")
-        self.gotHit=True
-        self.draw(win)
+        if not self.stationaryPhase:
+            self.gotHit=True
+            self.attacking= False
+            self.isJump= False
+            self.stationaryPhase= False
+            self.getHitCount=0
         
 
 #Enemy Class
@@ -366,9 +389,8 @@ def main():
                 pass#detects player enemy collision 
             # will be used for player health decrement
         else:
-            player.getHitCount=0
-            player.gotHit= False
             enemy.hit= False
+            player.stationaryPhase= False
     
         redrawwindow()
 
