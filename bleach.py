@@ -34,6 +34,11 @@ getHitRight= [pygame.image.load(f'hit{i}.png') for i in range(0,10)]
 getHitLeft= [pygame.transform.flip(img, True, False) for img in getHitRight]
 hitRight= [pygame.image.load(f'hit{i}.png') for i in range(5,10)]
 hitLeft=[pygame.transform.flip(img, True, False) for img in hitRight]
+standUpRight= [pygame.image.load('stanced1.png'),pygame.image.load('stanced2.png'),
+    pygame.image.load('jump1.png'), pygame.image.load('jump2.png'),
+          pygame.image.load('jump7.png'), pygame.image.load('jump8.png'),
+    pygame.image.load('jump9.png')]
+standUpLeft= [pygame.transform.flip(img, True, False) for img in standUpRight]
 
 #Enemy
 HwalkRight=[pygame.image.load(f'walk{i}.png') for i in range(2,10)]
@@ -74,6 +79,8 @@ class Player:
         self.getHitCount=0
         self.stationaryPhase= False
         self.stationaryPhaseCount=0
+        self.down= False
+        self.downCount= 0
 
     def draw(self, win):
         # Select current sprite
@@ -100,18 +107,29 @@ class Player:
                 # if self.dashTimer<=0:
                 #     self.dashing= False
                 #     self.dashCount=0
-                
-            if self.left:
-                limit = len(walkLeft) * framesPerImg
-                sprite = walkLeft[self.walkCount // framesPerImg]
+            if not self.down:
+                if self.left:
+                    limit = len(walkLeft) * framesPerImg
+                    sprite = walkLeft[self.walkCount // framesPerImg]
 
-            elif self.right:
-                limit = len(walkRight) * framesPerImg
-                sprite = walkRight[self.walkCount // framesPerImg]
-            if self.walkCount +1>= limit:
-                self.walkCount = 0
-            self.walkCount += 1
+                elif self.right:
+                    limit = len(walkRight) * framesPerImg
+                    sprite = walkRight[self.walkCount // framesPerImg]
+                if self.walkCount +1>= limit:
+                    self.walkCount = 0
+                self.walkCount += 1
+            else:
+                if self.facing==1:
+                    limit= len(standUpRight)* framesPerImg
+                    sprite= standUpRight[self.downCount// framesPerImg]
+                else:
+                    limit= len(standUpLeft)* framesPerImg
+                    sprite= standUpLeft[self.downCount// framesPerImg]
+                if self.downCount+1 >=limit:
+                    self.downCount=0
+                self.downCount+=1
         
+            
         elif self.attacking:
             framesPerImg=4
             if self.facing==1:
@@ -135,6 +153,19 @@ class Player:
             if self.spjumpCount +1>= limit:
                 self.spjumpCount=0
             self.spjumpCount += 1
+
+        elif self.stationaryPhase:
+            if self.facing==-1:
+                limit= len(hitLeft)*framesPerImg
+                sprite= hitLeft[self.stationaryPhaseCount// framesPerImg]
+            else:
+                limit= len(hitRight)*framesPerImg
+                sprite= hitRight[self.stationaryPhaseCount// framesPerImg]
+            if self.stationaryPhaseCount+1>= limit:
+                self.stationaryPhaseCount=0
+                self.down= True
+            self.stationaryPhaseCount+=1
+
         elif self.gotHit:
             if self.facing==1:
                 limit= len(getHitRight)*framesPerImg
@@ -149,17 +180,6 @@ class Player:
                 self.stationaryPhase= True
                 self.stationaryPhaseCount=0
             self.getHitCount+=1
-
-        elif self.stationaryPhase:
-            if self.facing==-1:
-                limit= len(hitLeft)*framesPerImg
-                sprite= hitLeft[self.stationaryPhaseCount// framesPerImg]
-            else:
-                limit= len(hitRight)*framesPerImg
-                sprite= hitRight[self.stationaryPhaseCount// framesPerImg]
-            if self.stationaryPhaseCount+1>= framesPerImg:
-                self.stationaryPhaseCount=0
-            self.stationaryPhaseCount+=1
 
         else:
             if self.stancephase==0: 
@@ -210,9 +230,7 @@ class Player:
             self.attacking= False
             self.isJump= False
             self.stationaryPhase= False
-            self.getHitCount=0
         
-
 #Enemy Class
 class Enemy:
     def __init__(self,width,height,x,y):#dunder - double underscore
@@ -383,14 +401,15 @@ def main():
         if player.hitbox.colliderect(enemy.hitbox):
             if enemy.attacking:
                 if enemy.attackCount>=21 and enemy.attackCount<24:
-                    enemy.hit= True
-                    player.hit()
-            else:
-                pass#detects player enemy collision 
+                    if not player.down:
+                        enemy.hit= True
+                        player.hit()
+                #detects player enemy collision 
             # will be used for player health decrement
         else:
             enemy.hit= False
             player.stationaryPhase= False
+           
     
         redrawwindow()
 
