@@ -137,9 +137,9 @@ class Player:
                     self.downCount=0
                     self.down= False
                 self.downCount+=1
-        
     
         elif self.attacking:
+            self.x+= self.facing* 2
             if self.facing==1:
                 limit= len(attackRight)*framesPerImg
                 sprite= attackRight[self.attackCount// framesPerImg]
@@ -221,18 +221,12 @@ class Player:
         # Draw sprite using feet position
         self.hitbox= pygame.Rect(self.x+10, self.feet_y-4,50, 52 )
         pygame.draw.rect(win, (255,0,0), self.hitbox, 2)
-        
-        # Calculate the center of your character (where his feet are horizontally)
-        center_x = self.x + (self.width // 2)
 
         # Get the width and height of the current frame
-        sprite_width = sprite.get_width()
         sprite_height = sprite.get_height()
         #didnt work sadly for the x coordinate
-        
-        draw_x = center_x- (sprite_width//2)
         draw_y = self.feet_y - sprite_height+50
-        win.blit(sprite, (draw_x, draw_y))
+        win.blit(sprite, (self.x, draw_y))
 
     def hit(self):
         print("hit")
@@ -346,7 +340,7 @@ enemy = Enemy(110, 149, 560, 500)
 def main():
     run = True
     while run:
-        clock.tick(30)
+        clock.tick(24)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
