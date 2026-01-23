@@ -5,10 +5,10 @@ import time
 """
 at some instance at the right side of the screen when the enemy and the player
 collide player falls down to the ground 
+new error: up and L/R glitches animation and theres glitches w jumping during hitbox collisions
 
 i dont know what happened but my player landed a few pixels up its initial position and 
 the player randomly falls down doesnt get hit tho 
-even if player isnt near the enemy it still gets hit just because of the hitbox collision
 """
 #But a solution i thought of is defining another variable called self.arm or smthg like
 #that and we check the collision between them if it happens player gets hit 
