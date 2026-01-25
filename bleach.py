@@ -1,19 +1,6 @@
 import pygame
 import time
 
-#Issue:
-""" 
-new error: up and L/R glitches animation and theres glitches w jumping during hitbox collisions
-i dont know what happened but my player landed a few pixels up its initial position and 
-the player randomly falls down doesnt get hit tho 
-"""
-
-#To be fixed
-#Dash
-"""Fixed"""
-# at some instance at the right side of the screen when the enemy and the player
-# collide player falls down to the ground
-
 pygame.init()
 # Screen setup
 screen_width = 1200
@@ -103,15 +90,13 @@ class Player:
         
         if not self.standing and not self.isJump and not self.attacking:
             self.stancephase=0
-            print(self.dashing)
             if self.dashing:
-                print("HELLO")
                 if self.facing==1:
-                    limit = len(dashRight) 
-                    sprite = dashRight[self.dashCount // framesPerImg]
+                    limit= len(dashRight)*framesPerImg
+                    sprite=dashRight[self.dashCount// framesPerImg]
                 else:
-                    limit = len(dashLeft) 
-                    sprite = dashLeft[self.dashCount // framesPerImg]
+                    limit = len(dashLeft) *framesPerImg
+                    sprite = dashLeft[self.dashCount//framesPerImg]
                 self.dashCount += 1
                 if self.dashCount +1>= limit:
                     self.dashCount = 0
@@ -120,6 +105,7 @@ class Player:
                 if self.dashTimer<=0:
                     self.dashing= False
                     self.dashCount=0
+                    self.dashTimer=10
 
             elif not self.down:
                 if self.left:
@@ -158,6 +144,8 @@ class Player:
 
         elif self.isJump:
             if self.facing==1:
+                print(self.jumpCount)
+                print(self.spjumpCount)
                 limit = len(jumpRight)* framesPerImg
                 sprite= jumpRight[self.spjumpCount//framesPerImg]
             else:
@@ -165,12 +153,12 @@ class Player:
                 sprite= jumpLeft[self.spjumpCount//framesPerImg]
             if self.spjumpCount +1>= limit:
                 self.spjumpCount=0
+             
             self.spjumpCount += 1
 
         elif self.stationaryPhase: 
             # for the player to stay down for a while
             # just so player doesnt stand up right again like nthg happened
-
             if self.facing==-1:
                 limit= len(hitLeft)*framesPerImg
                 sprite= hitLeft[self.stationaryPhaseCount// framesPerImg]
@@ -239,7 +227,6 @@ class Player:
         if not self.stationaryPhase:
             self.gotHit=True
             self.attacking= False
-            self.isJump= False
             self.stationaryPhase= False
         
 #Enemy Class
@@ -350,7 +337,7 @@ enemy = Enemy(110, 149, 560, 500)
 def main():
     run = True
     while run:
-        clock.tick(24)
+        clock.tick(22)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -363,11 +350,13 @@ def main():
                 
                 elif event.key== pygame.K_LSHIFT:
                    if player.vel < player.x < screen_width - player.width - player.vel:
-                        player.x+= player.facing*30
+                        player.x+= player.facing*40
                         player.standing= False
                         player.dashing= True
+                        player.dashCount=0
                         player.left= False
                         player.right= False
+            
             
         keys = pygame.key.get_pressed()
         # Left/right movement
@@ -378,7 +367,6 @@ def main():
                 player.left = True
                 player.right = False
                 player.standing = False
-                player.dashing= False
                 player.facing= -1
 
             elif keys[pygame.K_RIGHT] and player.x+ player.width+ player.vel < screen_width:
@@ -386,13 +374,14 @@ def main():
                 player.left = False
                 player.right = True
                 player.standing = False
-                player.dashing= False
                 player.facing= 1
 
             else:
-                player.standing = True
+                if not player.dashing:      
+                    player.standing = True
+                    player.dashCount=0
                 player.walkCount = 0
-                player.dashCount=0
+               
 
         # Jump logic
         if not player.isJump:
@@ -401,6 +390,7 @@ def main():
                 player.right = False
                 player.left = False
                 player.standing = False
+                player.walkCount=0
         else:
             if player.jumpCount >= -11:
                 neg = 1
@@ -413,6 +403,7 @@ def main():
             else:
                 player.jumpCount = 11
                 player.isJump = False
+                player.feet_y=500
         
         if player.hitbox.colliderect(enemy.body_hitbox):
             if enemy.attacking and enemy.attack_hitbox.colliderect(player.hitbox):
@@ -431,6 +422,4 @@ def main():
         redrawwindow()
 
     pygame.quit()
-
-
 main()
