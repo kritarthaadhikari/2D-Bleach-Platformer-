@@ -131,33 +131,6 @@ class Player:
                     self.downCount=0
                     self.down= False
                 self.downCount+=1
-    
-        elif self.attacking:
-            self.x+= self.facing
-            if self.facing==1:
-                limit= len(attackRight)*framesPerImg
-                sprite= attackRight[self.attackCount// framesPerImg]
-            else:
-                limit= len(attackLeft)*framesPerImg
-                sprite= attackLeft[self.attackCount// framesPerImg]
-            self.attackCount+=1
-            if self.attackCount+1 >= limit:
-                self.attackCount=0
-                self.attacking=False
-
-        elif self.isJump:
-            if self.facing==1:
-                print(self.jumpCount)
-                print(self.spjumpCount)
-                limit = len(jumpRight)* framesPerImg
-                sprite= jumpRight[self.spjumpCount//framesPerImg]
-            else:
-                limit = len(jumpLeft)* framesPerImg
-                sprite= jumpLeft[self.spjumpCount//framesPerImg]
-            if self.spjumpCount +1>= limit:
-                self.spjumpCount=0
-             
-            self.spjumpCount += 1
 
         elif self.stationaryPhase: 
             # for the player to stay down for a while
@@ -189,7 +162,32 @@ class Player:
                 self.down= True
                 self.stationaryPhaseCount=0
             self.getHitCount+=1
-
+        elif self.attacking:
+            self.x+= self.facing
+            if self.facing==1:
+                limit= len(attackRight)*framesPerImg
+                sprite= attackRight[self.attackCount// framesPerImg]
+            else:
+                limit= len(attackLeft)*framesPerImg
+                sprite= attackLeft[self.attackCount// framesPerImg]
+            self.attackCount+=1
+            if self.attackCount+1 >= limit:
+                self.attackCount=0
+                self.attacking=False
+            
+        elif self.isJump:
+            if self.facing==1:
+                print(self.jumpCount)
+                print(self.spjumpCount)
+                limit = len(jumpRight)* framesPerImg
+                sprite= jumpRight[self.spjumpCount//framesPerImg]
+            else:
+                limit = len(jumpLeft)* framesPerImg
+                sprite= jumpLeft[self.spjumpCount//framesPerImg]
+            if self.spjumpCount +1>= limit:
+                self.spjumpCount=0
+             
+            self.spjumpCount += 1
         else:
             if self.stancephase==0: 
                 if self.facing==-1:
@@ -250,7 +248,7 @@ class Enemy:
         self.attack_hitbox= pygame.Rect(self.x+10, self.feet-100, 50, 60)
         self.hit= False
         self.hitCount=0
-        self.health=10
+        self.health=500
         self.fallCount= 0
         self.fall= False
     
@@ -312,7 +310,7 @@ class Enemy:
                     self.hitCount=0
             #HP
             pygame.draw.rect(win,(255,0,0),(self.body_hitbox[0], self.body_hitbox[1]-20,70,10))
-            pygame.draw.rect(win,(0,255,0),(self.body_hitbox[0], self.body_hitbox[1]-20,70-(700-self.health)/10,10))
+            pygame.draw.rect(win,(0,255,0),(self.body_hitbox[0], self.body_hitbox[1]-20,70-7*(500-self.health)/50,10))
                 
         if self.health==0 and not self.fall:
                 if self.facing==1:
