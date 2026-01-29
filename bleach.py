@@ -8,6 +8,15 @@ screen_height = 600
 win = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Bleach')
 pygame.mixer.init()
+
+# Load the image
+hud_original = pygame.image.load('unnamed1.png').convert_alpha()
+
+target_width = 430 
+target_height = 150 
+
+# 3. Scale it
+hud_pannel = pygame.transform.smoothscale(hud_original, (target_width, target_height))
 # Background
 bg = pygame.transform.scale(pygame.image.load("bleach.jpeg"), (screen_width, screen_height))
 
@@ -162,6 +171,7 @@ class Player:
                 self.down= True
                 self.stationaryPhaseCount=0
             self.getHitCount+=1
+
         elif self.attacking:
             self.x+= self.facing
             if self.facing==1:
@@ -340,21 +350,31 @@ class Enemy:
             self.x+= self.facing* self.vel
         self.draw(win)
     
-# Redraw function
-def redrawwindow():
-    win.blit(bg, (0, 0))
-    enemy.move()
-    player.draw(win)
-    pygame.display.update()
-
-def hit():
-   enemy.health-=10
-   print(enemy.health)
-
+    def gothit(self):
+        self.health-=10
+        print(self.health)
+    
 # Clock and player initialization
 clock = pygame.time.Clock()
 player = Player(64, 64, 10, 500)
 enemy = Enemy(110, 149, 560, 500)
+# Redraw function
+def redrawwindow():
+    win.blit(bg, (0, 0))
+    hudPannel()
+    enemy.move()
+    player.draw(win)
+    pygame.display.update()    
+
+def hudPannel():
+    pygame.draw.rect(win,(255,0,0),(212,59,212,23))
+    pygame.draw.rect(win,(0,255,0),(212,59,212- 53*(120-player.health)/30,22 ))
+    win.blit(hud_pannel, (10,10))
+
+def hit():
+     
+    player.health-=1
+    print(player.health)
 
 # Main game loop
 def main():
@@ -431,14 +451,16 @@ def main():
         if player.hitbox.colliderect(enemy.body_hitbox):
             if enemy.attacking and player.hitbox.colliderect(enemy.attack_hitbox):
                 if enemy.attackCount>=21 and enemy.attackCount<24:
+                    hit()
                     if not player.down:
                         enemy.hit= True
                         player.hit()
                 #detects player enemy collision 
+               
             # will be used for player health decrement
             elif player.attacking:
                 if player.attackCount==0:
-                    hit()
+                    enemy.gothit()
             else:
                 enemy.hit= False
                 player.stationaryPhase= False
