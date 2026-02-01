@@ -9,6 +9,15 @@ win = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Bleach')
 pygame.mixer.init()
 
+#Projectile Setup
+slash= [pygame.image.load(f'fire{i}.png') for i in range(1,7)]
+
+fireLeft= pygame.image.load('fire7.png')
+fireRight= pygame.transform.flip(fireLeft,True, False)
+slashLeft=[pygame.transform.smoothscale(img, (64,64)) for img in slash]
+slashright=[ pygame.transform.flip(img, True, False) for img in slashLeft]
+projectiles=[]
+
 # Load the image
 hud_original = pygame.image.load('unnamed1.png').convert_alpha()
 
@@ -53,6 +62,7 @@ getsugatenshoRight =[pygame.image.load(f'getsugatensho{i}.png') for i in range(1
 getsugatenshoLeft =[pygame.transform.flip(img, True, False) for img in getsugatenshoRight]
 
 #Enemy
+hollows=[]
 HwalkRight=[pygame.image.load(f'walk{i}.png') for i in range(2,10)]
 HwalkLeft= [pygame.transform.flip(img, True, False) for img in HwalkRight]
 HattackRight= [pygame.image.load(f'hattack{i}.png') for i in range(0,10)]
@@ -254,7 +264,9 @@ class Player:
             self.gotHit=True
             self.attacking= False
             self.stationaryPhase= False
-        
+
+clock = pygame.time.Clock()
+player = Player(64, 64, 10, 500)
 #Enemy Class
 class Enemy:
     def __init__(self,width,height,x,y):#dunder - double underscore
@@ -340,7 +352,7 @@ class Enemy:
             pygame.draw.rect(win,(255,0,0),(self.body_hitbox[0], self.body_hitbox[1]-20,70,10))
             pygame.draw.rect(win,(0,255,0),(self.body_hitbox[0], self.body_hitbox[1]-20,70-7*(500-self.health)/50,10))
                 
-        if self.health==0 and not self.fall:
+        if self.health<=0 and not self.fall:
                 if self.facing==1:
                     limit= len(fallRight)*framesPerImg
                     sprite= fallRight[self.fallCount// framesPerImg]
@@ -364,7 +376,7 @@ class Enemy:
         win.blit(sprite , (self.x, draw_y))
     
     def move(self):
-        if not self.attacking and not self.health==0:
+        if not self.attacking and not self.health<=0:
             if self.x==self.end[1]:
                 self.facing=-1
             elif self.x==self.end[0]:
@@ -373,19 +385,52 @@ class Enemy:
         self.draw(win)
     
     def gothit(self):
-        self.health-=10
+        if player.signatureCount==21:
+            self.health-=100
+        elif not player.signature:
+         self.health-=10
         print(self.health)
-    
-# Clock and player initialization
-clock = pygame.time.Clock()
-player = Player(64, 64, 10, 500)
 enemy = Enemy(110, 149, 560, 500)
+
+#projectile
+class Projectile(pygame.Rect):
+    def __init__(self,x,y,width,height):
+        super().__init__(x,y,width,height)
+        self.vel= 10
+        self.count=0
+        self.getsugatenshou=False
+        self.direction= 1
+    
+    def draw(self,win):
+        if self.getsugatenshou:
+            limit= 3*len(slashLeft)
+            if player.facing==1:
+                sprite= slashright[self.count//3]
+            else:
+                sprite= slashLeft[self.count//3]
+            if self.count+1>=limit:
+                self.count=0
+                self.getsugatenshou=False
+            self.count+=1 
+            win.blit(sprite, (self.x,self.y))
+  
+    def move(self):
+        self.x+= player.facing*self.vel
+        self.draw(win)
+
 # Redraw function
 def redrawwindow():
     win.blit(bg, (0, 0))
     hudPannel()
     enemy.move()
     player.draw(win)
+    if player.signatureCount>=21:
+       
+        for p in projectiles[:]:
+            p.move()
+            if p.colliderect(enemy.body_hitbox) and player.signatureCount==21:
+                enemy.gothit()
+            projectiles.remove(p)
     pygame.display.update()    
 
 def hudPannel():
@@ -432,6 +477,9 @@ def main():
                     player.attacking= True
                     player.signatureCount=0
                     player.staminaGauge-=80
+                    new_slash= Projectile(player.x, player.feet_y-40,64,64)   
+                    new_slash.getsugatenshou=True
+                    projectiles.append(new_slash)
                     
         keys = pygame.key.get_pressed()
         # Left/right movement
@@ -478,14 +526,13 @@ def main():
                 player.jumpCount = 11
                 player.isJump = False
                 player.feet_y=500
-        
         if player.hitbox.colliderect(enemy.body_hitbox):
             if enemy.attacking and player.hitbox.colliderect(enemy.attack_hitbox):
                 if enemy.attackCount>=21 and enemy.attackCount<24:
                     hit()
                     if not player.down:
                         enemy.hit= True
-                        player.hit()
+                        player.hit() #playergot hit
                 #detects player enemy collision 
                
             # will be used for player health decrement
