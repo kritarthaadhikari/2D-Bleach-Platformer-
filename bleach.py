@@ -12,11 +12,12 @@ pygame.mixer.init()
 #Projectile Setup
 slash= [pygame.image.load(f'fire{i}.png') for i in range(1,7)]
 
-fireLeft= pygame.image.load('fire7.png')
-fireRight= pygame.transform.flip(fireLeft,True, False)
 slashLeft=[pygame.transform.smoothscale(img, (64,64)) for img in slash]
 slashright=[ pygame.transform.flip(img, True, False) for img in slashLeft]
 projectiles=[]
+blastLeft= slashLeft[5]
+blastRight= slashright[5]
+
 
 # Load the image
 hud_original = pygame.image.load('unnamed1.png').convert_alpha()
@@ -385,24 +386,23 @@ class Enemy:
         self.draw(win)
     
     def gothit(self):
-        if player.signatureCount==21:
-            self.health-=100
-        elif not player.signature:
+        if not player.signature:
          self.health-=10
         print(self.health)
 enemy = Enemy(110, 149, 560, 500)
 
 #projectile
 class Projectile(pygame.Rect):
-    def __init__(self,x,y,width,height):
+    def __init__(self,x,y,width,height,facing):
         super().__init__(x,y,width,height)
         self.vel= 10
         self.count=0
         self.getsugatenshou=False
-        self.direction= 1
+        self.direction= facing
+        self.hit= False
     
     def draw(self,win):
-        if self.getsugatenshou:
+        if self.getsugatenshou and not self.hit:
             limit= 3*len(slashLeft)
             if player.facing==1:
                 sprite= slashright[self.count//3]
@@ -412,7 +412,17 @@ class Projectile(pygame.Rect):
                 self.count=0
                 self.getsugatenshou=False
             self.count+=1 
-            win.blit(sprite, (self.x,self.y))
+        
+        else:
+            limit=3
+            if player.facing==1:
+                sprite=blastRight
+            else:
+                sprite=blastLeft
+            if self.count+1>=limit:
+                self.count=0
+            self.count+=1
+        win.blit(sprite, (self.x,self.y))
   
     def move(self):
         self.x+= player.facing*self.vel
@@ -425,12 +435,8 @@ def redrawwindow():
     enemy.move()
     player.draw(win)
     if player.signatureCount>=21:
-       
-        for p in projectiles[:]:
-            p.move()
-            if p.colliderect(enemy.body_hitbox) and player.signatureCount==21:
-                enemy.gothit()
-            projectiles.remove(p)
+        for p in projectiles:
+           p.move()
     pygame.display.update()    
 
 def hudPannel():
@@ -477,7 +483,7 @@ def main():
                     player.attacking= True
                     player.signatureCount=0
                     player.staminaGauge-=80
-                    new_slash= Projectile(player.x, player.feet_y-40,64,64)   
+                    new_slash= Projectile(player.x, player.feet_y,64,64,player.facing)   
                     new_slash.getsugatenshou=True
                     projectiles.append(new_slash)
                     
@@ -548,5 +554,7 @@ def main():
             player.stationaryPhase= False
             player.gotHit=False
         redrawwindow()
+        for p in projectiles:
+           pass
     pygame.quit()
 main()
