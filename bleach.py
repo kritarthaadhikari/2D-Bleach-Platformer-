@@ -402,7 +402,7 @@ class Projectile(pygame.Rect):
         self.hit= False
     
     def draw(self,win):
-        if self.getsugatenshou and not self.hit:
+        if self.getsugatenshou :
             limit= 3*len(slashLeft)
             if player.facing==1:
                 sprite= slashright[self.count//3]
@@ -425,7 +425,7 @@ class Projectile(pygame.Rect):
         win.blit(sprite, (self.x,self.y))
   
     def move(self):
-        self.x+= player.facing*self.vel
+        self.x+= self.direction*self.vel
         self.draw(win)
 
 # Redraw function
@@ -437,7 +437,7 @@ def redrawwindow():
     if player.signatureCount>=21:
         for p in projectiles:
            p.move()
-    pygame.display.update()    
+    pygame.display.update()   
 
 def hudPannel():
     pygame.draw.rect(win,(255,0,0),(212,59,212,23))
@@ -554,7 +554,5 @@ def main():
             player.stationaryPhase= False
             player.gotHit=False
         redrawwindow()
-        for p in projectiles:
-           pass
     pygame.quit()
 main()
