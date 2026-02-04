@@ -411,6 +411,7 @@ class Projectile(pygame.Rect):
             if self.count+1>=limit:
                 self.count=0
                 self.getsugatenshou=False
+                self.kill()
             self.count+=1 
         
         else:
@@ -423,10 +424,16 @@ class Projectile(pygame.Rect):
                 self.count=0
             self.count+=1
         win.blit(sprite, (self.x,self.y))
-  
+
     def move(self):
         self.x+= self.direction*self.vel
         self.draw(win)
+        if self.x < -100 or self.x > screen_width + 100:
+            self.kill()
+
+    def kill(self):
+        if self in projectiles[:]:
+            projectiles.remove(self)
 
 # Redraw function
 def redrawwindow():
@@ -435,7 +442,7 @@ def redrawwindow():
     enemy.move()
     player.draw(win)
     if player.signatureCount>=21:
-        for p in projectiles:
+        for p in projectiles[:]:
            p.move()
     pygame.display.update()   
 
