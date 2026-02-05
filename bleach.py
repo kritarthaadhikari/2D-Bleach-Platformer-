@@ -10,7 +10,7 @@ pygame.display.set_caption('Bleach')
 pygame.mixer.init()
 
 #Projectile Setup
-slash= [pygame.image.load(f'fire{i}.png') for i in range(1,7)]
+slash= [pygame.image.load(f'images/fire{i}.png') for i in range(1,7)]
 
 slashLeft=[pygame.transform.smoothscale(img, (64,64)) for img in slash]
 slashright=[ pygame.transform.flip(img, True, False) for img in slashLeft]
@@ -20,7 +20,7 @@ blastRight= slashright[5]
 
 
 # Load the image
-hud_original = pygame.image.load('unnamed1.png').convert_alpha()
+hud_original = pygame.image.load('images/unnamed1.png').convert_alpha()
 
 target_width = 430 
 target_height = 150 
@@ -28,51 +28,51 @@ target_height = 150
 # 3. Scale it
 hud_pannel = pygame.transform.smoothscale(hud_original, (target_width, target_height))
 # Background
-bg = pygame.transform.scale(pygame.image.load("bleach.jpeg"), (screen_width, screen_height))
+bg = pygame.transform.scale(pygame.image.load("images/bleach.jpeg"), (screen_width, screen_height))
 
 # Music
-pygame.mixer.music.load('on the precipice of death.mp3')
+pygame.mixer.music.load('audio/on the precipice of death.mp3')
 pygame.mixer.music.play(-1)
 #0 for once, 1 for twice 2 for thrice,etc
 
-attackOriginal= [pygame.image.load(f'nattack1{i}.png').convert_alpha() for i in range (0,6)]
+attackOriginal= [pygame.image.load(f'images/nattack1{i}.png').convert_alpha() for i in range (0,6)]
 # Sprites
 #Player
-walkRight = [pygame.image.load(f'run{i}.png') for i in range(1, 9)]
+walkRight = [pygame.image.load(f'images/run{i}.png') for i in range(1, 9)]
 walkLeft = [pygame.transform.flip(img, True, False) for img in walkRight]
-stanceRight = [pygame.image.load(f'stanced{i}.png') for i in range(4, 20)]
+stanceRight = [pygame.image.load(f'images/stanced{i}.png') for i in range(4, 20)]
 stanceLeft = [pygame.transform.flip(img, True, False) for img in stanceRight]
-stanceFinalRight = [pygame.image.load(f'stanced1{i}.png') for i in range(7,10)]
+stanceFinalRight = [pygame.image.load(f'images/stanced1{i}.png') for i in range(7,10)]
 stanceFinalLeft= [pygame.transform.flip(img, True, False) for img in stanceFinalRight]
-jumpRight= [pygame.image.load(f'jump{i}.png') for i in range(0,10)]
+jumpRight= [pygame.image.load(f'images/jump{i}.png') for i in range(0,10)]
 jumpLeft= [pygame.transform.flip(img, True, False) for img in jumpRight]
-dashRight=[ pygame.image.load(f'dash{i}.png') for i in range(1,4)]
+dashRight=[ pygame.image.load(f'images/dash{i}.png') for i in range(1,4)]
 dashLeft= [pygame.transform.flip(img, True, False) for img in dashRight]
-attackRight= [pygame.image.load(f'nattack{i}.png') for i in range (0,6)]
+attackRight= [pygame.image.load(f'images/nattack{i}.png') for i in range (0,6)]
 attackLeft= [pygame.transform.flip(img, True, False) for img in attackRight]
-getHitRight= [pygame.image.load(f'hit{i}.png') for i in range(0,10)]
+getHitRight= [pygame.image.load(f'images/hit{i}.png') for i in range(0,10)]
 getHitLeft= [pygame.transform.flip(img, True, False) for img in getHitRight]
-hitRight= [pygame.image.load(f'hit{i}.png') for i in range(5,10)]
+hitRight= [pygame.image.load(f'images/hit{i}.png') for i in range(5,10)]
 hitLeft=[pygame.transform.flip(img, True, False) for img in hitRight]
-standUpRight= [pygame.image.load('stanced1.png'),
-    pygame.image.load('stanced2.png'),pygame.image.load('jump1.png'), 
-    pygame.image.load('jump2.png'),pygame.image.load('jump7.png'),
-    pygame.image.load('jump8.png'),pygame.image.load('jump9.png')]
+standUpRight= [pygame.image.load('images/stanced1.png'),
+    pygame.image.load('images/stanced2.png'),pygame.image.load('images/jump1.png'), 
+    pygame.image.load('images/jump2.png'),pygame.image.load('images/jump7.png'),
+    pygame.image.load('images/jump8.png'),pygame.image.load('images/jump9.png')]
 standUpLeft= [pygame.transform.flip(img, True, False) for img in standUpRight]
-getsugatenshoRight =[pygame.image.load(f'getsugatensho{i}.png') for i in range(1,15)]
+getsugatenshoRight =[pygame.image.load(f'images/getsugatensho{i}.png') for i in range(1,15)]
 getsugatenshoLeft =[pygame.transform.flip(img, True, False) for img in getsugatenshoRight]
 
 #Enemy
 hollows=[]
-HwalkRight=[pygame.image.load(f'walk{i}.png') for i in range(2,10)]
+HwalkRight=[pygame.image.load(f'images/walk{i}.png') for i in range(2,10)]
 HwalkLeft= [pygame.transform.flip(img, True, False) for img in HwalkRight]
-HattackRight= [pygame.image.load(f'hattack{i}.png') for i in range(0,10)]
+HattackRight= [pygame.image.load(f'images/hattack{i}.png') for i in range(0,10)]
 HattackLeft= [pygame.transform.flip(img, True, False) for img in HattackRight]
-kickRight= [pygame.image.load(f'kick{i}.png') for i in range(0,3)]
+kickRight= [pygame.image.load(f'images/kick{i}.png') for i in range(0,3)]
 kickLeft= [pygame.transform.flip(img, True, False) for img in kickRight]
-attackSeenRight= [pygame.image.load(f'hattack{i}.png') for i in range(7,10)]
+attackSeenRight= [pygame.image.load(f'images/hattack{i}.png') for i in range(7,10)]
 attackSeenLeft= [pygame.transform.flip(img, True, False) for img in attackSeenRight]
-fallRight= [pygame.image.load(f'fall{i}.png') for i in range(1,5)]
+fallRight= [pygame.image.load(f'images/fall{i}.png') for i in range(1,5)]
 fallLeft= [pygame.transform.flip(img, True, False) for img in fallRight]
 
 # Player class
@@ -262,6 +262,7 @@ class Player:
 
     def hit(self):
         if not self.stationaryPhase:
+            self.health-=1
             self.gotHit=True
             self.attacking= False
             self.stationaryPhase= False
@@ -386,8 +387,7 @@ class Enemy:
         self.draw(win)
     
     def gothit(self):
-        if not player.signature:
-         self.health-=10
+        self.health-=10
         print(self.health)
 enemy = Enemy(110, 149, 560, 500)
 
@@ -454,8 +454,11 @@ def hudPannel():
     win.blit(hud_pannel, (10,10))
 
 def hit():
-    player.health-=1
-    print(player.health)
+    if enemy.attacking:
+        player.health-=1
+        print(player.health)
+    if player.signature:
+        enemy.health-=100
 
 # Main game loop
 def main():
@@ -550,6 +553,7 @@ def main():
                
             # will be used for player health decrement
             elif player.attacking:
+              
                 if player.attackCount==0:
                     enemy.gothit()
             else:
