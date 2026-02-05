@@ -326,11 +326,11 @@ class Enemy:
 
             if not self.attacking:
                 if self.facing==1:
-                    self.body_hitbox= pygame.Rect(self.x+30, self.feet-100,70, 135 )
+                    self.body_hitbox= pygame.Rect(self.x+30, self.feet-100,68, 135 )
                     #Adding it here updates the self.hitbox when the character moves
             
                 elif self.facing==-1:
-                    self.body_hitbox= pygame.Rect(self.x+10, self.feet-100,70, 135 )
+                    self.body_hitbox= pygame.Rect(self.x+12, self.feet-100,68, 135 )
             else:
                 if self.facing==1:
                     self.body_hitbox= pygame.Rect(self.x+10, self.feet-40,130, 60 )
@@ -372,7 +372,7 @@ class Enemy:
                     sprite= fallLeft[3]
 
         #Enemy's hitbox
-        # pygame.draw.rect(win, (255,0,0), self.body_hitbox,2)#2 is for border thickness
+        pygame.draw.rect(win, (255,0,0), self.body_hitbox,2)#2 is for border thickness
         sprite_height= sprite.get_height()
         draw_y= self.feet- sprite_height+50
         win.blit(sprite , (self.x, draw_y))
@@ -399,12 +399,24 @@ class Projectile(pygame.Rect):
         self.count=0
         self.getsugatenshou=False
         self.direction= facing
-        self.hit= False
+        self.hit= True
     
     def draw(self,win):
-        if self.getsugatenshou :
+        if self.hit:
+            limit=3
+            if self.direction==1:
+                sprite= blastRight
+            else:
+                sprite= blastLeft
+            if self.count+1>=limit:
+                self.count=0
+                print("Working")
+                self.hit= False
+            self.count+=1
+
+        elif self.getsugatenshou :
             limit= 3*len(slashLeft)
-            if player.facing==1:
+            if self.direction==1:
                 sprite= slashright[self.count//3]
             else:
                 sprite= slashLeft[self.count//3]
@@ -414,16 +426,10 @@ class Projectile(pygame.Rect):
                 self.kill()
             self.count+=1 
         
-        else:
-            limit=3
-            if player.facing==1:
-                sprite=blastRight
-            else:
-                sprite=blastLeft
-            if self.count+1>=limit:
-                self.count=0
-            self.count+=1
+        if self.hit:
+            win.blit(blastLeft,(self.x,self.y))
         win.blit(sprite, (self.x,self.y))
+        pygame.draw.rect(win, (255,0,0),self,2)
 
     def move(self):
         self.x+= self.direction*self.vel
@@ -457,14 +463,12 @@ def hit():
     if enemy.attacking:
         player.health-=1
         print(player.health)
-    if player.signature:
-        enemy.health-=100
 
 # Main game loop
 def main():
     run = True
     while run:
-        clock.tick(22)
+        clock.tick(24)
         if player.staminaGauge<100:
             player.staminaGauge+=1
         for event in pygame.event.get():
@@ -493,7 +497,7 @@ def main():
                     player.attacking= True
                     player.signatureCount=0
                     player.staminaGauge-=80
-                    new_slash= Projectile(player.x, player.feet_y,64,64,player.facing)   
+                    new_slash= Projectile(player.x, player.feet_y-20,64,64,player.facing)   
                     new_slash.getsugatenshou=True
                     projectiles.append(new_slash)
                     
@@ -542,6 +546,13 @@ def main():
                 player.jumpCount = 11
                 player.isJump = False
                 player.feet_y=500
+
+        for p in projectiles[:]:
+            if p.colliderect(enemy.body_hitbox):
+                enemy.health-=100
+                p.hit= True
+                p.kill()
+
         if player.hitbox.colliderect(enemy.body_hitbox):
             if enemy.attacking and player.hitbox.colliderect(enemy.attack_hitbox):
                 if enemy.attackCount>=21 and enemy.attackCount<24:
@@ -552,7 +563,7 @@ def main():
                 #detects player enemy collision 
                
             # will be used for player health decrement
-            elif player.attacking:
+            elif not player.signature and player.attacking:
               
                 if player.attackCount==0:
                     enemy.gothit()
