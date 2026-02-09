@@ -10,21 +10,9 @@ class Projectile(pygame.Rect):
         self.count=0
         self.getsugatenshou=False
         self.direction= facing
-        self.hit= True
     
     def draw(self,win):
-        if self.hit:
-            limit=3
-            if self.direction==1:
-                sprite= st.blastRight
-            else:
-                sprite= st.blastLeft
-            if self.count+1>=limit:
-                self.count=0
-                self.hit= False
-            self.count+=1
-
-        elif self.getsugatenshou :
+        if self.getsugatenshou :
             limit= 3*len(st.slashLeft)
             if self.direction==1:
                 sprite= st.slashright[self.count//3]
@@ -35,9 +23,6 @@ class Projectile(pygame.Rect):
                 self.getsugatenshou=False
                 self.kill()
             self.count+=1 
-        
-        if self.hit:
-            win.blit(st.blastLeft,(self.x,self.y))
         win.blit(sprite, (self.x,self.y))
         #pygame.draw.rect(win, (255,0,0),self,2) for hitbox
 

@@ -13,7 +13,7 @@ class Enemy:
         self.vel=2
         self.facing=-1
         self.walkCount=0
-        self.end= [self.width+30, st.screen_width-230]
+        self.end= [self.width-80, st.screen_width-230]
         self.attackCount=0
         self.lastattackTimer= time.time()
         self.attacking= False
@@ -79,8 +79,8 @@ class Enemy:
                 if self.hitCount+1 >=limit:
                     self.hitCount=0
             
-            # pygame.draw.rect(win,(255,0,0),(self.body_hitbox[0], self.body_hitbox[1]-20,70,10))
-            # pygame.draw.rect(win,(0,255,0),(self.body_hitbox[0], self.body_hitbox[1]-20,70-7*(500-self.health)/50,10))
+            pygame.draw.rect(win,(255,0,0),(self.body_hitbox[0], self.body_hitbox[1]-20,70,10))
+            pygame.draw.rect(win,(0,255,0),(self.body_hitbox[0], self.body_hitbox[1]-20,70-7*(500-self.health)/50,10))
                 
         if self.health<=0 and not self.fall:
                 if self.facing==1:
