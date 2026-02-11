@@ -7,8 +7,8 @@ import time
 
 clock = pygame.time.Clock()
 player = pl.Player(64, 64, 10, 500)
-enemy = en.Enemy(110, 149, 1200, 500)
-en.hollows.append(enemy)
+h= en.Enemy(110, 149, 1200, 500)
+# en.hollows.append(enemy)
 
 def hudPannel():
     pygame.draw.rect(st.win,(255,0,0),(212,59,212,23))
@@ -21,8 +21,8 @@ def redrawwindow():
     st.win.blit(st.bg, (0, 0))
     hudPannel()
     
-    for e in en.hollows:
-        e.move(st.win)
+    # for e in en.hollows:
+    h.move(st.win)
         
     player.draw(st.win)
     
@@ -32,20 +32,24 @@ def redrawwindow():
            p.draw(st.win)
     pygame.display.update()   
 
-last_enemy_spawn = time.time()
+# last_enemy_spawn = time.time()
 
-def createEnemies():
-    global last_enemy_spawn
-    if time.time() - last_enemy_spawn >= 10:
-        new_enemy = en.Enemy(110, 149, 1200, 500)
-        en.hollows.append(new_enemy)
-        last_enemy_spawn = time.time()
+# def createEnemies():
+#     global last_enemy_spawn
+#     if time.time() - last_enemy_spawn >= 10:
+#         new_enemy = en.Enemy(110, 149, 1200, 500)
+#         en.hollows.append(new_enemy)
+#         last_enemy_spawn = time.time()
 
+def hit():
+    # for h in en.hollows[:]:
+    if h.attacking:
+        player.health-=1
 def main():
     run = True
     while run:
         clock.tick(24)
-        createEnemies()
+        # createEnemies()
         
         if player.staminaGauge<100:
             player.staminaGauge+=1
@@ -117,34 +121,30 @@ def main():
 
         # Collisions
         for p in pj.projectiles[:]:
-            for h in en.hollows:
-                if p.colliderect(h.body_hitbox):
-                    if not h.damage:
-                        h.health-=100
-                        h.damage=True
-                else:
-                    h.damage=False
-
-        for h in en.hollows:
-            if player.hitbox.colliderect(h.body_hitbox):
-                if h.attacking and player.hitbox.colliderect(h.attack_hitbox):
-                    if h.attackCount>=21:
-                        player.hit()
-                        if not player.down:
-                            enemy.hit= True
-                            player.hit()
-                elif not player.signature and player.attacking:
-                    if player.attackCount==0:
-                        h.gothit()
-                else:
-                    h.hit= False
-                    player.stationaryPhase= False
-                    player.gotHit=False
+            # for h in en.hollows:
+            if p.colliderect(h.body_hitbox):
+                if not h.damage:
+                    h.health-=100
+                    h.damage=True
             else:
-                h.hit= False
-                player.stationaryPhase= False
-                player.gotHit=False
+                h.damage=False
 
+        # for h in en.hollows:
+        if player.hitbox.colliderect(h.body_hitbox):
+            if h.attacking and player.hitbox.colliderect(h.attack_hitbox):
+                if h.attackCount>=21 and h.attackCount<24:
+                    hit()
+                    if not player.down:
+                        h.hit= True
+                        player.hit()
+
+            elif not player.signature and player.attacking:
+                if player.attackCount==0:
+                    h.gothit()
+        else:
+            h.hit= False
+            player.stationaryPhase=False
+            player.gotHit=False
         redrawwindow()
     pygame.quit()
 main()

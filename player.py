@@ -8,43 +8,44 @@ class Player:
         self.x = x
         self.feet_y = y  
         self.vel = 5
-        self.walkCount = 0
-        self.stanceCount = 0
-        self.stanceFinal = 0
-        self.stancephase = 0
-        self.jumpCount = 11
-        self.spjumpCount = 0
+        self.walkCount = 0 #movement
+        self.stanceCount = 0 #stance init
+        self.stanceFinal = 0 #stance continuation
+        self.stancephase = 0 #T/F for stance
+        self.jumpCount = 11 #jump parameter
+        self.spjumpCount = 0 #jump 
         self.isJump = False
         self.right = False
         self.left = False
         self.standing = True
         self.dashing = False
-        self.dashCount = 0
-        self.facing = 1
-        self.dashTimer = 10
+        self.dashCount = 0 #dash
+        self.facing = 1 #direction
+        self.dashTimer = 10 #dash duration
         self.attacking = False
-        self.attackCount = 0
+        self.attackCount = 0 #attack
         self.hitbox = pygame.Rect(self.x+10, self.feet_y-4,50, 52 )
-        self.gotHit = False
-        self.getHitCount = 0
-        self.stationaryPhase = False
-        self.stationaryPhaseCount = 0
-        self.down = False
-        self.downCount = 0
+        self.gotHit = False #getting hit T/F
+        self.getHitCount = 0 #getting hit
+        self.stationaryPhase = False #getting hit continuation T/F
+        self.stationaryPhaseCount = 0 #getting hit continuation
+        self.down = False #knocked out check 
+        self.downCount = 0 #knocked out 
         self.health = 120
-        self.signature = False
+        self.signature = False 
         self.signatureCount = 0
         self.staminaGauge = 100
         self.ultimateGauge = 200
 
     def draw(self, win):
         framesPerImg = 3
+        limit=0
         sprite = st.jumpLeft[0]
         
+        print(self.stationaryPhase)
         if not self.standing and not self.isJump and not self.attacking:
             self.stancephase=0
-            print(self.down)
-            if self.dashing:
+            if self.dashing: #dashing animation
                 if self.facing==1:
                     limit= len(st.dashRight)*framesPerImg
                     sprite=st.dashRight[self.dashCount// framesPerImg]
@@ -60,7 +61,7 @@ class Player:
                     self.dashCount=0
                     self.dashTimer=10
 
-            elif not self.down:
+            elif not self.down: #movement animation
                 if self.left:
                     limit = len(st.walkLeft) * framesPerImg
                     sprite = st.walkLeft[self.walkCount // framesPerImg]
@@ -70,7 +71,7 @@ class Player:
                 self.walkCount += 1
                 if self.walkCount +1 >= limit:
                     self.walkCount = 0
-            else:
+            else: #Standing back up animation
                 if self.facing==1:
                     limit= len(st.standUpRight)* framesPerImg
                     sprite= st.standUpRight[self.downCount// framesPerImg]
@@ -82,7 +83,7 @@ class Player:
                     self.down= False
                 self.downCount+=1
 
-        elif self.stationaryPhase: 
+        elif self.stationaryPhase:  #continuously getting hit animation
             if self.facing==-1:
                 limit= len(st.hitLeft)*framesPerImg
                 sprite= st.hitLeft[self.stationaryPhaseCount// framesPerImg]
@@ -94,7 +95,7 @@ class Player:
                 self.down= True
             self.stationaryPhaseCount+=1
             
-        elif self.gotHit: 
+        elif self.gotHit: #falling and getting hit animation
             if self.facing==1:
                 limit= len(st.getHitRight)*framesPerImg
                 sprite= st.getHitRight[self.getHitCount//framesPerImg]
@@ -109,7 +110,7 @@ class Player:
                 self.stationaryPhaseCount=0
             self.getHitCount+=1
         elif self.attacking:
-            if not self.signature:
+            if not self.signature: #attack animation
                 self.x+= self.facing//2
                 limit= len(st.attackRight)*framesPerImg
                 if self.facing==1:
@@ -120,7 +121,7 @@ class Player:
                 if self.attackCount+1 >= limit:
                     self.attackCount=0
                     self.attacking=False
-            else:
+            else: #getsugatensho launch animation
                 limit= len(st.getsugatenshoRight)*framesPerImg
                 if self.facing==1:
                     sprite= st.getsugatenshoRight[self.signatureCount// framesPerImg]
@@ -132,7 +133,7 @@ class Player:
                     self.signatureCount=0
                     self.signature= False
                     self.attacking= False
-        elif self.isJump:
+        elif self.isJump: #jump animation
             if self.facing==1:
                 limit = len(st.jumpRight)* framesPerImg
                 sprite= st.jumpRight[self.spjumpCount//framesPerImg]
@@ -143,7 +144,7 @@ class Player:
                 self.spjumpCount=0
             self.spjumpCount += 1
         else:
-            if self.stancephase==0: 
+            if self.stancephase==0: #stance during no input
                 if self.facing==-1:
                     limit = len(st.stanceLeft) * framesPerImg
                     sprite = st.stanceLeft[self.stanceCount // framesPerImg]
@@ -154,7 +155,7 @@ class Player:
                 if self.stanceCount +1>= limit:
                     self.stanceCount=0
                     self.stancephase=1
-            else:
+            else: #continued stance when idle
                 if self.facing==-1:
                     limit = len(st.stanceFinalLeft)* framesPerImg
                     sprite = st.stanceFinalLeft[self.stanceFinal // framesPerImg]
@@ -174,7 +175,6 @@ class Player:
 
     def hit(self):
         if not self.stationaryPhase:
-            self.health-=1
             self.gotHit=True
             self.attacking= False
             self.stationaryPhase= False
