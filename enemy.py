@@ -120,3 +120,4 @@ class Enemy:
     def kill(self):
         if self in hollows:
             hollows.remove(self)
+            st.score+=10

@@ -31,8 +31,7 @@ hud_pannel = pygame.transform.smoothscale(hud_original, (target_width, target_he
 bg = pygame.transform.scale(pygame.image.load("images/bleach.jpeg"), (screen_width, screen_height))
 
 # Music
-pygame.mixer.music.load('audio/on the precipice of death.mp3')
-pygame.mixer.music.play(-1)
+
 #0 for once, 1 for twice 2 for thrice,etc
 
 attackOriginal= [pygame.image.load(f'images/nattack1{i}.png').convert_alpha() for i in range (0,6)]

@@ -35,7 +35,7 @@ class Player:
         self.signature = False 
         self.signatureCount = 0
         self.staminaGauge = 100
-        self.ultimateGauge = 200
+        self.ultimateGauge = 0
 
     def draw(self, win):
         framesPerImg = 3
@@ -71,9 +71,8 @@ class Player:
                 if self.walkCount +1 >= limit:
                     self.walkCount = 0
             else: #Standing back up animation
+                self.stationaryPhase= False
                 if self.facing==1:
-                    self.stationaryPhase= False
-                    self.stationaryPhase= False
                     limit= len(st.standUpRight)* framesPerImg
                     sprite= st.standUpRight[self.downCount// framesPerImg]
                 else:
@@ -174,6 +173,8 @@ class Player:
         win.blit(sprite, (draw_x, draw_y))
 
     def hit(self):
+        if self.gotHit or self.stationaryPhase or self.down:
+            return
         if not self.stationaryPhase:
             self.health-=1
             self.gotHit=True

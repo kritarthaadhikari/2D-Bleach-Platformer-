@@ -9,23 +9,24 @@ clock = pygame.time.Clock()
 player = pl.Player(64, 64, 10, 500)
 enemy = en.Enemy(110, 149, 1200, 500)
 en.hollows.append(enemy)
+font= pygame.font.SysFont('Comic Sans',30, True, False)
 
 def hudPannel():
     pygame.draw.rect(st.win,(255,0,0),(212,59,212,23))
     pygame.draw.rect(st.win,(0,255,0),(212,59,212- 53*(120-player.health)/30,22 ))
     pygame.draw.rect(st.win,(255,255,0),(175,89,188-(100-player.staminaGauge)*1.88,14))
-    pygame.draw.rect(st.win,(0,210,255),(239,116,(200-player.ultimateGauge)*1.8,18))
+    pygame.draw.rect(st.win,"cyan",(237,116,st.score*2.37,18))
+    
     st.win.blit(st.hud_pannel, (10,10))
 
 def redrawwindow():
     st.win.blit(st.bg, (0, 0))
     hudPannel()
-    
     for e in en.hollows:
         e.move(st.win)
-        
     player.draw(st.win)
-    
+    text= font.render(f"Score: {st.score}",1,(255,255,255))
+    st.win.blit(text,(st.screen_width-text.get_width()-20, 0))
     if player.signatureCount>=21:
         for p in pj.projectiles[:]:
            p.move()
@@ -41,10 +42,6 @@ def createEnemies():
         en.hollows.append(new_enemy)
         last_enemy_spawn = time.time()
 
-def hit():
-    for h in en.hollows[:]:
-        if h.attacking:
-            player.health-=1
 def main():
     run = True
     while run:
@@ -62,6 +59,7 @@ def main():
                 if event.key== pygame.K_SPACE:
                     player.standing= False
                     player.attacking= True
+                    player.signature=False
                     player.stancephase=0
                 
                 elif event.key== pygame.K_LSHIFT:
@@ -71,8 +69,8 @@ def main():
                         player.dashing= True
                         player.dashCount=0
                         player.staminaGauge-=20
-            if event.type== pygame.KEYUP:
-                if event.key== pygame.K_z and player.staminaGauge>=80:
+           
+                elif event.key== pygame.K_z and player.staminaGauge>=80:
                     player.standing= False
                     player.signature= True
                     player.attacking= True
@@ -122,13 +120,11 @@ def main():
         # Collisions
         for p in pj.projectiles[:]:
             for h in en.hollows:
-                if p.colliderect(h.body_hitbox):
+                if p.colliderect(h.body_hitbox) and player.signatureCount>=21:
+                    h.health-=100
+                    h.damage=True
                     p.kill()
-                    if not h.damage:
-                        h.health-=100
-                        h.damage=True
-                else:
-                    h.damage=False
+               
 
         for h in en.hollows[:]:
             if player.hitbox.colliderect(h.body_hitbox):
@@ -149,6 +145,7 @@ def main():
                 h.hit= False
                 player.stationaryPhase= False
                 player.gotHit=False
+
         redrawwindow()
     pygame.quit()
 main()

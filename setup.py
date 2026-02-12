@@ -8,6 +8,11 @@ screen_height = 600
 win = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Bleach')
 
+#Audio
+pygame.mixer.music.load('audio/on the precipice of death.mp3')
+pygame.mixer.music.play(-1)
+score=0
+
 # --- PROJECTILE ASSETS ---
 slash = [pygame.image.load(f'images/fire{i}.png') for i in range(1,7)]
 slashLeft = [pygame.transform.smoothscale(img, (64,64)) for img in slash]
