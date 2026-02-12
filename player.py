@@ -41,8 +41,7 @@ class Player:
         framesPerImg = 3
         limit=0
         sprite = st.jumpLeft[0]
-        
-        print(self.stationaryPhase)
+    
         if not self.standing and not self.isJump and not self.attacking:
             self.stancephase=0
             if self.dashing: #dashing animation
@@ -73,6 +72,8 @@ class Player:
                     self.walkCount = 0
             else: #Standing back up animation
                 if self.facing==1:
+                    self.stationaryPhase= False
+                    self.stationaryPhase= False
                     limit= len(st.standUpRight)* framesPerImg
                     sprite= st.standUpRight[self.downCount// framesPerImg]
                 else:
@@ -131,7 +132,6 @@ class Player:
                 self.signatureCount+=1
                 if self.signatureCount+1>=limit:
                     self.signatureCount=0
-                    self.signature= False
                     self.attacking= False
         elif self.isJump: #jump animation
             if self.facing==1:
@@ -175,6 +175,7 @@ class Player:
 
     def hit(self):
         if not self.stationaryPhase:
+            self.health-=1
             self.gotHit=True
             self.attacking= False
             self.stationaryPhase= False
