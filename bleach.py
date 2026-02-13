@@ -37,7 +37,7 @@ last_enemy_spawn = time.time()
 
 def createEnemies():
     global last_enemy_spawn
-    if time.time() - last_enemy_spawn >= 20:
+    if time.time() - last_enemy_spawn >= 30:
         new_enemy = en.Enemy(110, 149, 1200, 500)
         en.hollows.append(new_enemy)
         last_enemy_spawn = time.time()
@@ -45,12 +45,11 @@ def createEnemies():
 def main():
     run = True
     while run:
-        clock.tick(10)
+        clock.tick(22)
         createEnemies()
         
         if player.staminaGauge<100:
             player.staminaGauge+=1
-            
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -142,10 +141,16 @@ def main():
                 elif not player.signature and player.attacking:
                     if player.attackCount==0:
                         h.gothit()
+                        if player.combo:
+                            h.health-=20
                 else:
                     h.hit= False
+                    player.stationaryPhase= False
+                    player.gotHit=False
             else:
                 h.hit= False
+                player.stationaryPhase= False
+                player.gotHit=False
         redrawwindow()
     pygame.quit()
 main()

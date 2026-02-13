@@ -37,7 +37,8 @@ class Player:
         self.staminaGauge = 100
         self.ultimateGauge = 0
         self.comboIndex=0 #for combo attacks
-        self.comboTimer=10
+        self.comboTimer=10 #Time allowed for followup attack
+        self.combo= False
 
     def draw(self, win):
         framesPerImg = 3
@@ -111,6 +112,23 @@ class Player:
                 self.down= True
                 self.stationaryPhaseCount=0
             self.getHitCount+=1
+        elif self.combo:
+                self.feet_y-=1
+                self.x+= self.facing
+                limit= len(st.attackFollowUpRight)*framesPerImg
+                if self.facing==1:
+                    sprite=st.attackFollowUpRight[self.attackCount//framesPerImg]
+                else:
+                    sprite= st.attackFollowUpLeft[self.attackCount//framesPerImg]
+                self.attackCount+=1
+                if self.attackCount+1 >=limit:
+                    self.attackCount=0
+                    self.comboIndex=0   
+                    self.comboTimer=10
+                    self.attacking = False
+                    self.combo=False
+                    self.feet_y+=limit
+        
         elif self.attacking:
             if not self.signature: #attack animation
                 self.x+= self.facing//2
@@ -124,17 +142,7 @@ class Player:
                 if self.attackCount+1 >= limit:
                     self.attackCount=0
                     if self.comboIndex>1:
-                        print("True")
-                        limit= len(st.attackFollowUpRight)*framesPerImg
-                        if self.facing==1:
-                            sprite=st.attackFollowUpRight[self.attackCount//framesPerImg]
-                        else:
-                            sprite= st.attackFollowUpLeft[self.attackCount//framesPerImg]
-                        self.attackCount+=1
-                        if self.attackCount+1 >=limit:
-                            self.attackCount=0
-                            self.comboIndex=0   
-                            self.comboTimer=10         
+                        self.combo= True 
                     self.attacking=False
 
             else: #getsugatensho launch animation

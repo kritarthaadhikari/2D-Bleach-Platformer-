@@ -116,6 +116,7 @@ class Enemy:
     
     def gothit(self):
         self.health-=10
+        self.x= self.x
     
     def kill(self):
         if self in hollows:
