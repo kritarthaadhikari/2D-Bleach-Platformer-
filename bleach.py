@@ -45,7 +45,7 @@ def createEnemies():
 def main():
     run = True
     while run:
-        clock.tick(24)
+        clock.tick(10)
         createEnemies()
         
         if player.staminaGauge<100:
@@ -61,7 +61,13 @@ def main():
                     player.attacking= True
                     player.signature=False
                     player.stancephase=0
-                
+                    if player.comboTimer>0:
+                        player.comboIndex+=1
+                        player.comboTimer-=1
+                    else:
+                        player.comboIndex=0
+                        player.comboTimer=10
+
                 elif event.key== pygame.K_LSHIFT:
                    if player.vel < player.x < st.screen_width - player.width - player.vel and player.staminaGauge>=20:
                         player.x+= player.facing*40
@@ -138,7 +144,6 @@ def main():
                         h.gothit()
                 else:
                     h.hit= False
-                    
             else:
                 h.hit= False
         redrawwindow()

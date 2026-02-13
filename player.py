@@ -36,6 +36,8 @@ class Player:
         self.signatureCount = 0
         self.staminaGauge = 100
         self.ultimateGauge = 0
+        self.comboIndex=0 #for combo attacks
+        self.comboTimer=10
 
     def draw(self, win):
         framesPerImg = 3
@@ -118,15 +120,28 @@ class Player:
                 else:
                     sprite= st.attackLeft[self.attackCount// framesPerImg]
                 self.attackCount+=1
+
                 if self.attackCount+1 >= limit:
                     self.attackCount=0
+                    if self.comboIndex>1:
+                        print("True")
+                        limit= len(st.attackFollowUpRight)*framesPerImg
+                        if self.facing==1:
+                            sprite=st.attackFollowUpRight[self.attackCount//framesPerImg]
+                        else:
+                            sprite= st.attackFollowUpLeft[self.attackCount//framesPerImg]
+                        self.attackCount+=1
+                        if self.attackCount+1 >=limit:
+                            self.attackCount=0
+                            self.comboIndex=0   
+                            self.comboTimer=10         
                     self.attacking=False
+
             else: #getsugatensho launch animation
                 limit= len(st.getsugatenshoRight)*framesPerImg
                 if self.facing==1:
                     sprite= st.getsugatenshoRight[self.signatureCount// framesPerImg]
                 else:
-                    limit= len(st.getsugatenshoLeft)*framesPerImg
                     sprite= st.getsugatenshoLeft[self.signatureCount// framesPerImg]
                 self.signatureCount+=1
                 if self.signatureCount+1>=limit:
