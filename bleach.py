@@ -37,7 +37,7 @@ last_enemy_spawn = time.time()
 
 def createEnemies():
     global last_enemy_spawn
-    if time.time() - last_enemy_spawn >= 10:
+    if time.time() - last_enemy_spawn >= 20:
         new_enemy = en.Enemy(110, 149, 1200, 500)
         en.hollows.append(new_enemy)
         last_enemy_spawn = time.time()
@@ -125,7 +125,6 @@ def main():
                     h.damage=True
                     p.kill()
                
-
         for h in en.hollows[:]:
             if player.hitbox.colliderect(h.body_hitbox):
                 if h.attacking and player.hitbox.colliderect(h.attack_hitbox):
@@ -139,13 +138,9 @@ def main():
                         h.gothit()
                 else:
                     h.hit= False
-                    player.stationaryPhase= False
-                    player.gotHit=False
+                    
             else:
                 h.hit= False
-                player.stationaryPhase= False
-                player.gotHit=False
-
         redrawwindow()
     pygame.quit()
 main()

@@ -44,6 +44,8 @@ standUpRight = [pygame.image.load('images/stanced1.png'), pygame.image.load('ima
 standUpLeft = [pygame.transform.flip(img, True, False) for img in standUpRight]
 getsugatenshoRight = [pygame.image.load(f'images/getsugatensho{i}.png') for i in range(1,15)]
 getsugatenshoLeft = [pygame.transform.flip(img, True, False) for img in getsugatenshoRight]
+attackFollowUpRight= [pygame.image.load(f'images/ichigoattack2.{i}') for i in range(3,18)]
+attackFollowUpLeft= [pygame.transform.flip(img, True, False) for img in attackFollowUpRight]
 
 # --- ENEMY ASSETS ---
 HwalkRight = [pygame.image.load(f'images/walk{i}.png') for i in range(2,10)]

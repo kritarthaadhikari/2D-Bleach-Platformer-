@@ -167,7 +167,10 @@ class Player:
                     self.stanceCount=0
 
         self.hitbox= pygame.Rect(self.x+10, self.feet_y-4,50, 52 )
-        draw_x= self.x -sprite.get_width()+50
+        if self.signature and self.facing==-1:
+            draw_x= self.x -sprite.get_width()+50
+        else:
+            draw_x= self.x
         sprite_height = sprite.get_height()
         draw_y = self.feet_y - sprite_height+50
         win.blit(sprite, (draw_x, draw_y))
