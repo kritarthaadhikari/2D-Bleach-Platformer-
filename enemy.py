@@ -11,15 +11,15 @@ class Enemy:
         self.width= width
         self.height= height
         self.vel=2
-        self.facing=-1
-        self.walkCount=0
-        self.end= [self.width-80, st.screen_width-230]
-        self.attackCount=0
-        self.lastattackTimer= time.time()
-        self.attacking= False
+        self.facing=-1 #direction of movement
+        self.walkCount=0 #for walk animation
+        self.end= [self.width-80, st.screen_width-230] #boundary
+        self.attackCount=0 #attack animation
+        self.lastattackTimer= time.time() #attack timer
+        self.attacking= False 
         self.body_hitbox= pygame.Rect(self.x+10, self.feet-100,70, 125 )
         self.attack_hitbox= pygame.Rect(self.x+10, self.feet-100, 50, 60)
-        self.hit= False
+        self.hit= False 
         self.hitCount=0
         self.health=500
         self.fallCount= 0
@@ -30,7 +30,7 @@ class Enemy:
         framesPerImg=4
         current= time.time()
         if not self.fall:
-            if current- self.lastattackTimer > 3.0:
+            if current- self.lastattackTimer > 3.0 or self.attacking:
                 self.attacking= True
                 if not self.hit:
                     if self.facing==1:

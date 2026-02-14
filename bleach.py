@@ -16,7 +16,6 @@ def hudPannel():
     pygame.draw.rect(st.win,(0,255,0),(212,59,212- 53*(120-player.health)/30,22 ))
     pygame.draw.rect(st.win,(255,255,0),(175,89,188-(100-player.staminaGauge)*1.88,14))
     pygame.draw.rect(st.win,"cyan",(237,116,st.score*2.37,18))
-    
     st.win.blit(st.hud_pannel, (10,10))
 
 def redrawwindow():
@@ -37,7 +36,7 @@ last_enemy_spawn = time.time()
 
 def createEnemies():
     global last_enemy_spawn
-    if time.time() - last_enemy_spawn >= 30:
+    if time.time() - last_enemy_spawn >= 50:
         new_enemy = en.Enemy(110, 149, 1200, 500)
         en.hollows.append(new_enemy)
         last_enemy_spawn = time.time()
@@ -140,6 +139,9 @@ def main():
                             player.hit()
                 elif not player.signature and player.attacking:
                     if player.attackCount==0:
+                        if player.facing==h.facing:
+                            h.facing*=-1
+                        h.attacking= True
                         h.gothit()
                         if player.combo:
                             h.health-=20
