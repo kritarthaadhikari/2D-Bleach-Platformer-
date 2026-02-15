@@ -113,7 +113,6 @@ class Player:
                 self.stationaryPhaseCount=0
             self.getHitCount+=1
         elif self.combo:
-                self.feet_y-=1
                 self.x+= self.facing
                 limit= len(st.attackFollowUpRight)*framesPerImg
                 if self.facing==1:
@@ -127,7 +126,6 @@ class Player:
                     self.comboTimer=10
                     self.attacking = False
                     self.combo=False
-                    self.feet_y+=limit
         
         elif self.attacking:
             if not self.signature: #attack animation
@@ -199,8 +197,6 @@ class Player:
         win.blit(sprite, (draw_x, draw_y))
 
     def hit(self):
-        if self.gotHit or self.stationaryPhase or self.down:
-            return
         if not self.stationaryPhase:
             self.health-=1
             self.gotHit=True

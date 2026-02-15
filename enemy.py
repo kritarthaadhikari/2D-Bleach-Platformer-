@@ -115,10 +115,11 @@ class Enemy:
         self.draw(win)
     
     def gothit(self):
-        self.health-=10
+        self.health-=20
         self.x= self.x
     
     def kill(self):
         if self in hollows:
             hollows.remove(self)
             st.score+=10
+            st.killCount+=1

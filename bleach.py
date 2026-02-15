@@ -23,6 +23,9 @@ def redrawwindow():
     hudPannel()
     for e in en.hollows:
         e.move(st.win)
+        if e.health==0:
+            if player.health<=80:
+                player.health+=40
     player.draw(st.win)
     text= font.render(f"Score: {st.score}",1,(255,255,255))
     st.win.blit(text,(st.screen_width-text.get_width()-20, 0))
@@ -30,6 +33,10 @@ def redrawwindow():
         for p in pj.projectiles[:]:
            p.move()
            p.draw(st.win)
+    if st.killCount==0 and st.pressed:
+        text= font.render("Locked! Get a kill",1,(255,255,255))
+        st.win.blit(text,(st.screen_width//2-text.get_width()//2, st.screen_height//2-text.get_height()//2))
+
     pygame.display.update()   
 
 last_enemy_spawn = time.time()
@@ -74,16 +81,24 @@ def main():
                         player.dashCount=0
                         player.staminaGauge-=20
            
-                elif event.key== pygame.K_z and player.staminaGauge>=80:
-                    player.standing= False
-                    player.signature= True
-                    player.attacking= True
-                    player.signatureCount=0
-                    player.staminaGauge-=80
-                    new_slash= pj.Projectile(player.x, player.feet_y-20,64,64,player.facing)   
-                    new_slash.getsugatenshou=True
-                    pj.projectiles.append(new_slash)
-                    
+                elif event.key== pygame.K_z and player.staminaGauge>=90:
+                    st.pressed=True
+                    if st.killCount!=0:
+                        player.standing= False
+                        player.signature= True
+                        player.attacking= True
+                        player.signatureCount=0
+                        player.staminaGauge-=80
+                        new_slash= pj.Projectile(player.x, player.feet_y-20,64,64,player.facing)   
+                        new_slash.getsugatenshou=True
+                        pj.projectiles.append(new_slash)
+                        st.pressed=False
+                    else:
+                        redrawwindow()
+                        pygame.display.update()
+                else:
+                    st.pressed=False
+
         keys = pygame.key.get_pressed()
         if not player.attacking:
             if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and player.x > player.vel:
@@ -103,6 +118,7 @@ def main():
                     player.standing = True
                     player.dashCount=0
                 player.walkCount = 0
+                st.pressed=False
 
         # Jump logic
         if not player.isJump:
@@ -125,7 +141,7 @@ def main():
         for p in pj.projectiles[:]:
             for h in en.hollows:
                 if p.colliderect(h.body_hitbox) and player.signatureCount>=21:
-                    h.health-=100
+                    h.health-=200
                     h.damage=True
                     p.kill()
                
@@ -144,7 +160,7 @@ def main():
                         h.attacking= True
                         h.gothit()
                         if player.combo:
-                            h.health-=20
+                            h.health-=40
                 else:
                     h.hit= False
                     player.stationaryPhase= False
@@ -152,7 +168,8 @@ def main():
             else:
                 h.hit= False
                 player.stationaryPhase= False
-                player.gotHit=False
+                player.gotHit= False
+
         redrawwindow()
     pygame.quit()
 main()
