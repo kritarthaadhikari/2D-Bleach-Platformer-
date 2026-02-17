@@ -39,6 +39,7 @@ class Player:
         self.comboIndex=0 #for combo attacks
         self.comboTimer=10 #Time allowed for followup attack
         self.combo= False
+        self.hollowattack=[]
 
     def draw(self, win):
         framesPerImg = 3
@@ -197,8 +198,8 @@ class Player:
         win.blit(sprite, (draw_x, draw_y))
 
     def hit(self):
+        self.health-=1
         if not self.stationaryPhase:
-            self.health-=1
             self.gotHit=True
             self.attacking= False
             self.stationaryPhase= False
