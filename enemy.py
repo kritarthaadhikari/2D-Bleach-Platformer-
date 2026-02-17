@@ -24,7 +24,6 @@ class Enemy:
         self.health=500
         self.fallCount= 0
         self.fall= False
-        self.damage= False
     
     def draw(self,win):
         framesPerImg=4

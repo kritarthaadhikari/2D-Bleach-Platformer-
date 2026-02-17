@@ -43,7 +43,7 @@ last_enemy_spawn = time.time()
 
 def createEnemies():
     global last_enemy_spawn
-    if time.time() - last_enemy_spawn >= 50:
+    if time.time() - last_enemy_spawn >= 30:
         new_enemy = en.Enemy(110, 149, 1200, 500)
         en.hollows.append(new_enemy)
         last_enemy_spawn = time.time()
@@ -53,9 +53,8 @@ def main():
     while run:
         clock.tick(22)
         createEnemies()
-        
         if player.staminaGauge<100:
-            player.staminaGauge+=1
+            player.staminaGauge+=1/3
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -118,7 +117,7 @@ def main():
                     player.standing = True
                     player.dashCount=0
                 player.walkCount = 0
-                st.pressed=False
+                st.pressed=False 
 
         # Jump logic
         if not player.isJump:
@@ -141,10 +140,10 @@ def main():
         for p in pj.projectiles[:]:
             for h in en.hollows:
                 if p.colliderect(h.body_hitbox) and player.signatureCount>=21:
-                    h.health-=200
-                    h.damage=True
-                    p.kill()
-               
+                    if h not in p.hitEnemies:
+                        h.health-=200
+                        p.hitEnemies.append(h)
+        
         for h in en.hollows[:]:
             if player.hitbox.colliderect(h.body_hitbox):
                 if h.attacking and player.hitbox.colliderect(h.attack_hitbox):

@@ -10,6 +10,7 @@ class Projectile(pygame.Rect):
         self.count=0
         self.getsugatenshou=False
         self.direction= facing
+        self.hitEnemies= []
     
     def draw(self,win):
         if self.getsugatenshou :
