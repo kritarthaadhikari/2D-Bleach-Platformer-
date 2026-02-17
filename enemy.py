@@ -23,7 +23,7 @@ class Enemy:
         self.hitCount=0
         self.health=500
         self.fallCount= 0
-        self.fall= False
+        self.fall= False #detects ground fall
     
     def draw(self,win):
         framesPerImg=4

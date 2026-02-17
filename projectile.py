@@ -10,7 +10,7 @@ class Projectile(pygame.Rect):
         self.count=0
         self.getsugatenshou=False
         self.direction= facing
-        self.hitEnemies= []
+        self.hitEnemies= [] #stores hollows that have been hit and prevents repeated hits
     
     def draw(self,win):
         if self.getsugatenshou :
