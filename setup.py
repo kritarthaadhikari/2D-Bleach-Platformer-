@@ -17,11 +17,9 @@ killCount=0
 pressed=False #for availability of signature
 
 # --- PROJECTILE ASSETS ---
-slash = [pygame.image.load(f'images/fire{i}.png') for i in range(1,7)]
-slashLeft = [pygame.transform.smoothscale(img, (64,64)) for img in slash]
-slashright = [pygame.transform.flip(img, True, False) for img in slashLeft]
-blastLeft = slashLeft[5]
-blastRight = slashright[5]
+slash = [pygame.image.load(f'images/shot/fire{i}.png') for i in range(1,5)]
+slashright = [pygame.transform.smoothscale(img, (64,64)) for img in slash]
+slashLeft = [pygame.transform.flip(img, True, False) for img in slashright]
 
 # --- PLAYER ASSETS ---
 walkRight = [pygame.image.load(f'images/run{i}.png') for i in range(1, 9)]
@@ -60,6 +58,8 @@ attackSeenRight = [pygame.image.load(f'images/hattack{i}.png') for i in range(7,
 attackSeenLeft = [pygame.transform.flip(img, True, False) for img in attackSeenRight]
 fallRight = [pygame.image.load(f'images/fall{i}.png') for i in range(1,5)]
 fallLeft = [pygame.transform.flip(img, True, False) for img in fallRight]
+blownRight=[pygame.image.load(f'images/blown{i}.png')for i in range(1,4)] 
+blownLeft= [pygame.transform.flip(img, True, False) for img in blownRight]
 
 # --- UI & BG ---
 hud_original = pygame.image.load('images/unnamed1.png').convert_alpha()

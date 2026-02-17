@@ -88,7 +88,7 @@ def main():
                         player.attacking= True
                         player.signatureCount=0
                         player.staminaGauge-=80
-                        new_slash= pj.Projectile(player.x, player.feet_y-20,64,64,player.facing)   
+                        new_slash= pj.Projectile(player.x, player.feet_y-10,64,64,player.facing)   
                         new_slash.getsugatenshou=True
                         pj.projectiles.append(new_slash)
                         st.pressed=False
@@ -143,6 +143,10 @@ def main():
                     if h not in p.hitEnemies:
                         h.health-=200
                         p.hitEnemies.append(h)
+                        if p.direction != h.facing:
+                            h.blown=True
+                        else:
+                            h.blown=False
         
         for h in en.hollows[:]:
             if player.hitbox.colliderect(h.body_hitbox):

@@ -19,16 +19,18 @@ class Enemy:
         self.attacking= False 
         self.body_hitbox= pygame.Rect(self.x+10, self.feet-100,70, 125 )
         self.attack_hitbox= pygame.Rect(self.x+10, self.feet-100, 50, 60)
-        self.hit= False 
+        self.hit= False  #enemy attack continuation
         self.hitCount=0
         self.health=500
         self.fallCount= 0
         self.fall= False #detects ground fall
+        self.blown=False #blows character when signature is hit
+        self.blownCount=0
     
     def draw(self,win):
         framesPerImg=4
         current= time.time()
-        if not self.fall:
+        if not self.fall and not self.blown:
             if current- self.lastattackTimer > 3.0 or self.attacking:
                 self.attacking= True
                 if not self.hit:
@@ -66,7 +68,7 @@ class Enemy:
                 else:
                     self.body_hitbox= pygame.Rect(self.x, self.feet-40,130, 60 )
                     self.attack_hitbox= pygame.Rect(self.x, self.feet-30,50, 60)
-
+            
             if self.hit:
                 if self.facing==1:
                     limit= len(st.attackSeenRight)* framesPerImg
@@ -76,11 +78,23 @@ class Enemy:
                     sprite= st.attackSeenLeft[self.hitCount//framesPerImg]
                 self.hitCount+=1
                 if self.hitCount+1 >=limit:
-                    self.hitCount=0
-            
+                    self.hitCount=0 
+
             pygame.draw.rect(win,(255,0,0),(self.body_hitbox[0], self.body_hitbox[1]-20,70,10))
             pygame.draw.rect(win,(0,255,0),(self.body_hitbox[0], self.body_hitbox[1]-20,70-7*(500-self.health)/50,10))
-                
+
+        elif self.blown:
+            if self.facing==1:
+                limit= len(st.blownRight)*framesPerImg
+                sprite= st.blownRight[self.blownCount// framesPerImg]
+            elif self.facing==-1:
+                limit= len(st.blownLeft)*framesPerImg
+                sprite= st.blownLeft[self.blownCount// framesPerImg]
+            if self.blownCount+1>= limit:
+                self.blownCount=0
+                self.blown=False
+            self.blownCount+=1   
+
         if self.health<=0 and not self.fall:
                 if self.facing==1:
                     limit= len(st.fallRight)*framesPerImg
@@ -105,12 +119,15 @@ class Enemy:
         win.blit(sprite , (self.x, draw_y))
     
     def move(self, win):
-        if not self.attacking and not self.health<=0:
-            if self.x==self.end[1]:
-                self.facing=-1
-            elif self.x==self.end[0]:
-                self.facing=1
-            self.x+= self.facing* self.vel
+        if not self.blown:
+            if not self.attacking and not self.health<=0:
+                if self.x==self.end[1]:
+                    self.facing=-1
+                elif self.x==self.end[0]:
+                    self.facing=1
+                self.x+= self.facing* self.vel
+        else:
+            self.x+= -self.facing*4
         self.draw(win)
     
     def gothit(self):

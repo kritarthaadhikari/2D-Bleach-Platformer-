@@ -6,7 +6,7 @@ projectiles = []
 class Projectile(pygame.Rect):
     def __init__(self,x,y,width,height,facing):
         super().__init__(x,y,width,height)
-        self.vel= 10
+        self.vel= 15
         self.count=0
         self.getsugatenshou=False
         self.direction= facing
