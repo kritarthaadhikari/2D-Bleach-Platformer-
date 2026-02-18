@@ -6,6 +6,15 @@ pygame.mixer.init()
 screen_width = 1200
 screen_height = 600
 win = pygame.display.set_mode((screen_width, screen_height))
+surface =pygame.Surface((screen_width,screen_height),pygame.SRCALPHA)
+#“This surface will use RGBA 
+# (Red, Green, Blue, Alpha) instead of just RGB.”
+
+#Alpha = transparency value:
+# 0 → fully transparent
+# 255 → fully opaque
+# 128 → 50% transparent
+
 pygame.display.set_caption('Bleach')
 
 #Audio
@@ -15,6 +24,8 @@ pygame.mixer.music.play(-1)
 score=0
 killCount=0
 pressed=False #for availability of signature
+
+pause=False
 
 # --- PROJECTILE ASSETS ---
 slash = [pygame.image.load(f'images/shot/fire{i}.png') for i in range(1,5)]
