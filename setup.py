@@ -24,8 +24,7 @@ pygame.mixer.music.play(-1)
 score=0
 killCount=0
 pressed=False #for availability of signature
-
-pause=False
+pause= False
 
 # --- PROJECTILE ASSETS ---
 slash = [pygame.image.load(f'images/shot/fire{i}.png') for i in range(1,5)]
