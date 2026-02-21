@@ -104,6 +104,10 @@ def main():
                 if event.type ==pygame.MOUSEBUTTONDOWN and st.pause:
                     if restart.collidepoint(event.pos):
                         reset()
+                    elif mainmenu.collidepoint(event.pos):
+                        st.game_state="mainmenu"
+                        reset()
+                        
                 if event.type == pygame.KEYDOWN:
                     if not st.pause:
                         if event.key== pygame.K_SPACE:
