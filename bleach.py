@@ -10,7 +10,7 @@ clock = pygame.time.Clock()
 player = pl.Player(64, 64, 10, 500)
 enemy = en.Enemy(110, 149, 1200, 500)
 en.hollows.append(enemy)
-font= pygame.font.SysFont('Comic Sans',30, True, False)
+
 
 def hudPannel():
     pygame.draw.rect(st.win,(255,0,0),(212,59,212,23))
@@ -28,14 +28,14 @@ def redrawwindow():
             if player.health<=80:
                 player.health+=40
     player.draw(st.win)
-    text= font.render(f"Score: {st.score}",1,(255,255,255))
+    text= st.font.render(f"Score: {st.score}",1,(255,255,255))
     st.win.blit(text,(st.screen_width-text.get_width()-20, 0))
     if player.signatureCount>=21:
         for p in pj.projectiles[:]:
            p.move()
            p.draw(st.win)
     if st.killCount==0 and st.pressed:
-        text= font.render("Locked! Get a kill",1,(255,255,255))
+        text= st.font.render("Locked! Get a kill",1,(255,255,255))
         st.win.blit(text,(st.screen_width//2-text.get_width()//2, st.screen_height//2-text.get_height()//2))
     pygame.display.update()   
 
@@ -53,9 +53,9 @@ def draw_pause():
     pygame.draw.rect(st.surface,'dark gray',[st.screen_width//2-210,160,440,50],0,12)
     reset= pygame.draw.rect(st.surface,'white',[st.screen_width//2-210,220, 210,50],0,12) 
     save= pygame.draw.rect(st.surface,'white',[st.screen_width//2+20,220, 210,50],0,12) 
-    st.surface.blit(font.render("Game Paused: Esc to Resume",True,'black'),(st.screen_width//2-200,160))
-    st.surface.blit(font.render('Restart',True, 'black'),[st.screen_width//2-150,220, 210,50])
-    st.surface.blit(font.render('Main Menu',True, 'black'),[st.screen_width//2+50,220, 210,50])
+    st.surface.blit(st.font.render("Game Paused: Esc to Resume",True,'black'),(st.screen_width//2-200,160))
+    st.surface.blit(st.font.render('Restart',True, 'black'),[st.screen_width//2-150,220, 210,50])
+    st.surface.blit(st.font.render('Main Menu',True, 'black'),[st.screen_width//2+50,220, 210,50])
     st.win.blit(st.surface,(0,0))
     pygame.display.update()
     return reset, save
@@ -85,16 +85,18 @@ def reset():
 
 def main():
     run = True
-    game_state="mainmenu"
+    st.game_state="mainmenu"
     while run:
         clock.tick(22)
         events= pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
                 run = False
-        if game_state=="mainmenu":
-            game_state="start"
-        elif game_state=="start":
+        while st.game_state=="mainmenu":
+            mm.draw()
+            mm.handleMenu()
+          
+        if st.game_state=="start":
             createEnemies()
             if player.staminaGauge<100:
                 player.staminaGauge+=1/3
@@ -147,7 +149,7 @@ def main():
                             st.pause=False
                         else:
                             st.pause=True
-                            restart, save=draw_pause()
+                            restart, mainmenu=draw_pause()
 
             keys = pygame.key.get_pressed()
             if not st.pause:
@@ -226,15 +228,15 @@ def main():
                             player.stationaryPhase= False
                             player.gotHit= False
                 if player.health<=0:
-                    game_state="gameover"
+                    st.game_state="gameover"
                 redrawwindow()
-        elif game_state=="gameover":
-            text=font.render("Game Over! Try again",1,(255,255,255))
+        elif st.game_state=="gameover":
+            text=st.font.render("Game Over! Try again",1,(255,255,255))
             st.win.blit(text,(st.screen_width//2-150, st.screen_height//2-50))
             pygame.display.update()
             time.sleep(2)
             reset()
-            game_state="start"
+            st.game_state="start"
             pygame.display.update()
     pygame.quit()
 main()

@@ -15,8 +15,10 @@ surface =pygame.Surface((screen_width,screen_height),pygame.SRCALPHA)
 # 255 → fully opaque
 # 128 → 50% transparent
 
+game_state= "mainmenu"
 pygame.display.set_caption('Bleach')
-
+font= pygame.font.SysFont('Comic Sans',30, True, False)
+fontmm= pygame.font.SysFont('Arial Black',70, True, False)
 #Audio
 pygame.mixer.music.load('audio/on the precipice of death.mp3')
 pygame.mixer.music.play(-1)
