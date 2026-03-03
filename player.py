@@ -37,7 +37,7 @@ class Player:
         self.staminaGauge = 100
         self.ultimateGauge = 0
         self.comboIndex=0 #for combo attacks
-        self.comboTimer=10 #Time allowed for followup attack
+        self.comboTimer=5 #Time allowed for followup attack
         self.combo= False
         self.hollowattack=[]
 
@@ -115,6 +115,7 @@ class Player:
             self.getHitCount+=1
         elif self.combo:
                 self.x+= self.facing
+                self.feet_y-=1
                 limit= len(st.attackFollowUpRight)*framesPerImg
                 if self.facing==1:
                     sprite=st.attackFollowUpRight[self.attackCount//framesPerImg]
@@ -125,6 +126,7 @@ class Player:
                     self.attackCount=0
                     self.comboIndex=0   
                     self.comboTimer=10
+                    self.feet_y+=limit
                     self.attacking = False
                     self.combo=False
         

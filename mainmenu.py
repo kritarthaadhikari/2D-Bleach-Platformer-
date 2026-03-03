@@ -1,6 +1,6 @@
 import pygame
 import setup as st
-menu= pygame.transform.scale(pygame.image.load('images/mainmenu.jpg'),(st.screen_width,st.screen_height))
+menu=pygame.transform.scale(pygame.image.load('images/mainmenu.jpg'),(1200,800)).convert()
 
 def draw():
     st.win.blit(menu,(0,0))

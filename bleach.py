@@ -11,7 +11,6 @@ player = pl.Player(64, 64, 10, 500)
 enemy = en.Enemy(110, 149, 1200, 500)
 en.hollows.append(enemy)
 
-
 def hudPannel():
     pygame.draw.rect(st.win,(255,0,0),(212,59,212,23))
     pygame.draw.rect(st.win,(0,255,0),(212,59,212- 53*(120-player.health)/30,22 ))
@@ -43,10 +42,11 @@ last_enemy_spawn = time.time()
 
 def createEnemies():
     global last_enemy_spawn
-    if time.time() - last_enemy_spawn >= 30:
-        new_enemy = en.Enemy(110, 149, 1200, 500)
-        en.hollows.append(new_enemy)
-        last_enemy_spawn = time.time()
+    if not st.game_state=="mainmenu":
+        if time.time() - last_enemy_spawn >= 30:
+            new_enemy = en.Enemy(110, 149, 1200, 500)
+            en.hollows.append(new_enemy)
+            last_enemy_spawn = time.time()
 
 def draw_pause():
     pygame.draw.rect(st.surface,(128,128,128,150),[0,0, st.screen_width,st.screen_height])
@@ -121,6 +121,7 @@ def main():
                             else:
                                 player.comboIndex=0
                                 player.comboTimer=10
+                                player.combo=False
 
                         elif event.key== pygame.K_LSHIFT:
                             if player.vel < player.x < st.screen_width - player.width - player.vel and player.staminaGauge>=20:
@@ -130,9 +131,9 @@ def main():
                                 player.dashCount=0
                                 player.staminaGauge-=20
                 
-                        elif event.key== pygame.K_z and player.staminaGauge>=90:
+                        elif event.key== pygame.K_z:
                             st.pressed=True
-                            if st.killCount!=0:
+                            if st.killCount!=0 and player.staminaGauge>=90:
                                 player.standing= False
                                 player.signature= True
                                 player.attacking= True
@@ -200,10 +201,8 @@ def main():
                             if h not in p.hitEnemies:
                                 h.health-=200
                                 p.hitEnemies.append(h)
-                                if p.direction != h.facing:
-                                    h.blown=True
-                                else:
-                                    h.blown=False
+                                h.facing=-1*player.facing
+                                h.blown=True
                 
                 for h in en.hollows[:]:
                     if player.hitbox.colliderect(h.body_hitbox):
