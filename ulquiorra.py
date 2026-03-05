@@ -6,7 +6,7 @@ screen_height= 500
 win=pygame.display.set_mode((screen_width,screen_height))
 pygame.display.set_caption('Ulquiorra')
 #ULQUIORRA ASSETS
-walkRight= [pygame.image.load(f'images\enemy\walk{i}.png') for i in range(1,8)]
+walkRight= [pygame.image.load(f'images\enemy\ulquiorra\walk{i}.png') for i in range(1,8)]
 walkLeft= [pygame.transform.flip(img, True, False) for img in walkRight]
 
 class Espada:
