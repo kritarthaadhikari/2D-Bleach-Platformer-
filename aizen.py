@@ -30,6 +30,7 @@ class Antagonist:
         self.start=time.time()
         self.dash=False
         self.hitbox=pygame.Rect(self.x,self.feet_y,30,70)
+        self.attackhitbox=pygame.Rect(self.x+20,self.feet_y-self.height//2,30,30)
         self.test= pygame.Rect(200,self.feet_y, 50,100)
         self.attackCount=0
         self.attacking=True
@@ -69,6 +70,8 @@ class Antagonist:
 
         self.hitbox=pygame.Rect(self.x,self.feet_y,40,70)
         self.test= pygame.Rect(250,self.feet_y, 50,100)
+        self.attackhitbox=pygame.Rect(self.x+50,self.feet_y,75,60)
+        pygame.draw.rect(win,(0,255,0),self.attackhitbox,2)
         pygame.draw.rect(win,(255,0,0),self.test,2)
         pygame.draw.rect(win,(255,0,0),self.hitbox,2)
         win.blit(sprite,(self.x,self.feet_y))
