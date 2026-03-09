@@ -15,6 +15,9 @@ teleportLeft= [pygame.transform.flip(img, True, False) for img in teleportRight]
 attack= [pygame.image.load(f'images/enemy/Aizen/attack{i}.png') for i in range(1,7)]
 attackRight= [pygame.transform.smoothscale(img,(img.get_width(),90)) for img in attack]
 attackLeft= [pygame.transform.flip(img, True, False) for img in attackRight]
+airattack =[pygame.image.load(f'images/enemy/Aizen/airattack{i}.png') for i in range(1,6)]
+airattackRight= [pygame.transform.smoothscale(img,(img.get_width(),90) ) for img in airattack]
+airattackLeft= [pygame.transform.flip(img,True, False) for img in airattackRight]
 
 class Antagonist:
     def __init__(self,x,y,width,height):
@@ -34,6 +37,10 @@ class Antagonist:
         self.test= pygame.Rect(200,self.feet_y, 50,100)
         self.attackCount=0
         self.attacking=True
+        self.attack_state=1 #type of attack
+        self.jump= False
+        self.jumpCount=5
+        
     
     def draw(self,win):
         framesPerimg=3
@@ -58,15 +65,30 @@ class Antagonist:
             self.walkCount+=1
         
         elif self.attacking:
-            limit= len(attackLeft)*framesPerimg
-            if self.facing==1:
-                sprite=attackRight[self.attackCount//framesPerimg]
-            else:
-                sprite= attackLeft[self.attackCount//framesPerimg]
-            if self.attackCount+1>=limit:
-                self.attacking=False
-                self.attackCount=0
-            self.attackCount+=1
+            if self.attack_state==1:
+                limit= len(attackLeft)*framesPerimg
+                if self.facing==1:
+                    sprite=attackRight[self.attackCount//framesPerimg]
+                else:
+                    sprite= attackLeft[self.attackCount//framesPerimg]
+                if self.attackCount+1>=limit:
+                    self.attacking=False
+                    self.attackCount=0
+                    self.attack_state+=1
+                self.attackCount+=1
+            elif self.attack_state==2:
+                self.jump=True
+                limit= len(airattackRight)*framesPerimg
+                if self.facing==1:
+                    sprite= airattackRight[self.attackCount//framesPerimg]
+                else:
+                    sprite= airattackLeft[self.attackCount//framesPerimg]
+                if self.attackCount+1>=limit:
+                    self.attacking=False
+                    self.attackCount=0
+                    self.attack_state=1
+                    self.jump=False
+                self.attackCount+=1
 
         self.hitbox=pygame.Rect(self.x,self.feet_y,40,70)
         self.test= pygame.Rect(250,self.feet_y, 50,100)
@@ -81,12 +103,27 @@ class Antagonist:
             self.facing=1
         elif self.x+self.vel > self.end[1]:
             self.facing=-1
-        self.x+=self.facing*self.vel
-        # if time.time()-self.start>3:
-        #     self.flashstep()
-        #     self.walkCount=0
-        #     self.dash=True
-        #     self.start=time.time()
+        if not self.attacking and not self.jump:
+            self.x+=self.facing*self.vel
+
+            # if time.time()-self.start>3:
+            #     self.flashstep()
+            #     self.walkCount=0
+            #     self.dash=True
+            #     self.start=time.time()
+        if self.jump:
+            if self.jumpCount>=-5:
+                neg=1
+                if self.jumpCount<0: neg=-1
+                self.x+=self.facing*15
+                self.feet_y-=(self.jumpCount**2)*neg*0.5
+                self.jumpCount-=1
+            else:
+                self.jumpCount=5
+                neg=1
+                self.attack_state=1
+                self.jump=False
+                self.feet_y=320
         self.draw(win)
     
     def attack(self):
