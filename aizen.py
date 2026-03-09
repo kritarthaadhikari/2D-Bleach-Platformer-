@@ -90,9 +90,12 @@ class Antagonist:
                     self.jump=False
                 self.attackCount+=1
 
-        self.hitbox=pygame.Rect(self.x,self.feet_y,40,70)
+        self.hitbox=pygame.Rect(self.x+self.facing*5,self.feet_y,40,70)
         self.test= pygame.Rect(250,self.feet_y, 50,100)
-        self.attackhitbox=pygame.Rect(self.x+50,self.feet_y,75,60)
+        if self.facing==1:
+            self.attackhitbox=pygame.Rect(self.x+50,self.feet_y,75,60)
+        else:
+            self.attackhitbox= pygame.Rect(self.x-sprite.get_width()-30, self.feet_y,75,60)
         pygame.draw.rect(win,(0,255,0),self.attackhitbox,2)
         pygame.draw.rect(win,(255,0,0),self.test,2)
         pygame.draw.rect(win,(255,0,0),self.hitbox,2)
@@ -132,7 +135,7 @@ class Antagonist:
     def flashstep(self):
         self.x+=self.facing*100
 
-aizen= Antagonist(30, 320,64,64)
+aizen= Antagonist(1000, 320,64,64)
 clock= pygame.time.Clock()
 def main():
     run=True
