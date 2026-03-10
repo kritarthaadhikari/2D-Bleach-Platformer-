@@ -5,12 +5,13 @@ import enemy as en
 import player as pl
 import time
 import mainmenu as mm
-
+import aizen as aizy
 
 pygame.init()
 clock = pygame.time.Clock()
 player = pl.Player(64, 64, 10, 500)
 enemy = en.Enemy(110, 149, 1200, 500)
+aizen =aizy.Antagonist(10, 470,64,64)
 en.hollows.append(enemy)
 
 def hudPannel():
@@ -38,11 +39,16 @@ def redrawwindow():
     if st.killCount==0 and st.pressed:
         text= st.font.render("Locked! Get a kill",1,(255,255,255))
         st.win.blit(text,(st.screen_width//2-text.get_width()//2, st.screen_height//2-text.get_height()//2))
-    time= 30-pygame.time.get_ticks()//1000
+    time= 180-pygame.time.get_ticks()//1000
     if not time<=0:
         bossText= st.font.render(f"Boss will arrive in: {time//60}:{time%60}",1,(255,255,255))
         st.win.blit(bossText, (st.screen_width//2,0))
-
+    if time<=0:
+        aizen.move()
+        if aizen.test.colliderect(aizen.hitbox):
+            aizen.attack()
+        else:
+            aizen.attacking=False
     pygame.display.update()   
 
 last_enemy_spawn = time.time()
@@ -50,7 +56,7 @@ last_enemy_spawn = time.time()
 def createEnemies():
     global last_enemy_spawn
     if not st.game_state=="mainmenu":
-        if time.time() - last_enemy_spawn >= 30:
+        if time.time() - last_enemy_spawn >= 70:
             new_enemy = en.Enemy(110, 149, 1200, 500)
             en.hollows.append(new_enemy)
             last_enemy_spawn = time.time()

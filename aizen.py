@@ -1,28 +1,25 @@
 import pygame
 import time
-pygame.init()
+import setup as st
+# pygame.init()
 
-screen_width= 1200
-screen_height= 500
-win=pygame.display.set_mode((screen_width,screen_height))
-pygame.display.set_caption('Aizen')
 #Aizen ASSETS
 walk=  [pygame.image.load(f'images\enemy\Aizen\walk{i}.png').convert_alpha() for i in range(1,9)]
-walkRight= [pygame.transform.smoothscale(img,(img.get_width()//1.2,70) )for img in walk]
+walkRight= [pygame.transform.smoothscale(img,(img.get_width(),90) )for img in walk]
 walkLeft= [pygame.transform.flip(img, True, False) for img in walkRight]
 teleportRight= [pygame.image.load(f'images\enemy\Aizen\Teleport.png')]
 teleportLeft= [pygame.transform.flip(img, True, False) for img in teleportRight]
 attack= [pygame.image.load(f'images/enemy/Aizen/attack{i}.png') for i in range(1,6)]
-attackRight= [pygame.transform.smoothscale(img,(img.get_width()//1.2,70)) for img in attack]
+attackRight= [pygame.transform.smoothscale(img,(img.get_width(),90)) for img in attack]
 attackLeft= [pygame.transform.flip(img, True, False) for img in attackRight]
 airattack =[pygame.image.load(f'images/enemy/Aizen/airattack{i}.png') for i in range(1,6)]
-airattackRight= [pygame.transform.smoothscale(img,(img.get_width()//1.2,70) ) for img in airattack]
+airattackRight= [pygame.transform.smoothscale(img,(img.get_width(),90) ) for img in airattack]
 airattackLeft= [pygame.transform.flip(img,True, False) for img in airattackRight]
 strongAttack= [pygame.image.load(f'images/enemy/Aizen/strongattack{i}.png') for i in range(1,8)]
-strongAttackRight = [pygame.transform.smoothscale(img, (img.get_width()//1.2,70) )for img in strongAttack]
+strongAttackRight = [pygame.transform.smoothscale(img, (img.get_width(),90) )for img in strongAttack]
 strongAttackLeft= [pygame.transform.flip(img, True, False) for img in strongAttackRight]
 stance= pygame.image.load('images/enemy/Aizen/stance1.png')
-stanceRight= pygame.transform.smoothscale(stance,(stance.get_width()//1.2,70) )
+stanceRight= pygame.transform.smoothscale(stance,(stance.get_width(),90) )
 stanceLeft= pygame.transform.flip(stanceRight, True, False)
 
 class Antagonist:
@@ -35,7 +32,7 @@ class Antagonist:
         self.walkCount=0
         self.walk= False 
         self.facing=1
-        self.end= [self.width-50, screen_width-100]
+        self.end= [self.width-50, st.screen_width-100]
         self.start=time.time()
         self.dash=False
         self.hitbox=pygame.Rect(self.x,self.feet_y,30,70)
@@ -50,7 +47,7 @@ class Antagonist:
     
     def draw(self,win):
         framesPerimg=3
-        if not self.dash and not self.attacking and self.walk:
+        if not self.dash and not self.attacking:
             limit= len(walkRight)*framesPerimg
             if self.facing==1:
                 sprite= walkRight[self.walkCount//framesPerimg]
@@ -118,10 +115,10 @@ class Antagonist:
             self.attackhitbox=pygame.Rect(self.x+50,self.feet_y,75,60)
         else:
             self.attackhitbox= pygame.Rect(self.x-sprite.get_width()-30, self.feet_y,75,60)
-        pygame.draw.rect(win,(0,255,0),self.attackhitbox,2)
-        pygame.draw.rect(win,(255,0,0),self.test,2)
-        pygame.draw.rect(win,(255,0,0),self.hitbox,2)
-        win.blit(sprite,(self.x,self.feet_y))
+        # pygame.draw.rect(win,(0,255,0),self.attackhitbox,2)
+        # pygame.draw.rect(win,(255,0,0),self.test,2)
+        # pygame.draw.rect(win,(255,0,0),self.hitbox,2)
+        st.win.blit(sprite,(self.x,self.feet_y))
 
     def move(self):
         if self.x- self.vel< self.end[0]:
@@ -131,11 +128,11 @@ class Antagonist:
         if not self.attacking and not self.jump:
             self.x+=self.facing*self.vel
 
-            # if time.time()-self.start>3:
-            #     self.flashstep()
-            #     self.walkCount=0
-            #     self.dash=True
-            #     self.start=time.time()
+            if time.time()-self.start>3:
+                self.flashstep()
+                self.walkCount=0
+                self.dash=True
+                self.start=time.time()
         if self.jump:
             if self.jumpCount>=-5:
                 neg=1
@@ -148,31 +145,33 @@ class Antagonist:
                 neg=1
                 self.attack_state=1
                 self.jump=False
-                self.feet_y=320
-        self.draw(win)
+                self.feet_y=470
+        self.draw(st.win)
     
     def attack(self):
         self.attacking=True
        
     def flashstep(self):
         self.x+=self.facing*100
+    
+    def working(self):
+        pass
 
 aizen= Antagonist(1000, 350,64,64)
 clock= pygame.time.Clock()
-def main():
-    run=True
-    while run:
-        clock.tick(20)
-        for event in pygame.event.get():
-            if event.type== pygame.QUIT:
-                run=False
-        win.fill((50, 50, 50))
-        # aizen.move()
-        aizen.draw(win)
-        if aizen.test.colliderect(aizen.hitbox):
-            aizen.attack()
-        else:
-            aizen.attacking=False
-        pygame.display.update()
-    pygame.quit()
-main()
+# def main():
+#     run=True
+#     while run:
+#         clock.tick(20)
+#         for event in pygame.event.get():
+#             if event.type== pygame.QUIT:
+#                 run=False
+#         win.fill((50, 50, 50))
+#         aizen.move()
+#         if aizen.test.colliderect(aizen.hitbox):
+#             aizen.attack()
+#         else:
+#             aizen.attacking=False
+#         pygame.display.update()
+#     pygame.quit()
+# main()
