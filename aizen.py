@@ -8,16 +8,19 @@ win=pygame.display.set_mode((screen_width,screen_height))
 pygame.display.set_caption('Aizen')
 #Aizen ASSETS
 walk=  [pygame.image.load(f'images\enemy\Aizen\walk{i}.png').convert_alpha() for i in range(1,9)]
-walkRight= [pygame.transform.smoothscale(img,(img.get_width(),90) )for img in walk]
+walkRight= [pygame.transform.smoothscale(img,(img.get_width()//1.2,70) )for img in walk]
 walkLeft= [pygame.transform.flip(img, True, False) for img in walkRight]
 teleportRight= [pygame.image.load(f'images\enemy\Aizen\Teleport.png')]
 teleportLeft= [pygame.transform.flip(img, True, False) for img in teleportRight]
 attack= [pygame.image.load(f'images/enemy/Aizen/attack{i}.png') for i in range(1,7)]
-attackRight= [pygame.transform.smoothscale(img,(img.get_width(),90)) for img in attack]
+attackRight= [pygame.transform.smoothscale(img,(img.get_width()//1.2,70)) for img in attack]
 attackLeft= [pygame.transform.flip(img, True, False) for img in attackRight]
 airattack =[pygame.image.load(f'images/enemy/Aizen/airattack{i}.png') for i in range(1,6)]
-airattackRight= [pygame.transform.smoothscale(img,(img.get_width(),90) ) for img in airattack]
+airattackRight= [pygame.transform.smoothscale(img,(img.get_width()//1.2,70) ) for img in airattack]
 airattackLeft= [pygame.transform.flip(img,True, False) for img in airattackRight]
+strongAttack= [pygame.image.load(f'images/enemy/Aizen/strongattack{i}.png') for i in range(1,8)]
+strongAttackRight = [pygame.transform.smoothscale(img, (img.get_width()//1.2,70) )for img in strongAttack]
+strongAttackLeft= [pygame.transform.flip(img, True, False) for img in strongAttackRight]
 
 class Antagonist:
     def __init__(self,x,y,width,height):
@@ -89,6 +92,8 @@ class Antagonist:
                     self.attack_state=1
                     self.jump=False
                 self.attackCount+=1
+            elif self.attack_state==3:
+                pass
 
         self.hitbox=pygame.Rect(self.x+self.facing*5,self.feet_y,40,70)
         self.test= pygame.Rect(250,self.feet_y, 50,100)
@@ -135,7 +140,7 @@ class Antagonist:
     def flashstep(self):
         self.x+=self.facing*100
 
-aizen= Antagonist(1000, 320,64,64)
+aizen= Antagonist(1000, 350,64,64)
 clock= pygame.time.Clock()
 def main():
     run=True
