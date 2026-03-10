@@ -12,7 +12,7 @@ walkRight= [pygame.transform.smoothscale(img,(img.get_width()//1.2,70) )for img 
 walkLeft= [pygame.transform.flip(img, True, False) for img in walkRight]
 teleportRight= [pygame.image.load(f'images\enemy\Aizen\Teleport.png')]
 teleportLeft= [pygame.transform.flip(img, True, False) for img in teleportRight]
-attack= [pygame.image.load(f'images/enemy/Aizen/attack{i}.png') for i in range(1,7)]
+attack= [pygame.image.load(f'images/enemy/Aizen/attack{i}.png') for i in range(1,6)]
 attackRight= [pygame.transform.smoothscale(img,(img.get_width()//1.2,70)) for img in attack]
 attackLeft= [pygame.transform.flip(img, True, False) for img in attackRight]
 airattack =[pygame.image.load(f'images/enemy/Aizen/airattack{i}.png') for i in range(1,6)]
@@ -21,6 +21,9 @@ airattackLeft= [pygame.transform.flip(img,True, False) for img in airattackRight
 strongAttack= [pygame.image.load(f'images/enemy/Aizen/strongattack{i}.png') for i in range(1,8)]
 strongAttackRight = [pygame.transform.smoothscale(img, (img.get_width()//1.2,70) )for img in strongAttack]
 strongAttackLeft= [pygame.transform.flip(img, True, False) for img in strongAttackRight]
+stance= pygame.image.load('images/enemy/Aizen/stance1.png')
+stanceRight= pygame.transform.smoothscale(stance,(stance.get_width()//1.2,70) )
+stanceLeft= pygame.transform.flip(stanceRight, True, False)
 
 class Antagonist:
     def __init__(self,x,y,width,height):
@@ -30,7 +33,7 @@ class Antagonist:
         self.height= height 
         self.vel= 3
         self.walkCount=0
-        self.walk= True 
+        self.walk= False 
         self.facing=1
         self.end= [self.width-50, screen_width-100]
         self.start=time.time()
@@ -47,7 +50,7 @@ class Antagonist:
     
     def draw(self,win):
         framesPerimg=3
-        if not self.dash and not self.attacking:
+        if not self.dash and not self.attacking and self.walk:
             limit= len(walkRight)*framesPerimg
             if self.facing==1:
                 sprite= walkRight[self.walkCount//framesPerimg]
@@ -56,7 +59,6 @@ class Antagonist:
             if self.walkCount+1>=limit:
                 self.walkCount=0
             self.walkCount+=1
-           
         elif self.dash:
             if self.facing==1:
                 sprite=teleportRight[self.walkCount//framesPerimg]
@@ -78,7 +80,7 @@ class Antagonist:
                     self.attacking=False
                     self.attackCount=0
                     self.attack_state+=1
-                self.attackCount+=1
+                self.attackCount+=1 
             elif self.attack_state==2:
                 self.jump=True
                 limit= len(airattackRight)*framesPerimg
@@ -89,11 +91,26 @@ class Antagonist:
                 if self.attackCount+1>=limit:
                     self.attacking=False
                     self.attackCount=0
-                    self.attack_state=1
+                    self.attack_state+=1
                     self.jump=False
                 self.attackCount+=1
             elif self.attack_state==3:
-                pass
+                limit= len(strongAttack)*framesPerimg
+                if self.facing==1:
+                    sprite= strongAttackRight[self.attackCount//framesPerimg]
+                else:
+                    sprite= strongAttackLeft[self.attackCount//framesPerimg]
+                if self.attackCount+1>=limit:
+                    self.attacking=False
+                    self.attackCount=0
+                    self.attack_state=1
+                self.attackCount+=1
+
+        else:
+            if self.facing==-1:
+                sprite=stanceLeft
+            else:
+                sprite=stanceRight
 
         self.hitbox=pygame.Rect(self.x+self.facing*5,self.feet_y,40,70)
         self.test= pygame.Rect(250,self.feet_y, 50,100)
@@ -150,7 +167,8 @@ def main():
             if event.type== pygame.QUIT:
                 run=False
         win.fill((50, 50, 50))
-        aizen.move()
+        # aizen.move()
+        aizen.draw(win)
         if aizen.test.colliderect(aizen.hitbox):
             aizen.attack()
         else:
