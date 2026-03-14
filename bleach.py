@@ -39,19 +39,20 @@ def redrawwindow():
     if st.killCount==0 and st.pressed:
         text= st.font.render("Locked! Get a kill",1,(255,255,255))
         st.win.blit(text,(st.screen_width//2-text.get_width()//2, st.screen_height//2-text.get_height()//2))
-    time= 180-pygame.time.get_ticks()//1000
-    if not time<=0:
-        bossText= st.font.render(f"Boss will arrive in: {time//60}:{time%60}",1,(255,255,255))
+    boss_time= 1-(pygame.time.get_ticks()-start)//1000
+    if not boss_time<=0:
+        bossText= st.font.render(f"Boss will arrive in: {boss_time//60}:{boss_time%60}",1,(255,255,255))
         st.win.blit(bossText, (st.screen_width//2,0))
-    if time<=0:
-        aizen.move()
-        if aizen.test.colliderect(aizen.hitbox):
+    if boss_time<=0:
+        aizen.move(player)
+        if aizen.hitbox.colliderect(player.hitbox):
             aizen.attack()
         else:
             aizen.attacking=False
     pygame.display.update()   
 
 last_enemy_spawn = time.time()
+start= pygame.time.get_ticks()
 
 def createEnemies():
     global last_enemy_spawn
@@ -74,7 +75,7 @@ def draw_pause():
     return reset, save
 
 def reset():
-    global player,enemy, last_enemy_spawn
+    global player,enemy, last_enemy_spawn,start,aizen
     # Reset player
     player = pl.Player(64, 64, 10, 500)
 
@@ -82,6 +83,7 @@ def reset():
     en.hollows.clear()
     enemy = en.Enemy(110, 149, 1200, 500)
     en.hollows.append(enemy)
+    aizen= aizy.Antagonist(10, 470,64,64)
 
     # Reset projectiles
     pj.projectiles.clear()
@@ -93,6 +95,7 @@ def reset():
 
     # Reset timers
     last_enemy_spawn = time.time()
+    start= pygame.time.get_ticks()
     # Unpause
     st.pause = False
 
@@ -243,6 +246,11 @@ def main():
                             h.hit= False
                             player.stationaryPhase= False
                             player.gotHit= False
+                if aizen.hitbox.colliderect(player.hitbox):
+                    aizen.attacking=True
+                if player.hitbox.colliderect(aizen.attackhitbox) and aizen.attacking:
+                  
+                    player.health-=10
                 if player.health<=0:
                     st.game_state="gameover"
                 redrawwindow()

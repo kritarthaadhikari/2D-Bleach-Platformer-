@@ -28,7 +28,7 @@ class Antagonist:
         self.feet_y= y
         self.width= width
         self.height= height 
-        self.vel= 3
+        self.vel= 2
         self.walkCount=0
         self.walk= False 
         self.facing=1
@@ -37,7 +37,6 @@ class Antagonist:
         self.dash=False
         self.hitbox=pygame.Rect(self.x,self.feet_y,30,70)
         self.attackhitbox=pygame.Rect(self.x+20,self.feet_y-self.height//2,30,30)
-        self.test= pygame.Rect(200,self.feet_y, 50,100)
         self.attackCount=0
         self.attacking=True
         self.attack_state=1 #type of attack
@@ -110,21 +109,22 @@ class Antagonist:
                 sprite=stanceRight
 
         self.hitbox=pygame.Rect(self.x+self.facing*5,self.feet_y,40,70)
-        self.test= pygame.Rect(250,self.feet_y, 50,100)
-        if self.facing==1:
-            self.attackhitbox=pygame.Rect(self.x+50,self.feet_y,75,60)
-        else:
-            self.attackhitbox= pygame.Rect(self.x-sprite.get_width()-30, self.feet_y,75,60)
-        # pygame.draw.rect(win,(0,255,0),self.attackhitbox,2)
+        # self.test= pygame.Rect(250,self.feet_y, 50,100)
+        if self.attacking:
+            if self.facing==1:
+                self.attackhitbox=pygame.Rect(self.x+50,self.feet_y,75,60)
+            else:
+                self.attackhitbox= pygame.Rect(self.x-sprite.get_width()-30, self.feet_y,75,60)
+        # pygame.draw.rect(st.win,(0,255,0),self.attackhitbox,2)
         # pygame.draw.rect(win,(255,0,0),self.test,2)
-        # pygame.draw.rect(win,(255,0,0),self.hitbox,2)
+        # pygame.draw.rect(st.win,(255,0,0),self.hitbox,2)
         st.win.blit(sprite,(self.x,self.feet_y))
 
-    def move(self):
-        if self.x- self.vel< self.end[0]:
-            self.facing=1
-        elif self.x+self.vel > self.end[1]:
+    def move(self,other):
+        if self.x- other.x-self.vel>0:
             self.facing=-1
+        elif self.x+self.vel-other.x<0:
+            self.facing=1
         if not self.attacking and not self.jump:
             self.x+=self.facing*self.vel
 
