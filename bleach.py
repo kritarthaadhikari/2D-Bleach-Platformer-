@@ -248,9 +248,21 @@ def main():
                             player.gotHit= False
                 if aizen.hitbox.colliderect(player.hitbox):
                     aizen.attacking=True
-                if player.hitbox.colliderect(aizen.attackhitbox) and aizen.attacking:
-                  
-                    player.health-=10
+                else:
+                    aizen.attack_state=1
+                if player.hitbox.colliderect(aizen.attackhitbox) and aizen.attacking and not aizen.stationary:
+                    if aizen.attack_state==1 and aizen.attackCount>=9:
+                        player.health-=1
+                    elif aizen.attack_state==2 and aizen.attackCount>=6:
+                        player.health-=3
+                    elif aizen.attack_state==3 and aizen.attackCount>=9:
+                        player.health-=10
+                        aizen.stationary=True
+                    player.gotHit=True
+
+                else:
+                    player.gotHit=False
+                
                 if player.health<=0:
                     st.game_state="gameover"
                 redrawwindow()

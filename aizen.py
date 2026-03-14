@@ -42,11 +42,11 @@ class Antagonist:
         self.attack_state=1 #type of attack
         self.jump= False
         self.jumpCount=5
+        self.stationary=False
         
-    
     def draw(self,win):
         framesPerimg=3
-        if not self.dash and not self.attacking:
+        if not self.dash and not self.attacking and not self.stationary:
             limit= len(walkRight)*framesPerimg
             if self.facing==1:
                 sprite= walkRight[self.walkCount//framesPerimg]
@@ -64,7 +64,12 @@ class Antagonist:
                 self.walkCount=0
                 self.dash=False
             self.walkCount+=1
-        
+        elif self.stationary:
+            if self.facing==1:
+                sprite= stanceRight
+            else:
+                sprite=stanceLeft
+            
         elif self.attacking:
             if self.attack_state==1:
                 limit= len(attackLeft)*framesPerimg
@@ -101,51 +106,53 @@ class Antagonist:
                     self.attackCount=0
                     self.attack_state=1
                 self.attackCount+=1
-
         else:
             if self.facing==-1:
                 sprite=stanceLeft
             else:
                 sprite=stanceRight
+            self.stationary=False
+            
 
         self.hitbox=pygame.Rect(self.x+self.facing*5,self.feet_y,40,70)
         # self.test= pygame.Rect(250,self.feet_y, 50,100)
         if self.attacking:
             if self.facing==1:
-                self.attackhitbox=pygame.Rect(self.x+50,self.feet_y,75,60)
+                self.attackhitbox=pygame.Rect(self.x+30,self.feet_y,75,60)
             else:
-                self.attackhitbox= pygame.Rect(self.x-sprite.get_width()-30, self.feet_y,75,60)
+                self.attackhitbox= pygame.Rect(self.x-30, self.feet_y,75,60)
         # pygame.draw.rect(st.win,(0,255,0),self.attackhitbox,2)
         # pygame.draw.rect(win,(255,0,0),self.test,2)
         # pygame.draw.rect(st.win,(255,0,0),self.hitbox,2)
         st.win.blit(sprite,(self.x,self.feet_y))
 
     def move(self,other):
-        if self.x- other.x-self.vel>0:
-            self.facing=-1
-        elif self.x+self.vel-other.x<0:
-            self.facing=1
-        if not self.attacking and not self.jump:
-            self.x+=self.facing*self.vel
+        if not self.stationary:
+            if self.x- other.x>0:
+                self.facing=-1
+            elif self.x-other.x<0:
+                self.facing=1
+            if not self.attacking and not self.jump:
+                self.x+=self.facing*self.vel
 
-            if time.time()-self.start>3:
-                self.flashstep()
-                self.walkCount=0
-                self.dash=True
-                self.start=time.time()
-        if self.jump:
-            if self.jumpCount>=-5:
-                neg=1
-                if self.jumpCount<0: neg=-1
-                self.x+=self.facing*15
-                self.feet_y-=(self.jumpCount**2)*neg*0.5
-                self.jumpCount-=1
-            else:
-                self.jumpCount=5
-                neg=1
-                self.attack_state=1
-                self.jump=False
-                self.feet_y=470
+                if time.time()-self.start>3:
+                    self.flashstep()
+                    self.walkCount=0
+                    self.dash=True
+                    self.start=time.time()
+            if self.jump:
+                if self.jumpCount>=-5:
+                    neg=1
+                    if self.jumpCount<0: neg=-1
+                    self.x+=self.facing*15
+                    self.feet_y-=(self.jumpCount**2)*neg*0.5
+                    self.jumpCount-=1
+                else:
+                    self.jumpCount=5
+                    neg=1
+                    self.attack_state=1
+                    self.jump=False
+                    self.feet_y=470
         self.draw(st.win)
     
     def attack(self):
@@ -156,22 +163,3 @@ class Antagonist:
     
     def working(self):
         pass
-
-aizen= Antagonist(1000, 350,64,64)
-clock= pygame.time.Clock()
-# def main():
-#     run=True
-#     while run:
-#         clock.tick(20)
-#         for event in pygame.event.get():
-#             if event.type== pygame.QUIT:
-#                 run=False
-#         win.fill((50, 50, 50))
-#         aizen.move()
-#         if aizen.test.colliderect(aizen.hitbox):
-#             aizen.attack()
-#         else:
-#             aizen.attacking=False
-#         pygame.display.update()
-#     pygame.quit()
-# main()
