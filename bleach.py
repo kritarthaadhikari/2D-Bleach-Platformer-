@@ -39,7 +39,7 @@ def redrawwindow():
     if st.killCount==0 and st.pressed:
         text= st.font.render("Locked! Get a kill",1,(255,255,255))
         st.win.blit(text,(st.screen_width//2-text.get_width()//2, st.screen_height//2-text.get_height()//2))
-    boss_time= 1-(pygame.time.get_ticks()-start)//1000
+    boss_time= 180-(pygame.time.get_ticks()-start)//1000
     if not boss_time<=0:
         bossText= st.font.render(f"Boss will arrive in: {boss_time//60}:{boss_time%60}",1,(255,255,255))
         st.win.blit(bossText, (st.screen_width//2,0))
@@ -51,12 +51,12 @@ def redrawwindow():
             aizen.attacking=False
     pygame.display.update()   
 
-last_enemy_spawn = time.time()
 start= pygame.time.get_ticks()
+last_enemy_spawn = time.time()
 
 def createEnemies():
     global last_enemy_spawn
-    if not st.game_state=="mainmenu":
+    if st.game_state=="start":
         if time.time() - last_enemy_spawn >= 70:
             new_enemy = en.Enemy(110, 149, 1200, 500)
             en.hollows.append(new_enemy)
@@ -256,10 +256,9 @@ def main():
                     elif aizen.attack_state==2 and aizen.attackCount>=6:
                         player.health-=3
                     elif aizen.attack_state==3 and aizen.attackCount>=9:
-                        player.health-=10
+                        player.health-=5
                         aizen.stationary=True
                     player.gotHit=True
-
                 else:
                     player.gotHit=False
                 
