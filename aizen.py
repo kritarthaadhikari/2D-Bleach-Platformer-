@@ -21,6 +21,9 @@ strongAttackLeft= [pygame.transform.flip(img, True, False) for img in strongAtta
 stance= pygame.image.load('images/enemy/Aizen/stance1.png')
 stanceRight= pygame.transform.smoothscale(stance,(stance.get_width(),90) )
 stanceLeft= pygame.transform.flip(stanceRight, True, False)
+damage= [pygame.image.load(f'images/enemy/Aizen/damage{i}.png') for i in range(1,5)]
+damageRight= [pygame.transform.smoothscale(img,(img.get_width(),90) ) for img in damage]
+damageLeft= [pygame.transform.flip(img, True, False) for img in damageRight]
 
 class Antagonist:
     def __init__(self,x,y,width,height):
@@ -43,10 +46,11 @@ class Antagonist:
         self.jump= False
         self.jumpCount=5
         self.stationary=False
+        self.gotHit= False
         
     def draw(self,win):
         framesPerimg=3
-        if not self.dash and not self.attacking and not self.stationary:
+        if not self.dash and not self.attacking and not self.stationary and not self.gotHit:
             limit= len(walkRight)*framesPerimg
             if self.facing==1:
                 sprite= walkRight[self.walkCount//framesPerimg]
@@ -64,6 +68,8 @@ class Antagonist:
                 self.walkCount=0
                 self.dash=False
             self.walkCount+=1
+        elif self.gotHit:
+            pass
         elif self.stationary:
             if self.facing==1:
                 sprite= stanceRight

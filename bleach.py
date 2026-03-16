@@ -248,6 +248,8 @@ def main():
                             player.gotHit= False
                 if aizen.hitbox.colliderect(player.hitbox):
                     aizen.attacking=True
+                    if player.attacking:
+                        
                 else:
                     aizen.attack_state=1
                 if player.hitbox.colliderect(aizen.attackhitbox) and aizen.attacking and not aizen.stationary:
