@@ -47,6 +47,7 @@ class Antagonist:
         self.jumpCount=5
         self.stationary=False
         self.gotHit= False
+        self.gotHitcount=0
         
     def draw(self,win):
         framesPerimg=3
@@ -69,7 +70,14 @@ class Antagonist:
                 self.dash=False
             self.walkCount+=1
         elif self.gotHit:
-            pass
+            limit= len(damageLeft)*framesPerimg
+            if self.facing==1:
+                sprite= damageRight[self.gotHitcount//framesPerimg]
+            else:
+                sprite= damageLeft[self.gotHitcount//framesPerimg]
+            if self.gotHitcount+1>=limit:
+                self.gotHitcount=0
+            self.gotHitcount+=1
         elif self.stationary:
             if self.facing==1:
                 sprite= stanceRight

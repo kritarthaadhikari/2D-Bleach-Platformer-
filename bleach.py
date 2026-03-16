@@ -39,7 +39,7 @@ def redrawwindow():
     if st.killCount==0 and st.pressed:
         text= st.font.render("Locked! Get a kill",1,(255,255,255))
         st.win.blit(text,(st.screen_width//2-text.get_width()//2, st.screen_height//2-text.get_height()//2))
-    boss_time= 180-(pygame.time.get_ticks()-start)//1000
+    boss_time= 5-(pygame.time.get_ticks()-start)//1000
     if not boss_time<=0:
         bossText= st.font.render(f"Boss will arrive in: {boss_time//60}:{boss_time%60}",1,(255,255,255))
         st.win.blit(bossText, (st.screen_width//2,0))
@@ -248,22 +248,27 @@ def main():
                             player.gotHit= False
                 if aizen.hitbox.colliderect(player.hitbox):
                     aizen.attacking=True
-                    if player.attacking:
-                        
+                    if not player.attacking:
+                           aizen.gotHit=False
+                           if player.hitbox.colliderect(aizen.attackhitbox) and aizen.attacking and not aizen.stationary:
+                                if aizen.attack_state==1 and aizen.attackCount>=9:
+                                    player.health-=1
+                                elif aizen.attack_state==2 and aizen.attackCount>=6:
+                                    player.health-=3
+                                elif aizen.attack_state==3 and aizen.attackCount>=9:
+                                    player.health-=5
+                                    aizen.stationary=True
+                                    player.gotHit=True
+                                else:
+                                    player.gotHit=False
+                    else:
+                        aizen.gotHit=True
+                        aizen.attacking=False
+                        aizen.stationary=False
+                    
                 else:
                     aizen.attack_state=1
-                if player.hitbox.colliderect(aizen.attackhitbox) and aizen.attacking and not aizen.stationary:
-                    if aizen.attack_state==1 and aizen.attackCount>=9:
-                        player.health-=1
-                    elif aizen.attack_state==2 and aizen.attackCount>=6:
-                        player.health-=3
-                    elif aizen.attack_state==3 and aizen.attackCount>=9:
-                        player.health-=5
-                        aizen.stationary=True
-                    player.gotHit=True
-                else:
-                    player.gotHit=False
-                
+             
                 if player.health<=0:
                     st.game_state="gameover"
                 redrawwindow()
