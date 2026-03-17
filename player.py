@@ -86,7 +86,16 @@ class Player:
                     self.downCount=0
                     self.down= False
                 self.downCount+=1
-
+        elif self.isJump: #jump animation
+            if self.facing==1:
+                limit = len(st.jumpRight)* framesPerImg
+                sprite= st.jumpRight[self.spjumpCount//framesPerImg]
+            else:
+                limit = len(st.jumpLeft)* framesPerImg
+                sprite= st.jumpLeft[self.spjumpCount//framesPerImg]
+            if self.spjumpCount +1>= limit:
+                self.spjumpCount=0
+            self.spjumpCount += 1
         elif self.stationaryPhase:  #continuously getting hit animation
             if self.facing==-1:
                 limit= len(st.hitLeft)*framesPerImg
@@ -156,16 +165,6 @@ class Player:
                 if self.signatureCount+1>=limit:
                     self.signatureCount=0
                     self.attacking= False
-        elif self.isJump: #jump animation
-            if self.facing==1:
-                limit = len(st.jumpRight)* framesPerImg
-                sprite= st.jumpRight[self.spjumpCount//framesPerImg]
-            else:
-                limit = len(st.jumpLeft)* framesPerImg
-                sprite= st.jumpLeft[self.spjumpCount//framesPerImg]
-            if self.spjumpCount +1>= limit:
-                self.spjumpCount=0
-            self.spjumpCount += 1
         else:
             if self.stancephase==0: #stance during no input
                 if self.facing==-1:

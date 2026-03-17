@@ -48,9 +48,10 @@ class Antagonist:
         self.stationary=False
         self.gotHit= False
         self.gotHitcount=0
+        self.health =500
         
     def draw(self,win):
-        framesPerimg=3
+        framesPerimg=4
         if not self.dash and not self.attacking and not self.stationary and not self.gotHit:
             limit= len(walkRight)*framesPerimg
             if self.facing==1:

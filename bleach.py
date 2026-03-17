@@ -57,7 +57,7 @@ last_enemy_spawn = time.time()
 def createEnemies():
     global last_enemy_spawn
     if st.game_state=="start":
-        if time.time() - last_enemy_spawn >= 70:
+        if time.time() - last_enemy_spawn >= 30:
             new_enemy = en.Enemy(110, 149, 1200, 500)
             en.hollows.append(new_enemy)
             last_enemy_spawn = time.time()
@@ -255,12 +255,13 @@ def main():
                                     player.health-=1
                                 elif aizen.attack_state==2 and aizen.attackCount>=6:
                                     player.health-=3
+                                    aizen.attack_state+=1
                                 elif aizen.attack_state==3 and aizen.attackCount>=9:
-                                    player.health-=5
-                                    aizen.stationary=True
-                                    player.gotHit=True
+                                    player.hit()
                                 else:
                                     player.gotHit=False
+                           print(aizen.attack_state)
+                           print(player.gotHit)
                     else:
                         aizen.gotHit=True
                         aizen.attacking=False
