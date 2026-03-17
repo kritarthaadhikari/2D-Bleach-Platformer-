@@ -118,14 +118,14 @@ class Enemy:
         draw_y= self.feet- sprite_height+50
         win.blit(sprite , (self.x, draw_y))
     
-    def move(self, win):
+    def move(self, win,other):
         if not self.blown:
-            if not self.attacking and not self.health<=0:
-                if self.x==self.end[1]:
-                    self.facing=-1
-                elif self.x==self.end[0]:
-                    self.facing=1
-                self.x+= self.facing* self.vel
+            if self.x- other.x>0:
+                self.facing=-1
+            elif self.x-other.x<0:
+                self.facing=1
+            if not self.attacking:
+                self.x+=self.facing*self.vel
         else:
             self.x+= -self.facing*4
         self.draw(win)

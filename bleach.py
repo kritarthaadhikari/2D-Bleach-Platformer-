@@ -25,7 +25,7 @@ def redrawwindow():
     st.win.blit(st.bg, (0, 0))
     hudPannel()
     for e in en.hollows:
-        e.move(st.win)
+        e.move(st.win,player)
         if e.health==0:
             if player.health<=80:
                 player.health+=40
@@ -246,7 +246,7 @@ def main():
                             h.hit= False
                             player.stationaryPhase= False
                             player.gotHit= False
-                if aizen.hitbox.colliderect(player.hitbox):
+                if aizen.hitbox.colliderect(player.hitbox) and not player.down:
                     aizen.attacking=True
                     if not player.attacking:
                            aizen.gotHit=False
@@ -254,7 +254,7 @@ def main():
                                 if aizen.attack_state==1 and aizen.attackCount>=9:
                                     player.health-=1
                                 elif aizen.attack_state==2 and aizen.attackCount>=6:
-                                    player.health-=3
+                                    player.health-=1
                                     aizen.attack_state+=1
                                 elif aizen.attack_state==3 and aizen.attackCount>=9:
                                     player.hit()
@@ -266,10 +266,9 @@ def main():
                         aizen.gotHit=True
                         aizen.attacking=False
                         aizen.stationary=False
-                    
                 else:
                     aizen.attack_state=1
-             
+                    aizen.attacking=False
                 if player.health<=0:
                     st.game_state="gameover"
                 redrawwindow()
