@@ -85,6 +85,9 @@ class Player:
                 if self.downCount+1 >=limit:
                     self.downCount=0
                     self.down= False
+                    if not self.gotHit:
+                        self.stationaryPhase=False
+                    
                 self.downCount+=1
         elif self.isJump: #jump animation
             if self.facing==1:

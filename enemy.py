@@ -31,8 +31,7 @@ class Enemy:
         framesPerImg=4
         current= time.time()
         if not self.fall and not self.blown:
-            if current- self.lastattackTimer > 3.0 or self.attacking:
-                self.attacking= True
+            if self.attacking:
                 if not self.hit:
                     if self.facing==1:
                         limit= len(st.HattackRight)*framesPerImg
@@ -120,9 +119,9 @@ class Enemy:
     
     def move(self, win,other):
         if not self.blown:
-            if self.x- other.x>0:
+            if self.x- other.x-150>0:
                 self.facing=-1
-            elif self.x-other.x<0:
+            elif self.x+150-other.x<0:
                 self.facing=1
             if not self.attacking:
                 self.x+=self.facing*self.vel

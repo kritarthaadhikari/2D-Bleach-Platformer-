@@ -39,16 +39,12 @@ def redrawwindow():
     if st.killCount==0 and st.pressed:
         text= st.font.render("Locked! Get a kill",1,(255,255,255))
         st.win.blit(text,(st.screen_width//2-text.get_width()//2, st.screen_height//2-text.get_height()//2))
-    boss_time= 5-(pygame.time.get_ticks()-start)//1000
+    boss_time= 40-(pygame.time.get_ticks()-start)//1000
     if not boss_time<=0:
         bossText= st.font.render(f"Boss will arrive in: {boss_time//60}:{boss_time%60}",1,(255,255,255))
         st.win.blit(bossText, (st.screen_width//2,0))
     if boss_time<=0:
         aizen.move(player)
-        if aizen.hitbox.colliderect(player.hitbox):
-            aizen.attack()
-        else:
-            aizen.attacking=False
     pygame.display.update()   
 
 start= pygame.time.get_ticks()
@@ -145,6 +141,8 @@ def main():
                                 player.standing= False
                                 player.dashing= True
                                 player.dashCount=0
+                                player.stationaryPhase=False
+                                player.down= False
                                 player.staminaGauge-=20
                 
                         elif event.key== pygame.K_z:
@@ -223,6 +221,7 @@ def main():
                 for h in en.hollows[:]:
                     if player.hitbox.colliderect(h.body_hitbox):
                         player.hollowattack.append(h)
+                        h.attacking= True
                         if h.attacking and player.hitbox.colliderect(h.attack_hitbox):
                             if 21 <=h.attackCount <24:
                                 player.hit()
@@ -248,6 +247,7 @@ def main():
                             player.gotHit= False
                 if aizen.hitbox.colliderect(player.hitbox) and not player.down:
                     aizen.attacking=True
+                    aizen.stationary=False
                     if not player.attacking:
                            aizen.gotHit=False
                            if player.hitbox.colliderect(aizen.attackhitbox) and aizen.attacking and not aizen.stationary:
@@ -255,20 +255,25 @@ def main():
                                     player.health-=1
                                 elif aizen.attack_state==2 and aizen.attackCount>=6:
                                     player.health-=1
-                                    aizen.attack_state+=1
+                                    aizen.attack_state=3
                                 elif aizen.attack_state==3 and aizen.attackCount>=9:
                                     player.hit()
                                 else:
                                     player.gotHit=False
                            print(aizen.attack_state)
                            print(player.gotHit)
-                    else:
-                        aizen.gotHit=True
-                        aizen.attacking=False
-                        aizen.stationary=False
-                else:
-                    aizen.attack_state=1
-                    aizen.attacking=False
+                    elif player.attacking and player.attackCount>=9:
+                        if player.signature:
+                            aizen.health-=100
+                            return
+                        else:
+                            aizen.health-=1
+                        
+                        # aizen.gotHit=True
+                        # aizen.health-=10
+                        # aizen.attacking=False
+                        # aizen.stationary=False
+              
                 if player.health<=0:
                     st.game_state="gameover"
                 redrawwindow()
