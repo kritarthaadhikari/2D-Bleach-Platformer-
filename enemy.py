@@ -31,7 +31,8 @@ class Enemy:
         framesPerImg=4
         current= time.time()
         if not self.fall and not self.blown:
-            if self.attacking:
+            if current- self.lastattackTimer > 3.0 or self.attacking:
+                self.attacking= True
                 if not self.hit:
                     if self.facing==1:
                         limit= len(st.HattackRight)*framesPerImg
@@ -117,14 +118,14 @@ class Enemy:
         draw_y= self.feet- sprite_height+50
         win.blit(sprite , (self.x, draw_y))
     
-    def move(self, win,other):
+    def move(self, win):
         if not self.blown:
-            if self.x- other.x-150>0:
-                self.facing=-1
-            elif self.x+150-other.x<0:
-                self.facing=1
-            if not self.attacking:
-                self.x+=self.facing*self.vel
+            if not self.attacking and not self.health<=0:
+                if self.x==self.end[1]:
+                    self.facing=-1
+                elif self.x==self.end[0]:
+                    self.facing=1
+                self.x+= self.facing* self.vel
         else:
             self.x+= -self.facing*4
         self.draw(win)
