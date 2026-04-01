@@ -36,6 +36,8 @@ def redrawwindow():
     if st.killCount==0 and st.pressed:
         text= st.font.render("Locked! Get a kill",1,(255,255,255))
         st.win.blit(text,(st.screen_width//2-text.get_width()//2, st.screen_height//2-text.get_height()//2))
+    if st.Mpause:
+        st.win.blit(st.mute,(st.screen_width-100,70))
     pygame.display.update()   
 
 last_enemy_spawn = time.time()
@@ -112,7 +114,9 @@ def main():
                 if event.type == pygame.KEYDOWN:
                     if not st.pause:
                         if event.key==pygame.K_m:
+                            st.Mpause=not st.Mpause
                             st.pause_music()
+
                         if event.key== pygame.K_SPACE:
                             player.standing= False
                             player.attacking= True
