@@ -206,4 +206,7 @@ class Player:
         if not self.stationaryPhase:
             self.gotHit=True
             self.attacking= False
+            self.combo=False
+            self.attackCount=0
+            self.y=500
             self.stationaryPhase= False

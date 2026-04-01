@@ -10,10 +10,14 @@ surface =pygame.Surface((screen_width,screen_height),pygame.SRCALPHA)
 #“This surface will use RGBA 
 # (Red, Green, Blue, Alpha) instead of just RGB.”
 
+pygame.mixer.music.load('audio/on the precipice of death.mp3')
+pygame.mixer.music.play(-1)
 #Alpha = transparency value:
 # 0 → fully transparent
 # 255 → fully opaque
 # 128 → 50% transparent
+
+Mpause= False
 
 game_state= "mainmenu"
 pygame.display.set_caption('Bleach')
@@ -77,3 +81,9 @@ blownLeft= [pygame.transform.flip(img, True, False) for img in blownRight]
 hud_original = pygame.image.load('images/unnamed1.png').convert_alpha()
 hud_pannel = pygame.transform.smoothscale(hud_original, (430, 150))
 bg = pygame.transform.scale(pygame.image.load("images/bleach.jpeg"), (screen_width, screen_height))
+
+def pause_music():
+    if Mpause:
+        pygame.mixer.music.pause()
+    else:
+        pygame.mixer.music.unpause()

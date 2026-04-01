@@ -83,6 +83,7 @@ def reset():
     # Unpause
     st.pause = False
 
+
 def main():
     run = True
     st.game_state="mainmenu"
@@ -110,6 +111,8 @@ def main():
                         
                 if event.type == pygame.KEYDOWN:
                     if not st.pause:
+                        if event.key==pygame.K_m:
+                            st.pause_music()
                         if event.key== pygame.K_SPACE:
                             player.standing= False
                             player.attacking= True
