@@ -216,3 +216,9 @@ class Player:
         self.comboTimer=5
         self.comboIndex=0
         self.y_offset = 0   # only reset animation, not physics
+
+
+        #ISSues
+        """
+        player indefinitely attacks even after the interruption ;
+        the combo animation continues regardless """

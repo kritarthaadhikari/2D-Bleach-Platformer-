@@ -110,9 +110,10 @@ def main():
                     elif mainmenu.collidepoint(event.pos):
                         st.game_state="mainmenu"
                         reset()
-                        
                 if event.type == pygame.KEYDOWN:
                     if not st.pause:
+                        if not event.key== pygame.K_SPACE:
+                            player.interrupt()    
                         if event.key==pygame.K_m:
                             st.Mpause=not st.Mpause
                             st.pause_music()
