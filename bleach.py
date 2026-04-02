@@ -126,21 +126,23 @@ def main():
                                 player.comboIndex+=1
                                 player.comboTimer-=1
                             else:
-                                player.comboIndex=0
-                                player.comboTimer=10
                                 player.combo=False
+                                player.comboIndex=0
+                                player.comboTimer=5
 
                         elif event.key== pygame.K_LSHIFT:
                             if player.vel < player.x < st.screen_width - player.width - player.vel and player.staminaGauge>=20:
+                                player.interrupt()
                                 player.x+= player.facing*40
                                 player.standing= False
                                 player.dashing= True
                                 player.dashCount=0
                                 player.staminaGauge-=20
-                
+                                
                         elif event.key== pygame.K_z:
                             st.pressed=True
                             if st.killCount!=0 and player.staminaGauge>=90:
+                                player.interrupt()
                                 player.standing= False
                                 player.signature= True
                                 player.attacking= True
@@ -150,6 +152,7 @@ def main():
                                 new_slash.getsugatenshou=True
                                 pj.projectiles.append(new_slash)
                                 st.pressed=False
+                                
                             else:
                                 redrawwindow()
                                 pygame.display.update()

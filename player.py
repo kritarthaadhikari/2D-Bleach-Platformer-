@@ -7,6 +7,7 @@ class Player:
         self.height = height
         self.x = x
         self.feet_y = y  
+        self.y_offset= 0
         self.vel = 5
         self.walkCount = 0 #movement
         self.stanceCount = 0 #stance init
@@ -45,7 +46,7 @@ class Player:
         framesPerImg = 3
         limit=0
         sprite = st.jumpLeft[0]
-    
+
         if not self.standing and not self.isJump and not self.attacking:
             self.stancephase=0
             if self.dashing: #dashing animation
@@ -127,7 +128,7 @@ class Player:
             self.getHitCount+=1
         elif self.combo:
                 self.x+= self.facing
-                self.feet_y-=1
+                self.y_offset-=1
                 limit= len(st.attackFollowUpRight)*framesPerImg
                 if self.facing==1:
                     sprite=st.attackFollowUpRight[self.attackCount//framesPerImg]
@@ -137,8 +138,8 @@ class Player:
                 if self.attackCount+1 >=limit:
                     self.attackCount=0
                     self.comboIndex=0   
-                    self.comboTimer=10
-                    self.feet_y+=limit
+                    self.comboTimer=5
+                    self.y_offset=0
                     self.attacking = False
                     self.combo=False
         
@@ -198,15 +199,20 @@ class Player:
         else:
             draw_x= self.x
         sprite_height = sprite.get_height()
-        draw_y = self.feet_y - sprite_height+50
+        draw_y = self.feet_y - sprite_height+self.y_offset+50
         win.blit(sprite, (draw_x, draw_y))
 
     def hit(self):
         self.health-=1
         if not self.stationaryPhase:
+            self.interrupt()
             self.gotHit=True
-            self.attacking= False
-            self.combo=False
-            self.attackCount=0
-            self.y=500
             self.stationaryPhase= False
+
+    def interrupt(self):
+        self.attacking = False
+        self.attackCount = 0
+        self.combo=False
+        self.comboTimer=5
+        self.comboIndex=0
+        self.y_offset = 0   # only reset animation, not physics
