@@ -88,3 +88,13 @@ def pause_music():
         pygame.mixer.music.pause()
     else:
         pygame.mixer.music.unpause()
+
+
+NON_INTERRUPT_KEYS= {pygame.K_SPACE,
+                     pygame.K_LSHIFT,
+                     pygame.K_z,
+                     pygame.K_a
+                     ,pygame.K_d,
+                     pygame.K_LEFT,
+                     pygame.K_RIGHT
+                     }
