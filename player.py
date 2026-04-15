@@ -126,6 +126,30 @@ class Player:
                 self.down= True
                 self.stationaryPhaseCount=0
             self.getHitCount+=1
+        elif self.attacking:
+            if not self.signature: #attack animation
+                self.x+= self.facing//2
+                limit= len(st.attackRight)*framesPerImg
+                if self.facing==1:
+                    sprite= st.attackRight[self.attackCount// framesPerImg]
+                else:
+                    sprite= st.attackLeft[self.attackCount// framesPerImg]
+                self.attackCount+=1
+
+                if self.attackCount+1 >= limit:
+                    self.attackCount=0
+                    self.attacking=False
+
+            else: #getsugatensho launch animation
+                limit= len(st.getsugatenshoRight)*framesPerImg
+                if self.facing==1:
+                    sprite= st.getsugatenshoRight[self.signatureCount// framesPerImg]
+                else:
+                    sprite= st.getsugatenshoLeft[self.signatureCount// framesPerImg]
+                self.signatureCount+=1
+                if self.signatureCount+1>=limit:
+                    self.signatureCount=0
+                    self.attacking= False
         elif self.combo:
                 self.x+= self.facing
                 self.y_offset-=1
@@ -143,32 +167,6 @@ class Player:
                     self.attacking = False
                     self.combo=False
         
-        elif self.attacking:
-            if not self.signature: #attack animation
-                self.x+= self.facing//2
-                limit= len(st.attackRight)*framesPerImg
-                if self.facing==1:
-                    sprite= st.attackRight[self.attackCount// framesPerImg]
-                else:
-                    sprite= st.attackLeft[self.attackCount// framesPerImg]
-                self.attackCount+=1
-
-                if self.attackCount+1 >= limit:
-                    self.attackCount=0
-                    if self.comboIndex>1:
-                        self.combo= True 
-                    self.attacking=False
-
-            else: #getsugatensho launch animation
-                limit= len(st.getsugatenshoRight)*framesPerImg
-                if self.facing==1:
-                    sprite= st.getsugatenshoRight[self.signatureCount// framesPerImg]
-                else:
-                    sprite= st.getsugatenshoLeft[self.signatureCount// framesPerImg]
-                self.signatureCount+=1
-                if self.signatureCount+1>=limit:
-                    self.signatureCount=0
-                    self.attacking= False
         else:
             if self.stancephase==0: #stance during no input
                 if self.facing==-1:

@@ -119,18 +119,23 @@ def main():
                             st.pause_music()
                      
                         if event.key== pygame.K_SPACE:
-                            player.standing= False
-                            player.attacking= True
-                            player.signature=False
-                            player.stancephase=0
-                            if player.comboTimer>0:
-                                player.comboIndex+=1
-                                player.comboTimer-=1
-                            else:
-                                player.combo=False
-                                player.comboIndex=0
+                            if not player.attacking and not player.combo:
+                                player.standing= False
+                                player.attacking= True
+                                player.signature=False
+                                player.stancephase=0
+                                player.attackCount=0
+                                player.combo = False
+                                player.comboIndex = 0
+                                player.comboTimer = 5
+                            elif player.attacking and not player.combo:
+                                player.combo= True
+                                player.comboIndex=1
                                 player.comboTimer=5
-
+                            elif player.combo:
+                                player.comboIndex+=1
+                                player.comboTimer=5
+                           
                         elif event.key== pygame.K_LSHIFT:
                             if player.vel < player.x < st.screen_width - player.width - player.vel and player.staminaGauge>=20:
                                 player.interrupt()
