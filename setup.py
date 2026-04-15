@@ -92,5 +92,9 @@ def pause_music():
 
 NON_INTERRUPT_KEYS= {pygame.K_SPACE,
                      pygame.K_LSHIFT,
-                     pygame.K_z
+                     pygame.K_z,
+                     pygame.K_LEFT,
+                     pygame.K_RIGHT, 
+                     pygame.K_a,
+                        pygame.K_d
                      }

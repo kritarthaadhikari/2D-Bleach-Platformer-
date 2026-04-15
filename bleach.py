@@ -117,45 +117,45 @@ def main():
                         if event.key==pygame.K_m:
                             st.Mpause=not st.Mpause
                             st.pause_music()
-                        if not player.combo:
-                            if event.key== pygame.K_SPACE:
-                                player.standing= False
-                                player.attacking= True
-                                player.signature=False
-                                player.stancephase=0
-                                if player.comboTimer>0:
-                                    player.comboIndex+=1
-                                    player.comboTimer-=1
-                                else:
-                                    player.combo=False
-                                    player.comboIndex=0
-                                    player.comboTimer=5
+                     
+                        if event.key== pygame.K_SPACE:
+                            player.standing= False
+                            player.attacking= True
+                            player.signature=False
+                            player.stancephase=0
+                            if player.comboTimer>0:
+                                player.comboIndex+=1
+                                player.comboTimer-=1
+                            else:
+                                player.combo=False
+                                player.comboIndex=0
+                                player.comboTimer=5
 
-                            elif event.key== pygame.K_LSHIFT:
-                                if player.vel < player.x < st.screen_width - player.width - player.vel and player.staminaGauge>=20:
-                                    player.interrupt()
-                                    player.x+= player.facing*40
-                                    player.standing= False
-                                    player.dashing= True
-                                    player.dashCount=0
-                                    player.staminaGauge-=20
-                                    
-                            elif event.key== pygame.K_z:
-                                st.pressed=True
-                                if st.killCount!=0 and player.staminaGauge>=90:
-                                    player.interrupt()
-                                    player.standing= False
-                                    player.signature= True
-                                    player.attacking= True
-                                    player.signatureCount=0
-                                    player.staminaGauge-=80
-                                    new_slash= pj.Projectile(player.x, player.feet_y-10,64,64,player.facing)   
-                                    new_slash.getsugatenshou=True
-                                    pj.projectiles.append(new_slash)
-                                    st.pressed=False
-                                else:
-                                    redrawwindow()
-                                    pygame.display.update()
+                        elif event.key== pygame.K_LSHIFT:
+                            if player.vel < player.x < st.screen_width - player.width - player.vel and player.staminaGauge>=20:
+                                player.interrupt()
+                                player.x+= player.facing*40
+                                player.standing= False
+                                player.dashing= True
+                                player.dashCount=0
+                                player.staminaGauge-=20
+                                
+                        elif event.key== pygame.K_z:
+                            st.pressed=True
+                            if st.killCount!=0 and player.staminaGauge>=90:
+                                player.interrupt()
+                                player.standing= False
+                                player.signature= True
+                                player.attacking= True
+                                player.signatureCount=0
+                                player.staminaGauge-=80
+                                new_slash= pj.Projectile(player.x, player.feet_y-10,64,64,player.facing)   
+                                new_slash.getsugatenshou=True
+                                pj.projectiles.append(new_slash)
+                                st.pressed=False
+                            else:
+                                redrawwindow()
+                                pygame.display.update()
                         else:
                             st.pressed=False
 
@@ -222,7 +222,7 @@ def main():
                                 player.hit()
                                 if not player.down:
                                     h.hit= True
-                                    player.hit()
+                
                         elif not player.signature and player.attacking:
                             if player.attackCount==0:
                                 if player.facing==h.facing:
