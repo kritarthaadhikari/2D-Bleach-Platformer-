@@ -228,7 +228,7 @@ def main():
                                 if not player.down:
                                     h.hit= True
                 
-                        elif not player.signature and player.attacking:
+                        elif not player.signature and (player.attacking or player.combo):
                             if player.attackCount==0:
                                 if player.facing==h.facing:
                                     h.facing*=-1

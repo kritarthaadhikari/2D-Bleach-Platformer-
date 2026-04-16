@@ -1,6 +1,6 @@
 import pygame
 import setup as st
-
+import projectile as pr
 class Player:
     def __init__(self, width, height, x, y):
         self.width = width
@@ -219,7 +219,8 @@ class Player:
         self.comboQueued=False
         self.comboTimer=5
         self.comboIndex=0
-        self.y_offset = 0   # only reset animation, not physics
+        self.y_offset = 0
+        pr.projectiles.clear()   # only reset animation, not physics
 
 
         #ISSues
