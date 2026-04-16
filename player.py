@@ -40,6 +40,7 @@ class Player:
         self.comboIndex=0 #for combo attacks
         self.comboTimer=5 #Time allowed for followup attack
         self.combo= False
+        self.comboQueued= False # queue follow-up combo while first attack is still active
         self.hollowattack=[]
 
     def draw(self, win):
@@ -47,7 +48,7 @@ class Player:
         limit=0
         sprite = st.jumpLeft[0]
 
-        if not self.standing and not self.isJump and not self.attacking:
+        if not self.standing and not self.isJump and not self.attacking and not self.combo:
             self.stancephase=0
             if self.dashing: #dashing animation
                 if self.facing==1:
@@ -139,6 +140,10 @@ class Player:
                 if self.attackCount+1 >= limit:
                     self.attackCount=0
                     self.attacking=False
+                    if self.comboQueued:
+                        self.comboQueued = False
+                        self.combo = True
+                        self.attackCount = 0
 
             else: #getsugatensho launch animation
                 limit= len(st.getsugatenshoRight)*framesPerImg
@@ -211,6 +216,7 @@ class Player:
         self.attacking = False
         self.attackCount = 0
         self.combo=False
+        self.comboQueued=False
         self.comboTimer=5
         self.comboIndex=0
         self.y_offset = 0   # only reset animation, not physics

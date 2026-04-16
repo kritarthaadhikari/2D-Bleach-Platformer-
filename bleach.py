@@ -173,7 +173,7 @@ def main():
 
             keys = pygame.key.get_pressed()
             if not st.pause:
-                if not player.attacking:
+                if not player.attacking and not player.combo:
                     if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and player.x > player.vel:
                         player.x -= player.vel
                         player.left = True
