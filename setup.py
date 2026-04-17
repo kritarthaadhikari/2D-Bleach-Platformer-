@@ -65,6 +65,18 @@ attackFollowUpRight= [pygame.image.load(f'images/ichigo/ichigoattack2.{i}.png') 
     pygame.image.load('images/ichigo/ichigoattack2.16.png')]
 attackFollowUpLeft= [pygame.transform.flip(img, True, False) for img in attackFollowUpRight]
 
+# --- PLAYER BANKAI ASSETS ---
+bankaiWalkRight = [pygame.image.load(f'images/bankai/run{i}.png') for i in range(1, 9)]
+bankaiWalkLeft = [pygame.transform.flip(img, True, False) for img in bankaiWalkRight]
+bankaiStanceRight = [pygame.image.load(f'images/bankai/stance{i}.png') for i in range(1, 5)]
+bankaiStanceLeft = [pygame.transform.flip(img, True, False) for img in bankaiStanceRight]
+bankaiJumpRight = [pygame.image.load(f'images/bankai/jump{i}.png') for i in range(1, 10)]
+bankaiJumpLeft = [pygame.transform.flip(img, True, False) for img in bankaiJumpRight]
+bankaiDashRight = [pygame.image.load(f'images/bankai/dash{i}.png') for i in range(1, 4)]
+bankaiDashLeft = [pygame.transform.flip(img, True, False) for img in bankaiDashRight]
+bankaiHitRight = [pygame.image.load(f'images/bankai/hit{i}.png') for i in range(1, 11)]
+bankaiHitLeft = [pygame.transform.flip(img, True, False) for img in bankaiHitRight]
+
 # --- ENEMY ASSETS ---
 HwalkRight = [pygame.image.load(f'images/menosgrande/walk{i}.png') for i in range(2,10)]
 HwalkLeft = [pygame.transform.flip(img, True, False) for img in HwalkRight]
