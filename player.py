@@ -40,7 +40,6 @@ class Player:
         self.comboIndex=0 #for combo attacks
         self.comboTimer=5 #Time allowed for followup attack
         self.combo= False
-        self.comboQueued= False # queue follow-up combo while first attack is still active
         self.hollowattack=[]
 
     def draw(self, win):

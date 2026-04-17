@@ -38,31 +38,31 @@ slashright = [pygame.transform.smoothscale(img, (64,64)) for img in slash]
 slashLeft = [pygame.transform.flip(img, True, False) for img in slashright]
 
 # --- PLAYER ASSETS ---
-walkRight = [pygame.image.load(f'images/run{i}.png') for i in range(1, 9)]
+walkRight = [pygame.image.load(f'images/ichigo/run{i}.png') for i in range(1, 9)]
 walkLeft = [pygame.transform.flip(img, True, False) for img in walkRight]
-stanceRight = [pygame.image.load(f'images/stanced{i}.png') for i in range(4, 20)]
+stanceRight = [pygame.image.load(f'images/ichigo/stanced{i}.png') for i in range(4, 20)]
 stanceLeft = [pygame.transform.flip(img, True, False) for img in stanceRight]
-stanceFinalRight = [pygame.image.load(f'images/stanced1{i}.png') for i in range(7,10)]
+stanceFinalRight = [pygame.image.load(f'images/ichigo/stanced1{i}.png') for i in range(7,10)]
 stanceFinalLeft = [pygame.transform.flip(img, True, False) for img in stanceFinalRight]
-jumpRight = [pygame.image.load(f'images/jump{i}.png') for i in range(0,10)]
+jumpRight = [pygame.image.load(f'images/ichigo/jump{i}.png') for i in range(0,10)]
 jumpLeft = [pygame.transform.flip(img, True, False) for img in jumpRight]
-dashRight = [pygame.image.load(f'images/dash{i}.png') for i in range(1,4)]
+dashRight = [pygame.image.load(f'images/ichigo/dash{i}.png') for i in range(1,4)]
 dashLeft = [pygame.transform.flip(img, True, False) for img in dashRight]
-attackRight = [pygame.image.load(f'images/nattack{i}.png') for i in range (0,6)]
+attackRight = [pygame.image.load(f'images/ichigo/nattack{i}.png') for i in range (0,6)]
 attackLeft = [pygame.transform.flip(img, True, False) for img in attackRight]
-getHitRight = [pygame.image.load(f'images/hit{i}.png') for i in range(0,10)]
+getHitRight = [pygame.image.load(f'images/ichigo/hit{i}.png') for i in range(0,10)]
 getHitLeft = [pygame.transform.flip(img, True, False) for img in getHitRight]
-hitRight = [pygame.image.load(f'images/hit{i}.png') for i in range(5,10)]
+hitRight = [pygame.image.load(f'images/ichigo/hit{i}.png') for i in range(5,10)]
 hitLeft = [pygame.transform.flip(img, True, False) for img in hitRight]
-standUpRight = [pygame.image.load('images/stanced1.png'), pygame.image.load('images/stanced2.png'),
-                pygame.image.load('images/jump1.png'), pygame.image.load('images/jump2.png'),
-                pygame.image.load('images/jump7.png'), pygame.image.load('images/jump8.png'),
-                pygame.image.load('images/jump9.png')]
+standUpRight = [pygame.image.load('images/ichigo/stanced1.png'), pygame.image.load('images/ichigo/stanced2.png'),
+                pygame.image.load('images/ichigo/jump1.png'), pygame.image.load('images/ichigo/jump2.png'),
+                pygame.image.load('images/ichigo/jump7.png'), pygame.image.load('images/ichigo/jump8.png'),
+                pygame.image.load('images/ichigo/jump9.png')]
 standUpLeft = [pygame.transform.flip(img, True, False) for img in standUpRight]
-getsugatenshoRight = [pygame.image.load(f'images/getsugatensho{i}.png') for i in range(1,15)]
+getsugatenshoRight = [pygame.image.load(f'images/ichigo/getsugatensho{i}.png') for i in range(1,15)]
 getsugatenshoLeft = [pygame.transform.flip(img, True, False) for img in getsugatenshoRight]
-attackFollowUpRight= [pygame.image.load(f'images/ichigoattack2.{i}.png') for i in range(3,8)]+[
-    pygame.image.load('images/ichigoattack2.16.png')]
+attackFollowUpRight= [pygame.image.load(f'images/ichigo/ichigoattack2.{i}.png') for i in range(3,8)]+[
+    pygame.image.load('images/ichigo/ichigoattack2.16.png')]
 attackFollowUpLeft= [pygame.transform.flip(img, True, False) for img in attackFollowUpRight]
 
 # --- ENEMY ASSETS ---
