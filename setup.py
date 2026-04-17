@@ -66,15 +66,15 @@ attackFollowUpRight= [pygame.image.load(f'images/ichigo/ichigoattack2.{i}.png') 
 attackFollowUpLeft= [pygame.transform.flip(img, True, False) for img in attackFollowUpRight]
 
 # --- ENEMY ASSETS ---
-HwalkRight = [pygame.image.load(f'images/walk{i}.png') for i in range(2,10)]
+HwalkRight = [pygame.image.load(f'images/menosgrande/walk{i}.png') for i in range(2,10)]
 HwalkLeft = [pygame.transform.flip(img, True, False) for img in HwalkRight]
-HattackRight = [pygame.image.load(f'images/hattack{i}.png') for i in range(0,10)]
+HattackRight = [pygame.image.load(f'images/menosgrande/hattack{i}.png') for i in range(0,10)]
 HattackLeft = [pygame.transform.flip(img, True, False) for img in HattackRight]
-attackSeenRight = [pygame.image.load(f'images/hattack{i}.png') for i in range(7,10)]
+attackSeenRight = [pygame.image.load(f'images/menosgrande/hattack{i}.png') for i in range(7,10)]
 attackSeenLeft = [pygame.transform.flip(img, True, False) for img in attackSeenRight]
-fallRight = [pygame.image.load(f'images/fall{i}.png') for i in range(1,5)]
+fallRight = [pygame.image.load(f'images/menosgrande/fall{i}.png') for i in range(1,5)]
 fallLeft = [pygame.transform.flip(img, True, False) for img in fallRight]
-blownRight=[pygame.image.load(f'images/blown{i}.png')for i in range(1,4)] 
+blownRight=[pygame.image.load(f'images/menosgrande/blown{i}.png')for i in range(1,4)] 
 blownLeft= [pygame.transform.flip(img, True, False) for img in blownRight]
 
 # --- UI & BG ---
