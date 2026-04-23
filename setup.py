@@ -77,6 +77,7 @@ bankaiDashLeft = [pygame.transform.flip(img, True, False) for img in bankaiDashR
 bankaiHitRight = [pygame.image.load(f'images/bankai/hit{i}.png') for i in range(1, 11)]
 bankaiHitLeft = [pygame.transform.flip(img, True, False) for img in bankaiHitRight]
 
+
 # --- ENEMY ASSETS ---
 HwalkRight = [pygame.image.load(f'images/menosgrande/walk{i}.png') for i in range(2,10)]
 HwalkLeft = [pygame.transform.flip(img, True, False) for img in HwalkRight]
