@@ -41,6 +41,7 @@ class Player:
         self.comboTimer=5 #Time allowed for followup attack
         self.combo= False
         self.hollowattack=[]
+        self.comboQueued= False
 
     def draw(self, win):
         framesPerImg = 3

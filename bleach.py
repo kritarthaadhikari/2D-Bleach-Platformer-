@@ -90,7 +90,7 @@ def main():
     run = True
     st.game_state="mainmenu"
     while run:
-        clock.tick(22)
+        clock.tick(10)
         events= pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:

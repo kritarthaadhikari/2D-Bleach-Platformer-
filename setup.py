@@ -61,8 +61,7 @@ standUpRight = [pygame.image.load('images/ichigo/stanced1.png'), pygame.image.lo
 standUpLeft = [pygame.transform.flip(img, True, False) for img in standUpRight]
 getsugatenshoRight = [pygame.image.load(f'images/ichigo/getsugatensho{i}.png') for i in range(1,15)]
 getsugatenshoLeft = [pygame.transform.flip(img, True, False) for img in getsugatenshoRight]
-attackFollowUpRight= [pygame.image.load(f'images/ichigo/ichigoattack2.{i}.png') for i in range(3,8)]+[
-    pygame.image.load('images/ichigo/ichigoattack2.16.png')]
+attackFollowUpRight=[pygame.transform.smoothscale(pygame.image.load(f'images/ichigo/niattack{i}.png'), (64,64)) for i in range(1,7)]
 attackFollowUpLeft= [pygame.transform.flip(img, True, False) for img in attackFollowUpRight]
 
 # --- PLAYER BANKAI ASSETS ---
@@ -76,6 +75,8 @@ bankaiDashRight = [pygame.image.load(f'images/bankai/dash{i}.png') for i in rang
 bankaiDashLeft = [pygame.transform.flip(img, True, False) for img in bankaiDashRight]
 bankaiHitRight = [pygame.image.load(f'images/bankai/hit{i}.png') for i in range(1, 11)]
 bankaiHitLeft = [pygame.transform.flip(img, True, False) for img in bankaiHitRight]
+bankaiAttackRight = [pygame.image.load(f'images/bankai/attack{i}.png') for i in range(0, 6)]
+bankaiAttackLeft = [pygame.transform.flip(img, True, False) for img in bankaiAttackRight]
 
 
 # --- ENEMY ASSETS ---
