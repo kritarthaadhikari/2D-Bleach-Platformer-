@@ -82,6 +82,13 @@ bankaiHitRight = [pygame.image.load(f'images/bankai/hit{i}.png') for i in range(
 bankaiHitLeft = [pygame.transform.flip(img, True, False) for img in bankaiHitRight]
 bankaiAttackRight = [pygame.image.load(f'images/bankai/attack{i}.png') for i in range(0, 6)]
 bankaiAttackLeft = [pygame.transform.flip(img, True, False) for img in bankaiAttackRight]
+bankaiIdleHitRight= [pygame.image.load(f'images/bankai/hit{i}.png') for i in range(5,10)]
+bankaiIdleHitLeft = [pygame.transform.flip(img, True, False) for img in bankaiIdleHitRight]
+bankaistandUpRight = [pygame.image.load('images/bankai/stanced1.png'), pygame.image.load('images/bankai/stanced2.png'),
+                       pygame.image.load('images/bankai/jump2.png'),pygame.image.load('images/bankai/jump3.png'), 
+                       pygame.image.load('images/bankai/jump7.png'),pygame.image.load('images/bankai/jump8.png'), 
+                       pygame.image.load('images/bankai/jump9.png')]
+bankaistandUpLeft = [pygame.transform.flip(img, True, False) for img in bankaistandUpRight]
 
 
 # --- ENEMY ASSETS ---
