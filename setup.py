@@ -50,10 +50,10 @@ dashRight = [pygame.image.load(f'images/ichigo/dash{i}.png') for i in range(1,4)
 dashLeft = [pygame.transform.flip(img, True, False) for img in dashRight]
 attackRight = [pygame.image.load(f'images/ichigo/nattack{i}.png') for i in range (0,6)]
 attackLeft = [pygame.transform.flip(img, True, False) for img in attackRight]
-getHitRight = [pygame.image.load(f'images/ichigo/hit{i}.png') for i in range(0,10)]
-getHitLeft = [pygame.transform.flip(img, True, False) for img in getHitRight]
-hitRight = [pygame.image.load(f'images/ichigo/hit{i}.png') for i in range(5,10)]
-hitLeft = [pygame.transform.flip(img, True, False) for img in hitRight]
+HitRight = [pygame.image.load(f'images/ichigo/hit{i}.png') for i in range(0,10)]
+HitLeft = [pygame.transform.flip(img, True, False) for img in HitRight]
+IdleHitRight = [pygame.image.load(f'images/ichigo/hit{i}.png') for i in range(5,10)]
+IdleHitLeft = [pygame.transform.flip(img, True, False) for img in IdleHitRight]
 standUpRight = [pygame.image.load('images/ichigo/stanced1.png'), pygame.image.load('images/ichigo/stanced2.png'),
                 pygame.image.load('images/ichigo/jump1.png'), pygame.image.load('images/ichigo/jump2.png'),
                 pygame.image.load('images/ichigo/jump7.png'), pygame.image.load('images/ichigo/jump8.png'),
@@ -89,6 +89,12 @@ bankaistandUpRight = [pygame.image.load('images/bankai/stanced1.png'), pygame.im
                        pygame.image.load('images/bankai/jump7.png'),pygame.image.load('images/bankai/jump8.png'), 
                        pygame.image.load('images/bankai/jump9.png')]
 bankaistandUpLeft = [pygame.transform.flip(img, True, False) for img in bankaistandUpRight]
+bankaiGetsugatenshoRight = [pygame.image.load(f'images/bankai/getsugatensho{i}.png') for i in range(0,11)]
+bankaiGetsugatenshoLeft = [pygame.transform.flip(img, True, False) for img in bankaiGetsugatenshoRight]
+bankaiFollowUpRight=[pygame.image.load(f'images/bankai/fattack{i}.png') for i in range(1,7)]
+bankaiFollowUpLeft = [pygame.transform.flip(img, True, False) for img in bankaiFollowUpRight]
+
+
 
 
 # --- ENEMY ASSETS ---

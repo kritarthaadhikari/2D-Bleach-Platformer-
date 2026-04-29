@@ -42,6 +42,55 @@ class Player:
         self.combo= False
         self.hollowattack=[]
         self.comboQueued= False
+        self.animations= {
+            "shikai":{
+                "walkRight": st.walkRight,
+                "walkLeft": st.walkLeft,
+                "stanceRight": st.stanceRight,
+                "stanceLeft": st.stanceLeft,
+                "stanceFinalRight": st.stanceFinalRight,
+                "stanceFinalLeft": st.stanceFinalLeft,
+                "jumpRight": st.jumpRight,
+                "jumpLeft": st.jumpLeft,
+                "dashRight": st.dashRight,
+                "dashLeft": st.dashLeft,
+                "attackRight": st.attackRight,
+                "attackLeft": st.attackLeft,
+                "getHitRight": st.getHitRight,
+                "getHitLeft": st.getHitLeft,
+                "hitRight": st.hitRight,
+                "hitLeft": st.hitLeft,
+                "standUpRight": st.standUpRight,
+                "standUpLeft": st.standUpLeft,
+                "getsugatenshoRight": st.getsugatenshoRight,
+                "getsugatenshoLeft": st.getsugatenshoLeft,
+                "attackFollowUpRight": st.attackFollowUpRight,
+                "attackFollowUpLeft": st.attackFollowUpLeft   
+            },
+            "bankai":{
+                "walkRight": st.bankaiWalkRight,
+                "walkLeft": st.bankaiWalkLeft,
+                "stanceRight": st.bankaiStanceRight,
+                "stanceLeft": st.bankaiStanceLeft,
+                "jumpRight": st.bankaiJumpRight,
+                "jumpLeft": st.bankaiJumpLeft,
+                "dashRight": st.bankaiDashRight,
+                "dashLeft": st.bankaiDashLeft,
+                "hitRight": st.bankaiHitRight,
+                "hitLeft": st.bankaiHitLeft,
+                "attackRight": st.bankaiAttackRight,
+                "attackLeft": st.bankaiAttackLeft,
+                "idleHitRight": st.bankaiIdleHitRight,
+                "idleHitLeft": st.bankaiIdleHitLeft,
+                "standUpRight": st.bankaistandUpRight,
+                "standUpLeft": st.bankaistandUpLeft,
+                "getsugatenshoRight": st.bankaiGetsugatenshoRight,
+                "getsugatenshoLeft": st.bankaiGetsugatenshoLeft,
+                "attackFollowUpRight": st.bankaiFollowUpRight,
+                "attackFollowUpLeft": st.bankaiFollowUpLeft
+            }
+            
+        }
 
     def draw(self, win):
         framesPerImg = 3
