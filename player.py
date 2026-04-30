@@ -36,7 +36,7 @@ class Player:
         self.signature = False 
         self.signatureCount = 0
         self.staminaGauge = 100
-        self.ultimateGauge = 160
+        self.ultimateGauge = 0
         self.comboIndex=0 #for combo attacks
         self.comboTimer=5 #Time allowed for followup attack
         self.combo= False

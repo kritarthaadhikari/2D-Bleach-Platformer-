@@ -225,7 +225,8 @@ def main():
                 for h in en.hollows[:]:
                     if player.hitbox.colliderect(h.body_hitbox):
                         player.hollowattack.append(h)
-                        if h.attacking and player.hitbox.colliderect(h.attack_hitbox):
+                        h.attacking=True
+                        if player.hitbox.colliderect(h.attack_hitbox):
                             if 21 <=h.attackCount <24:
                                 player.hit()
                                 if not player.down:

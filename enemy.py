@@ -33,11 +33,11 @@ class Enemy:
             if self.attacking:
                 if not self.hit:
                     if self.facing==1:
-                        limit= len(st.HattackRight)*(framesPerImg)
-                        sprite= st.HattackRight[self.attackCount//framesPerImg]
+                        limit= len(st.HattackRight)*3
+                        sprite= st.HattackRight[self.attackCount//3]
                     elif self.facing==-1:
-                        limit= len(st.HattackLeft)*(framesPerImg)
-                        sprite= st.HattackLeft[self.attackCount//framesPerImg]
+                        limit= len(st.HattackLeft)*3
+                        sprite= st.HattackLeft[self.attackCount//3]
                     self.attackCount+=1
                     if self.attackCount+1>=limit:
                         self.attackCount=0 
@@ -68,11 +68,11 @@ class Enemy:
             
             if self.hit:
                 if self.facing==1:
-                    limit= len(st.attackSeenRight)* framesPerImg
-                    sprite= st.attackSeenRight[self.hitCount//framesPerImg]
+                    limit= len(st.attackSeenRight)* 3
+                    sprite= st.attackSeenRight[self.hitCount//3]
                 else:
-                    limit= len(st.attackSeenLeft)* framesPerImg
-                    sprite= st.attackSeenLeft[self.hitCount//framesPerImg]
+                    limit= len(st.attackSeenLeft)* 3
+                    sprite= st.attackSeenLeft[self.hitCount//3]
                 self.hitCount+=1
                 if self.hitCount+1 >=limit:
                     self.hitCount=0 
@@ -117,9 +117,9 @@ class Enemy:
     def move(self, win,other):
         if not self.blown:
             if not self.attacking and not self.health<=0:
-                if self.x==self.end[1] or 0<self.x-other.x<400:
+                if self.x-other.x>300:
                     self.facing=-1
-                elif self.x==self.end[0] or 0<other.x-self.x<400 :
+                elif other.x-self.x>300 :
                     self.facing=1
                 self.x+= self.facing* self.vel
         else:
