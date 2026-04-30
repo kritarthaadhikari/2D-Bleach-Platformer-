@@ -36,7 +36,7 @@ class Player:
         self.signature = False 
         self.signatureCount = 0
         self.staminaGauge = 100
-        self.ultimateGauge = 0
+        self.ultimateGauge = 160
         self.comboIndex=0 #for combo attacks
         self.comboTimer=5 #Time allowed for followup attack
         self.combo= False
@@ -68,7 +68,9 @@ class Player:
                 "getsugatenshoRight": st.getsugatenshoRight,
                 "getsugatenshoLeft": st.getsugatenshoLeft,
                 "attackFollowUpRight": st.attackFollowUpRight,
-                "attackFollowUpLeft": st.attackFollowUpLeft   
+                "attackFollowUpLeft": st.attackFollowUpLeft,
+                "transformRight": st.shikaiTransformRight,
+                "transformLeft": st.shikaiTransformLeft
             },
             "bankai":{
                 "walkRight": st.bankaiWalkRight,
@@ -92,9 +94,13 @@ class Player:
                 "getsugatenshoRight": st.bankaiGetsugatenshoRight,
                 "getsugatenshoLeft": st.bankaiGetsugatenshoLeft,
                 "attackFollowUpRight": st.bankaiFollowUpRight,
-                "attackFollowUpLeft": st.bankaiFollowUpLeft
+                "attackFollowUpLeft": st.bankaiFollowUpLeft,
+                "transformRight": st.bankaiTransformRight,
+                "transformLeft": st.bankaiTransformLeft 
             }
         }
+        self.bankai=False
+        self.bankaiCount=0
 
     def activateBankai(self):
         self.state= "bankai"
@@ -106,159 +112,175 @@ class Player:
         self.dashCount=0
         self.attackCount=0
         self.signatureCount=0
+        self.jumpCount=11
+        self.spjumpCount=0
+        self.bankai=True
+        self.draw(st.win)
         
     def draw(self, win):
         framesPerImg = 3
         limit=0
         sprite = st.jumpLeft[0]
-
-        if not self.standing and not self.isJump and not self.attacking and not self.combo:
-            self.stancephase=0
-            if self.dashing: #dashing animation
-                if self.facing==1:
-                    limit= len(self.animations[self.state]["dashRight"])*framesPerImg
-                    sprite = self.animations[self.state]["dashRight"][self.dashCount//framesPerImg]
-                else:
-                    limit = len(self.animations[self.state]["dashLeft"]) *framesPerImg
-                    sprite = self.animations[self.state]["dashLeft"][self.dashCount//framesPerImg]
-                self.dashCount += 1
-                if self.dashCount +1>= limit:
-                    self.dashCount = 0
-                self.dashTimer-=1
-                if self.dashTimer<=0:
-                    self.dashing= False
-                    self.dashCount=0
-                    self.dashTimer=10
-
-            elif not self.down: #movement animation
-                if self.left:
-                    limit = len(self.animations[self.state]["walkLeft"]) * framesPerImg
-                    sprite = self.animations[self.state]["walkLeft"][self.walkCount // framesPerImg]
-                elif self.right:
-                    limit = len(self.animations[self.state]["walkRight"]) * framesPerImg
-                    sprite = self.animations[self.state]["walkRight"][self.walkCount // framesPerImg]
-                self.walkCount += 1
-                if self.walkCount +1 >= limit:
-                    self.walkCount = 0
-            else: #Standing back up animation
-                self.stationaryPhase= False
-                if self.facing==1:
-                    limit= len(self.animations[self.state]["standUpRight"])* framesPerImg
-                    sprite= self.animations[self.state]["standUpRight"][self.downCount// framesPerImg]
-                else:
-                    limit= len(self.animations[self.state]["standUpLeft"])* framesPerImg
-                    sprite= self.animations[self.state]["standUpLeft"][self.downCount// framesPerImg]
-                if self.downCount+1 >=limit:
-                    self.downCount=0
-                    self.down= False
-                    if not self.gotHit:
-                        self.stationaryPhase=False
-                    
-                self.downCount+=1
-        elif self.isJump: #jump animation
+        if self.bankai:
+            limit=len(self.animations[self.state]["transformRight"])*4
             if self.facing==1:
-                limit = len(self.animations[self.state]["jumpRight"])* framesPerImg
-                sprite= self.animations[self.state]["jumpRight"][self.spjumpCount//framesPerImg]
+                sprite= self.animations[self.state]["transformRight"][self.bankaiCount//4]
             else:
-                limit = len(self.animations[self.state]["jumpLeft"])* framesPerImg
-                sprite= self.animations[self.state]["jumpLeft"][self.spjumpCount//framesPerImg]
-            if self.spjumpCount +1>= limit:
-                self.spjumpCount=0
-            self.spjumpCount += 1
-        elif self.stationaryPhase:  #continuously getting hit animation
-            if self.facing==-1:
-                limit= len(self.animations[self.state]["IdleHitLeft"])*framesPerImg
-                sprite= self.animations[self.state]["IdleHitLeft"][self.stationaryPhaseCount// framesPerImg]
-            else:
-                limit= len(self.animations[self.state]["IdleHitRight"])*framesPerImg
-                sprite= self.animations[self.state]["IdleHitRight"][self.stationaryPhaseCount// framesPerImg]
-            if self.stationaryPhaseCount+1>= limit:
-                self.stationaryPhaseCount=0
-                self.down= True
-            self.stationaryPhaseCount+=1
+                sprite= self.animations[self.state]["transformLeft"][self.bankaiCount//4]
+            if self.state=="bankai" and 16<=self.bankaiCount<=24:
+                st.win.blit(st.bankai, (self.x-self.facing*70, self.feet_y- st.bankai.get_height()+50))
+            if self.bankaiCount+1>= limit:
+                self.bankaiCount=0
+                self.bankai=False
+            self.bankaiCount+=1
+        if not self.bankai:
+            if not self.standing and not self.isJump and not self.attacking and not self.combo:
+                self.stancephase=0
+                if self.dashing: #dashing animation
+                    if self.facing==1:
+                        limit= len(self.animations[self.state]["dashRight"])*framesPerImg
+                        sprite = self.animations[self.state]["dashRight"][self.dashCount//framesPerImg]
+                    else:
+                        limit = len(self.animations[self.state]["dashLeft"]) *framesPerImg
+                        sprite = self.animations[self.state]["dashLeft"][self.dashCount//framesPerImg]
+                    self.dashCount += 1
+                    if self.dashCount +1>= limit:
+                        self.dashCount = 0
+                    self.dashTimer-=1
+                    if self.dashTimer<=0:
+                        self.dashing= False
+                        self.dashCount=0
+                        self.dashTimer=10
+
+                elif not self.down: #movement animation
+                    if self.left:
+                        limit = len(self.animations[self.state]["walkLeft"]) * framesPerImg
+                        sprite = self.animations[self.state]["walkLeft"][self.walkCount // framesPerImg]
+                    elif self.right:
+                        limit = len(self.animations[self.state]["walkRight"]) * framesPerImg
+                        sprite = self.animations[self.state]["walkRight"][self.walkCount // framesPerImg]
+                    self.walkCount += 1
+                    if self.walkCount +1 >= limit:
+                        self.walkCount = 0
+                else: #Standing back up animation
+                    self.stationaryPhase= False
+                    if self.facing==1:
+                        limit= len(self.animations[self.state]["standUpRight"])* framesPerImg
+                        sprite= self.animations[self.state]["standUpRight"][self.downCount// framesPerImg]
+                    else:
+                        limit= len(self.animations[self.state]["standUpLeft"])* framesPerImg
+                        sprite= self.animations[self.state]["standUpLeft"][self.downCount// framesPerImg]
+                    if self.downCount+1 >=limit:
+                        self.downCount=0
+                        self.down= False
+                        if not self.gotHit:
+                            self.stationaryPhase=False
+                        
+                    self.downCount+=1
+            elif self.isJump: #jump animation
+                if self.facing==1:
+                    limit = len(self.animations[self.state]["jumpRight"])* framesPerImg
+                    sprite= self.animations[self.state]["jumpRight"][self.spjumpCount//framesPerImg]
+                else:
+                    limit = len(self.animations[self.state]["jumpLeft"])* framesPerImg
+                    sprite= self.animations[self.state]["jumpLeft"][self.spjumpCount//framesPerImg]
+                if self.spjumpCount +1>= limit:
+                    self.spjumpCount=0
+                self.spjumpCount += 1
+            elif self.stationaryPhase:  #continuously getting hit animation
+                if self.facing==-1:
+                    limit= len(self.animations[self.state]["IdleHitLeft"])*framesPerImg
+                    sprite= self.animations[self.state]["IdleHitLeft"][self.stationaryPhaseCount// framesPerImg]
+                else:
+                    limit= len(self.animations[self.state]["IdleHitRight"])*framesPerImg
+                    sprite= self.animations[self.state]["IdleHitRight"][self.stationaryPhaseCount// framesPerImg]
+                if self.stationaryPhaseCount+1>= limit:
+                    self.stationaryPhaseCount=0
+                    self.down= True
+                self.stationaryPhaseCount+=1
+                
+            elif self.gotHit: #falling and getting hit animation
+                if self.facing==1:
+                    limit= len(self.animations[self.state]["HitRight"])*framesPerImg
+                    sprite= self.animations[self.state]["HitRight"][self.getHitCount//framesPerImg]
+                else:
+                    limit= len(self.animations[self.state]["HitLeft"])*framesPerImg
+                    sprite= self.animations[self.state]["HitLeft"][self.getHitCount//framesPerImg]
+                if self.getHitCount+1>=limit:
+                    self.getHitCount=0
+                    self.gotHit= False
+                    self.stationaryPhase= True
+                    self.down= True
+                    self.stationaryPhaseCount=0
+                self.getHitCount+=1
+            elif self.attacking:
+                if not self.signature: #attack animation
+                    self.x+= self.facing//2
+                    limit= len(self.animations[self.state]["attackRight"])*framesPerImg
+                    if self.facing==1:
+                        sprite= self.animations[self.state]["attackRight"][self.attackCount// framesPerImg]
+                    else:
+                        sprite= self.animations[self.state]["attackLeft"][self.attackCount// framesPerImg]
+                    self.attackCount+=1
+
+                    if self.attackCount+1 >= limit:
+                        self.attackCount=0
+                        self.attacking=False
+                        if self.comboQueued:
+                            self.comboQueued = False
+                            self.combo = True
+                            self.attackCount = 0
+
+                else: #getsugatensho launch animation
+                    limit= len(self.animations[self.state]["getsugatenshoRight"])*framesPerImg
+                    if self.facing==1:
+                        sprite= self.animations[self.state]["getsugatenshoRight"][self.signatureCount// framesPerImg]
+                    else:
+                        sprite= self.animations[self.state]["getsugatenshoLeft"][self.signatureCount// framesPerImg]
+                    self.signatureCount+=1
+                    if self.signatureCount+1>=limit:
+                        self.signatureCount=0
+                        self.attacking= False
+            elif self.combo:
+                    self.x+= self.facing
+                    self.y_offset-=1
+                    limit= len(self.animations[self.state]["attackFollowUpRight"])*framesPerImg
+                    if self.facing==1:
+                        sprite= self.animations[self.state]["attackFollowUpRight"][self.attackCount//framesPerImg]
+                    else:
+                        sprite= self.animations[self.state]["attackFollowUpLeft"][self.attackCount//framesPerImg]
+                    self.attackCount+=1
+                    if self.attackCount+1 >=limit:
+                        self.attackCount=0
+                        self.comboIndex=0   
+                        self.comboTimer=5
+                        self.y_offset=0
+                        self.attacking = False
+                        self.combo=False
             
-        elif self.gotHit: #falling and getting hit animation
-            if self.facing==1:
-                limit= len(self.animations[self.state]["HitRight"])*framesPerImg
-                sprite= self.animations[self.state]["HitRight"][self.getHitCount//framesPerImg]
             else:
-                limit= len(self.animations[self.state]["HitLeft"])*framesPerImg
-                sprite= self.animations[self.state]["HitLeft"][self.getHitCount//framesPerImg]
-            if self.getHitCount+1>=limit:
-                self.getHitCount=0
-                self.gotHit= False
-                self.stationaryPhase= True
-                self.down= True
-                self.stationaryPhaseCount=0
-            self.getHitCount+=1
-        elif self.attacking:
-            if not self.signature: #attack animation
-                self.x+= self.facing//2
-                limit= len(self.animations[self.state]["attackRight"])*framesPerImg
-                if self.facing==1:
-                    sprite= self.animations[self.state]["attackRight"][self.attackCount// framesPerImg]
-                else:
-                    sprite= self.animations[self.state]["attackLeft"][self.attackCount// framesPerImg]
-                self.attackCount+=1
-
-                if self.attackCount+1 >= limit:
-                    self.attackCount=0
-                    self.attacking=False
-                    if self.comboQueued:
-                        self.comboQueued = False
-                        self.combo = True
-                        self.attackCount = 0
-
-            else: #getsugatensho launch animation
-                limit= len(self.animations[self.state]["getsugatenshoRight"])*framesPerImg
-                if self.facing==1:
-                    sprite= self.animations[self.state]["getsugatenshoRight"][self.signatureCount// framesPerImg]
-                else:
-                    sprite= self.animations[self.state]["getsugatenshoLeft"][self.signatureCount// framesPerImg]
-                self.signatureCount+=1
-                if self.signatureCount+1>=limit:
-                    self.signatureCount=0
-                    self.attacking= False
-        elif self.combo:
-                self.x+= self.facing
-                self.y_offset-=1
-                limit= len(self.animations[self.state]["attackFollowUpRight"])*framesPerImg
-                if self.facing==1:
-                    sprite= self.animations[self.state]["attackFollowUpRight"][self.attackCount//framesPerImg]
-                else:
-                    sprite= self.animations[self.state]["attackFollowUpLeft"][self.attackCount//framesPerImg]
-                self.attackCount+=1
-                if self.attackCount+1 >=limit:
-                    self.attackCount=0
-                    self.comboIndex=0   
-                    self.comboTimer=5
-                    self.y_offset=0
-                    self.attacking = False
-                    self.combo=False
-        
-        else:
-            if self.stancephase==0: #stance during no input
-                if self.facing==-1:
-                    limit = len(self.animations[self.state]["stanceLeft"]) * framesPerImg
-                    sprite = self.animations[self.state]["stanceLeft"][self.stanceCount // framesPerImg]
-                elif self.facing==1:
-                    limit = len(self.animations[self.state]["stanceRight"]) * framesPerImg
-                    sprite = self.animations[self.state]["stanceRight"][self.stanceCount // framesPerImg]
-                if self.stanceCount +1>= limit:
-                    self.stanceCount=0
-                    self.stancephase=1
-                self.stanceCount += 1
-            else: #continued stance when idle
-                if self.facing==-1:
-                    limit = len(self.animations[self.state]["stanceFinalLeft"]) * framesPerImg
-                    sprite = self.animations[self.state]["stanceFinalLeft"][self.stanceFinal // framesPerImg]
-                else:
-                    limit = len(self.animations[self.state]["stanceFinalRight"]) * framesPerImg
-                    sprite = self.animations[self.state]["stanceFinalRight"][self.stanceFinal // framesPerImg]
-                self.stanceFinal+=1
-                if self.stanceFinal+1>= limit:
-                    self.stanceFinal=0
-                    self.stanceCount=0
+                if self.stancephase==0: #stance during no input
+                    if self.facing==-1:
+                        limit = len(self.animations[self.state]["stanceLeft"]) * framesPerImg
+                        sprite = self.animations[self.state]["stanceLeft"][self.stanceCount // framesPerImg]
+                    elif self.facing==1:
+                        limit = len(self.animations[self.state]["stanceRight"]) * framesPerImg
+                        sprite = self.animations[self.state]["stanceRight"][self.stanceCount // framesPerImg]
+                    if self.stanceCount +1>= limit:
+                        self.stanceCount=0
+                        self.stancephase=1
+                    self.stanceCount += 1
+                else: #continued stance when idle
+                    if self.facing==-1:
+                        limit = len(self.animations[self.state]["stanceFinalLeft"]) * framesPerImg
+                        sprite = self.animations[self.state]["stanceFinalLeft"][self.stanceFinal // framesPerImg]
+                    else:
+                        limit = len(self.animations[self.state]["stanceFinalRight"]) * framesPerImg
+                        sprite = self.animations[self.state]["stanceFinalRight"][self.stanceFinal // framesPerImg]
+                    self.stanceFinal+=1
+                    if self.stanceFinal+1>= limit:
+                        self.stanceFinal=0
+                        self.stanceCount=0
 
         self.hitbox= pygame.Rect(self.x+10, self.feet_y-4,50, 52 )
         

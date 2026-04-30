@@ -31,17 +31,18 @@ class Enemy:
         framesPerImg=4
         if not self.fall and not self.blown:
             if self.attacking:
+                attackFramesPerImg = 3
                 if not self.hit:
                     if self.facing==1:
-                        limit= len(st.HattackRight)*3
-                        sprite= st.HattackRight[self.attackCount//3]
+                        limit = len(st.HattackRight) * attackFramesPerImg
+                        sprite = st.HattackRight[self.attackCount // attackFramesPerImg]
                     elif self.facing==-1:
-                        limit= len(st.HattackLeft)*3
-                        sprite= st.HattackLeft[self.attackCount//3]
-                    self.attackCount+=1
-                    if self.attackCount+1>=limit:
-                        self.attackCount=0 
-                        self.attacking= False
+                        limit = len(st.HattackLeft) * attackFramesPerImg
+                        sprite = st.HattackLeft[self.attackCount // attackFramesPerImg]
+                    self.attackCount += 1
+                    if self.attackCount + 1 >= limit:
+                        self.attackCount = 0 
+                        self.attacking = False
             else:       
                 if self.facing==-1:
                     limit= len(st.HwalkLeft)* framesPerImg
@@ -68,11 +69,11 @@ class Enemy:
             
             if self.hit:
                 if self.facing==1:
-                    limit= len(st.attackSeenRight)* 3
-                    sprite= st.attackSeenRight[self.hitCount//3]
+                    limit= len(st.attackSeenRight)* attackFramesPerImg
+                    sprite= st.attackSeenRight[self.hitCount//attackFramesPerImg]
                 else:
-                    limit= len(st.attackSeenLeft)* 3
-                    sprite= st.attackSeenLeft[self.hitCount//3]
+                    limit= len(st.attackSeenLeft)* attackFramesPerImg
+                    sprite= st.attackSeenLeft[self.hitCount//attackFramesPerImg]
                 self.hitCount+=1
                 if self.hitCount+1 >=limit:
                     self.hitCount=0 
@@ -109,7 +110,7 @@ class Enemy:
                 else:
                     sprite= st.fallLeft[3]
                 self.kill(other)
-        # pygame.draw.rect(win, (255,0,0), self.body_hitbox,2)
+        pygame.draw.rect(win, (255,0,0), self.body_hitbox,2)
         sprite_height= sprite.get_height()
         draw_y= self.feet- sprite_height+50
         win.blit(sprite , (self.x, draw_y))
@@ -117,9 +118,9 @@ class Enemy:
     def move(self, win,other):
         if not self.blown:
             if not self.attacking and not self.health<=0:
-                if self.x-other.x>300:
+                if self.x-other.x>200:
                     self.facing=-1
-                elif other.x-self.x>300 :
+                elif other.x-self.x>200:
                     self.facing=1
                 self.x+= self.facing* self.vel
         else:
