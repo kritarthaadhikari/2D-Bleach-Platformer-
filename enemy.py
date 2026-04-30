@@ -33,10 +33,10 @@ class Enemy:
             if self.attacking:
                 if not self.hit:
                     if self.facing==1:
-                        limit= len(st.HattackRight)*(framesPerImg-2)
+                        limit= len(st.HattackRight)*(framesPerImg)
                         sprite= st.HattackRight[self.attackCount//framesPerImg]
                     elif self.facing==-1:
-                        limit= len(st.HattackLeft)*(framesPerImg-2)
+                        limit= len(st.HattackLeft)*(framesPerImg)
                         sprite= st.HattackLeft[self.attackCount//framesPerImg]
                     self.attackCount+=1
                     if self.attackCount+1>=limit:

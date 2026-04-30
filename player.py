@@ -167,11 +167,11 @@ class Player:
             self.spjumpCount += 1
         elif self.stationaryPhase:  #continuously getting hit animation
             if self.facing==-1:
-                limit= len(self.animations[self.state]["hitLeft"])*framesPerImg
-                sprite= self.animations[self.state]["HitLeft"][self.stationaryPhaseCount// framesPerImg]
+                limit= len(self.animations[self.state]["IdleHitLeft"])*framesPerImg
+                sprite= self.animations[self.state]["IdleHitLeft"][self.stationaryPhaseCount// framesPerImg]
             else:
-                limit= len(self.animations[self.state]["hitRight"])*framesPerImg
-                sprite= self.animations[self.state]["HitRight"][self.stationaryPhaseCount// framesPerImg]
+                limit= len(self.animations[self.state]["IdleHitRight"])*framesPerImg
+                sprite= self.animations[self.state]["IdleHitRight"][self.stationaryPhaseCount// framesPerImg]
             if self.stationaryPhaseCount+1>= limit:
                 self.stationaryPhaseCount=0
                 self.down= True
@@ -179,11 +179,11 @@ class Player:
             
         elif self.gotHit: #falling and getting hit animation
             if self.facing==1:
-                limit= len(self.animations[self.state]["IdleHitRight"])*framesPerImg
-                sprite= self.animations[self.state]["IdleHitRight"][self.getHitCount//framesPerImg]
+                limit= len(self.animations[self.state]["HitRight"])*framesPerImg
+                sprite= self.animations[self.state]["HitRight"][self.getHitCount//framesPerImg]
             else:
-                limit= len(self.animations[self.state]["IdleHitLeft"])*framesPerImg
-                sprite= self.animations[self.state]["IdleHitLeft"][self.getHitCount//framesPerImg]
+                limit= len(self.animations[self.state]["HitLeft"])*framesPerImg
+                sprite= self.animations[self.state]["HitLeft"][self.getHitCount//framesPerImg]
             if self.getHitCount+1>=limit:
                 self.getHitCount=0
                 self.gotHit= False
