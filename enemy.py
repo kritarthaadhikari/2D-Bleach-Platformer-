@@ -27,24 +27,21 @@ class Enemy:
         self.blown=False #blows character when signature is hit
         self.blownCount=0
     
-    def draw(self,win):
+    def draw(self,win,other):
         framesPerImg=4
-        current= time.time()
         if not self.fall and not self.blown:
-            if current- self.lastattackTimer > 3.0 or self.attacking:
-                self.attacking= True
+            if self.attacking:
                 if not self.hit:
                     if self.facing==1:
-                        limit= len(st.HattackRight)*framesPerImg
+                        limit= len(st.HattackRight)*(framesPerImg-2)
                         sprite= st.HattackRight[self.attackCount//framesPerImg]
                     elif self.facing==-1:
-                        limit= len(st.HattackLeft)*framesPerImg
+                        limit= len(st.HattackLeft)*(framesPerImg-2)
                         sprite= st.HattackLeft[self.attackCount//framesPerImg]
                     self.attackCount+=1
                     if self.attackCount+1>=limit:
                         self.attackCount=0 
                         self.attacking= False
-                        self.lastattackTimer= time.time()
             else:       
                 if self.facing==-1:
                     limit= len(st.HwalkLeft)* framesPerImg
@@ -111,31 +108,35 @@ class Enemy:
                     sprite= st.fallRight[3]
                 else:
                     sprite= st.fallLeft[3]
-                self.kill()
-
+                self.kill(other)
         # pygame.draw.rect(win, (255,0,0), self.body_hitbox,2)
         sprite_height= sprite.get_height()
         draw_y= self.feet- sprite_height+50
         win.blit(sprite , (self.x, draw_y))
     
-    def move(self, win):
+    def move(self, win,other):
         if not self.blown:
             if not self.attacking and not self.health<=0:
-                if self.x==self.end[1]:
+                if self.x==self.end[1] or 0<self.x-other.x<400:
                     self.facing=-1
-                elif self.x==self.end[0]:
+                elif self.x==self.end[0] or 0<other.x-self.x<400 :
                     self.facing=1
                 self.x+= self.facing* self.vel
         else:
             self.x+= -self.facing*4
-        self.draw(win)
+        self.draw(win,other)
     
     def gothit(self):
         self.health-=20
-        self.x= self.x
     
-    def kill(self):
+    def kill(self,other):
         if self in hollows:
             hollows.remove(self)
             st.score+=10
             st.killCount+=1
+            if other.ultimateGauge<160:
+                other.ultimateGauge+=40
+            if other.health<=80:
+                other.health+=40 
+
+#Issue: Enemy movement and not attacking when player is in range

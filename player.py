@@ -36,13 +36,15 @@ class Player:
         self.signature = False 
         self.signatureCount = 0
         self.staminaGauge = 100
-        self.ultimateGauge = 0
+        self.ultimateGauge = 160
         self.comboIndex=0 #for combo attacks
         self.comboTimer=5 #Time allowed for followup attack
         self.combo= False
         self.hollowattack=[]
         self.comboQueued= False
         self.state= "shikai"
+        self.damage=200
+        self.incrementalFactor= 1 #bankai impact increase factor
         self.animations= {
             "shikai":{
                 "walkRight": st.walkRight,
@@ -57,10 +59,10 @@ class Player:
                 "dashLeft": st.dashLeft,
                 "attackRight": st.attackRight,
                 "attackLeft": st.attackLeft,
-                "getHitRight": st.getHitRight,
-                "getHitLeft": st.getHitLeft,
-                "hitRight": st.hitRight,
-                "hitLeft": st.hitLeft,
+                "IdleHitRight": st.IdleHitRight,
+                "IdleHitLeft": st.IdleHitLeft,
+                "HitRight": st.HitRight,
+                "HitLeft": st.HitLeft,
                 "standUpRight": st.standUpRight,
                 "standUpLeft": st.standUpLeft,
                 "getsugatenshoRight": st.getsugatenshoRight,
@@ -73,16 +75,18 @@ class Player:
                 "walkLeft": st.bankaiWalkLeft,
                 "stanceRight": st.bankaiStanceRight,
                 "stanceLeft": st.bankaiStanceLeft,
+                "stanceFinalRight": st.bankaiStanceRight,
+                "stanceFinalLeft": st.bankaiStanceLeft,
                 "jumpRight": st.bankaiJumpRight,
                 "jumpLeft": st.bankaiJumpLeft,
                 "dashRight": st.bankaiDashRight,
                 "dashLeft": st.bankaiDashLeft,
-                "hitRight": st.bankaiHitRight,
-                "hitLeft": st.bankaiHitLeft,
+                "HitRight": st.bankaiHitRight,
+                "HitLeft": st.bankaiHitLeft,
                 "attackRight": st.bankaiAttackRight,
                 "attackLeft": st.bankaiAttackLeft,
-                "idleHitRight": st.bankaiIdleHitRight,
-                "idleHitLeft": st.bankaiIdleHitLeft,
+                "IdleHitRight": st.bankaiIdleHitRight,
+                "IdleHitLeft": st.bankaiIdleHitLeft,
                 "standUpRight": st.bankaistandUpRight,
                 "standUpLeft": st.bankaistandUpLeft,
                 "getsugatenshoRight": st.bankaiGetsugatenshoRight,
@@ -95,7 +99,14 @@ class Player:
     def activateBankai(self):
         self.state= "bankai"
         self.vel=7
-
+        self.damage=500
+        self.stanceCount=0
+        self.stanceFinal=0
+        self.incrementalFactor=3
+        self.dashCount=0
+        self.attackCount=0
+        self.signatureCount=0
+        
     def draw(self, win):
         framesPerImg = 3
         limit=0
@@ -105,10 +116,10 @@ class Player:
             self.stancephase=0
             if self.dashing: #dashing animation
                 if self.facing==1:
-                    limit= len(st.dashRight)*framesPerImg
+                    limit= len(self.animations[self.state]["dashRight"])*framesPerImg
                     sprite = self.animations[self.state]["dashRight"][self.dashCount//framesPerImg]
                 else:
-                    limit = len(st.dashLeft) *framesPerImg
+                    limit = len(self.animations[self.state]["dashLeft"]) *framesPerImg
                     sprite = self.animations[self.state]["dashLeft"][self.dashCount//framesPerImg]
                 self.dashCount += 1
                 if self.dashCount +1>= limit:
@@ -121,10 +132,10 @@ class Player:
 
             elif not self.down: #movement animation
                 if self.left:
-                    limit = len(st.walkLeft) * framesPerImg
+                    limit = len(self.animations[self.state]["walkLeft"]) * framesPerImg
                     sprite = self.animations[self.state]["walkLeft"][self.walkCount // framesPerImg]
                 elif self.right:
-                    limit = len(st.walkRight) * framesPerImg
+                    limit = len(self.animations[self.state]["walkRight"]) * framesPerImg
                     sprite = self.animations[self.state]["walkRight"][self.walkCount // framesPerImg]
                 self.walkCount += 1
                 if self.walkCount +1 >= limit:
@@ -132,10 +143,10 @@ class Player:
             else: #Standing back up animation
                 self.stationaryPhase= False
                 if self.facing==1:
-                    limit= len(st.standUpRight)* framesPerImg
+                    limit= len(self.animations[self.state]["standUpRight"])* framesPerImg
                     sprite= self.animations[self.state]["standUpRight"][self.downCount// framesPerImg]
                 else:
-                    limit= len(st.standUpLeft)* framesPerImg
+                    limit= len(self.animations[self.state]["standUpLeft"])* framesPerImg
                     sprite= self.animations[self.state]["standUpLeft"][self.downCount// framesPerImg]
                 if self.downCount+1 >=limit:
                     self.downCount=0
@@ -146,21 +157,21 @@ class Player:
                 self.downCount+=1
         elif self.isJump: #jump animation
             if self.facing==1:
-                limit = len(st.jumpRight)* framesPerImg
+                limit = len(self.animations[self.state]["jumpRight"])* framesPerImg
                 sprite= self.animations[self.state]["jumpRight"][self.spjumpCount//framesPerImg]
             else:
-                limit = len(st.jumpLeft)* framesPerImg
+                limit = len(self.animations[self.state]["jumpLeft"])* framesPerImg
                 sprite= self.animations[self.state]["jumpLeft"][self.spjumpCount//framesPerImg]
             if self.spjumpCount +1>= limit:
                 self.spjumpCount=0
             self.spjumpCount += 1
         elif self.stationaryPhase:  #continuously getting hit animation
             if self.facing==-1:
-                limit= len(st.hitLeft)*framesPerImg
-                sprite= self.animations[self.state]["hitLeft"][self.stationaryPhaseCount// framesPerImg]
+                limit= len(self.animations[self.state]["hitLeft"])*framesPerImg
+                sprite= self.animations[self.state]["HitLeft"][self.stationaryPhaseCount// framesPerImg]
             else:
-                limit= len(st.hitRight)*framesPerImg
-                sprite= self.animations[self.state]["hitRight"][self.stationaryPhaseCount// framesPerImg]
+                limit= len(self.animations[self.state]["hitRight"])*framesPerImg
+                sprite= self.animations[self.state]["HitRight"][self.stationaryPhaseCount// framesPerImg]
             if self.stationaryPhaseCount+1>= limit:
                 self.stationaryPhaseCount=0
                 self.down= True
@@ -168,11 +179,11 @@ class Player:
             
         elif self.gotHit: #falling and getting hit animation
             if self.facing==1:
-                limit= len(st.getHitRight)*framesPerImg
-                sprite= self.animations[self.state]["getHitRight"][self.getHitCount//framesPerImg]
+                limit= len(self.animations[self.state]["IdleHitRight"])*framesPerImg
+                sprite= self.animations[self.state]["IdleHitRight"][self.getHitCount//framesPerImg]
             else:
-                limit= len(st.getHitLeft)*framesPerImg
-                sprite= self.animations[self.state]["getHitLeft"][self.getHitCount//framesPerImg]
+                limit= len(self.animations[self.state]["IdleHitLeft"])*framesPerImg
+                sprite= self.animations[self.state]["IdleHitLeft"][self.getHitCount//framesPerImg]
             if self.getHitCount+1>=limit:
                 self.getHitCount=0
                 self.gotHit= False
@@ -183,7 +194,7 @@ class Player:
         elif self.attacking:
             if not self.signature: #attack animation
                 self.x+= self.facing//2
-                limit= len(st.attackRight)*framesPerImg
+                limit= len(self.animations[self.state]["attackRight"])*framesPerImg
                 if self.facing==1:
                     sprite= self.animations[self.state]["attackRight"][self.attackCount// framesPerImg]
                 else:
@@ -199,7 +210,7 @@ class Player:
                         self.attackCount = 0
 
             else: #getsugatensho launch animation
-                limit= len(st.getsugatenshoRight)*framesPerImg
+                limit= len(self.animations[self.state]["getsugatenshoRight"])*framesPerImg
                 if self.facing==1:
                     sprite= self.animations[self.state]["getsugatenshoRight"][self.signatureCount// framesPerImg]
                 else:
@@ -211,7 +222,7 @@ class Player:
         elif self.combo:
                 self.x+= self.facing
                 self.y_offset-=1
-                limit= len(st.attackFollowUpRight)*framesPerImg
+                limit= len(self.animations[self.state]["attackFollowUpRight"])*framesPerImg
                 if self.facing==1:
                     sprite= self.animations[self.state]["attackFollowUpRight"][self.attackCount//framesPerImg]
                 else:
@@ -233,10 +244,10 @@ class Player:
                 elif self.facing==1:
                     limit = len(self.animations[self.state]["stanceRight"]) * framesPerImg
                     sprite = self.animations[self.state]["stanceRight"][self.stanceCount // framesPerImg]
-                self.stanceCount += 1
                 if self.stanceCount +1>= limit:
                     self.stanceCount=0
                     self.stancephase=1
+                self.stanceCount += 1
             else: #continued stance when idle
                 if self.facing==-1:
                     limit = len(self.animations[self.state]["stanceFinalLeft"]) * framesPerImg
@@ -250,10 +261,13 @@ class Player:
                     self.stanceCount=0
 
         self.hitbox= pygame.Rect(self.x+10, self.feet_y-4,50, 52 )
-        if self.signature and self.facing==-1:
-            draw_x= self.x -sprite.get_width()+50
-        else:
-            draw_x= self.x
+        
+        draw_x= self.x
+        if not self.state=="bankai" or  ((self.animations['bankai']['stanceRight'][0] and self.facing==1)and (not self.attacking and not self.combo)
+                                        or((self.state=="bankai" and (self.attacking or self.combo) and self.facing==-1))):
+            if self.signature and self.facing==-1 or self.state=="bankai":
+                draw_x= self.x -sprite.get_width()+50
+        
         sprite_height = sprite.get_height()
         draw_y = self.feet_y - sprite_height+self.y_offset+50
         win.blit(sprite, (draw_x, draw_y))

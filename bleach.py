@@ -15,17 +15,14 @@ def hudPannel():
     pygame.draw.rect(st.win,(255,0,0),(212,59,212,23))
     pygame.draw.rect(st.win,(0,255,0),(212,59,212- 53*(120-player.health)/30,22 ))
     pygame.draw.rect(st.win,(255,255,0),(175,89,188-(100-player.staminaGauge)*1.88,14))
-    pygame.draw.rect(st.win,"cyan",(237,116,st.score*2.37,18))
+    pygame.draw.rect(st.win,"cyan",(237,116,180-1.125*(160-player.ultimateGauge),18))
     st.win.blit(st.hud_pannel, (10,10))
 
 def redrawwindow():
     st.win.blit(st.bg, (0, 0))
     hudPannel()
     for e in en.hollows:
-        e.move(st.win)
-        if e.health==0:
-            if player.health<=80:
-                player.health+=40
+        e.move(st.win,player)
     player.draw(st.win)
     text= st.font.render(f"Score: {st.score}",1,(255,255,255))
     st.win.blit(text,(st.screen_width-text.get_width()-20, 0))
@@ -35,6 +32,9 @@ def redrawwindow():
            p.draw(st.win)
     if st.killCount==0 and st.pressed:
         text= st.font.render("Locked! Get a kill",1,(255,255,255))
+        st.win.blit(text,(st.screen_width//2-text.get_width()//2, st.screen_height//2-text.get_height()//2))
+    if player.ultimateGauge>=160:
+        text= st.font.render("Ultimate Ready!",1,(255,255,255))
         st.win.blit(text,(st.screen_width//2-text.get_width()//2, st.screen_height//2-text.get_height()//2))
     if st.Mpause:
         st.win.blit(st.mute,(st.screen_width-100,70))
@@ -102,7 +102,7 @@ def main():
         if st.game_state=="start":
             createEnemies()
             if player.staminaGauge<100:
-                player.staminaGauge+=1/3
+                player.staminaGauge+=1/3*player.incrementalFactor
             for event in events:
                 if event.type ==pygame.MOUSEBUTTONDOWN and st.pause:
                     if restart.collidepoint(event.pos):
@@ -139,7 +139,7 @@ def main():
                         elif event.key== pygame.K_LSHIFT:
                             if player.vel < player.x < st.screen_width - player.width - player.vel and player.staminaGauge>=20:
                                 player.interrupt()
-                                player.x+= player.facing*40
+                                player.x+= player.facing*40*player.incrementalFactor
                                 player.standing= False
                                 player.dashing= True
                                 player.dashCount=0
@@ -161,6 +161,9 @@ def main():
                             else:
                                 redrawwindow()
                                 pygame.display.update()
+                        elif event.key==pygame.K_b and player.ultimateGauge>=160:
+                            player.ultimateGauge=0
+                            player.activateBankai()
                         else:
                             st.pressed=False
 
@@ -214,7 +217,7 @@ def main():
                     for h in en.hollows:
                         if p.colliderect(h.body_hitbox) and player.signatureCount>=21:
                             if h not in p.hitEnemies:
-                                h.health-=200
+                                h.health-=player.damage
                                 p.hitEnemies.append(h)
                                 h.facing=-1*player.facing
                                 h.blown=True
