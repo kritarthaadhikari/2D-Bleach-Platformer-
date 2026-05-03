@@ -246,6 +246,8 @@ class Player:
                         sprite= self.animations[self.state]["getsugatenshoRight"][self.signatureCount// framesPerImg]
                     else:
                         sprite= self.animations[self.state]["getsugatenshoLeft"][self.signatureCount// framesPerImg]
+                    if 24>=self.signatureCount>=9:
+                        st.win.blit(st.getsugatensho, (self.x-self.facing*50, self.feet_y- st.getsugatensho.get_height()+40))
                     self.signatureCount+=1
                     if self.signatureCount+1>=limit:
                         self.signatureCount=0

@@ -30,12 +30,18 @@ def redrawwindow():
         for p in pj.projectiles[:]:
            p.move()
            p.draw(st.win)
-    if st.killCount==0 and st.pressed:
-        text= st.font.render("Locked! Get a kill",1,(255,255,255))
-        st.win.blit(text,(st.screen_width//2-text.get_width()//2, st.screen_height//2-text.get_height()//2))
-    if player.ultimateGauge>=160:
-        text= st.font.render("Ultimate Ready!",1,(255,255,255))
-        st.win.blit(text,(st.screen_width//2-text.get_width()//2, st.screen_height//2-text.get_height()//2))
+    st.current_time= pygame.time.get_ticks()
+    if st.show_text:
+        if st.killCount==0 and st.current_time-st.text_start_time<= st.text_duration:
+            text= st.font.render("Locked! Get a kill",1,(255,255,255))
+            st.win.blit(text,(st.screen_width//2-text.get_width()//2, st.screen_height//2-text.get_height()//2))
+        else:
+            st.show_text= False
+    st.current_time_bankai= pygame.time.get_ticks()
+    if st.current_time_bankai-st.text_start_time_bankai<=st.text_duration_bankai:
+        if player.ultimateGauge>=160:
+            text= st.font.render("Ultimate Ready!",1,(255,255,255))
+            st.win.blit(text,(st.screen_width//2-text.get_width()//2, st.screen_height//2-text.get_height()//2))
     if st.Mpause:
         st.win.blit(st.mute,(st.screen_width-100,70))
     pygame.display.update()   
@@ -89,6 +95,14 @@ def reset():
     # Unpause
     st.pause = False
 
+def enemyDamaged(enemy):
+    if player.attackCount==0:
+        if player.facing==enemy.facing:
+            enemy.facing*=-1
+        enemy.attacking= True
+        enemy.gothit(player)
+        if player.combo:
+            enemy.health-=40*player.incrementalFactor
 
 def main():
     run = True
@@ -150,7 +164,6 @@ def main():
                                     player.staminaGauge-=20
                                     
                             elif event.key== pygame.K_z:
-                                st.pressed=True
                                 if st.killCount!=0 and player.staminaGauge>=90:
                                     player.interrupt()
                                     player.standing= False
@@ -161,12 +174,11 @@ def main():
                                     new_slash= pj.Projectile(player.x, player.feet_y-10,64,64,player.facing)   
                                     new_slash.getsugatenshou=True
                                     pj.projectiles.append(new_slash)
-                                    st.pressed=False
                                 else:
+                                    st.show_text= True
+                                    st.text_start_time= pygame.time.get_ticks()
                                     redrawwindow()
                                     pygame.display.update()
-                            else:
-                                st.pressed=False
                         elif event.key==pygame.K_b and player.ultimateGauge>=160:
                             player.activateBankai()
 
@@ -234,16 +246,11 @@ def main():
                             if 21 <=h.attackCount <24:
                                 player.hit()
                                 if not player.down:
-                                    h.hit= True
-                
+                                    h.hit= True  
+                            if player.attackCount==0 and (player.attacking or player.combo and not player.signature):
+                                enemyDamaged(h)
                         elif not player.signature and (player.attacking or player.combo):
-                            if player.attackCount==0:
-                                if player.facing==h.facing:
-                                    h.facing*=-1
-                                h.attacking= True
-                                h.gothit(player)
-                                if player.combo:
-                                    h.health-=40
+                            enemyDamaged(h)
                         else:
                             h.hit= False
                             player.stationaryPhase= False

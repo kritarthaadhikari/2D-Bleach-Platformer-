@@ -29,8 +29,18 @@ pygame.mixer.music.play(-1)
 
 score=0
 killCount=0
-pressed=False #for availability of signature
 pause= False
+
+#Signature Display Parameters
+text_duration= 1000 #1s
+text_start_time= 0
+current_time=0
+show_text= False
+
+#Bankai Display Parameters
+text_duration_bankai= 2000 #2s
+text_start_time_bankai= 0
+current_time_bankai=0
 
 # --- PROJECTILE ASSETS ---
 slash = [pygame.image.load(f'images/shot/fire{i}.png') for i in range(1,5)]
