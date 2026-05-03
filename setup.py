@@ -97,9 +97,14 @@ bankaiFollowUpRight=[pygame.image.load(f'images/bankai/fattack{i}.png') for i in
 bankaiFollowUpLeft = [pygame.transform.flip(img, True, False) for img in bankaiFollowUpRight]
 bankaiTransformRight= [pygame.image.load(f'images/bankai/bankai{i}.png') for i in range(1,9)]
 bankaiTransformLeft = [pygame.transform.flip(img, True, False) for img in bankaiTransformRight]
-bankai= pygame.image.load('images/bankai/bankai.png')
 getsugatensho= pygame.image.load('images/bankai/getsuga.png')
-    
+
+#bankai visuals
+bankai= pygame.image.load('images/bankai/bankai.png')
+tr= pygame.image.load('images/bankai/TR1.png')
+tl= pygame.image.load('images/bankai/TL.png')
+
+
 # --- ENEMY ASSETS ---
 HwalkRight = [pygame.image.load(f'images/menosgrande/walk{i}.png') for i in range(2,10)]
 HwalkLeft = [pygame.transform.flip(img, True, False) for img in HwalkRight]

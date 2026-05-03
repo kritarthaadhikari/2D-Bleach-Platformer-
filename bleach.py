@@ -44,10 +44,14 @@ last_enemy_spawn = time.time()
 
 def createEnemies():
     global last_enemy_spawn
+    i=0
     if not st.game_state=="mainmenu":
-        if time.time() - last_enemy_spawn >= 30:
-            new_enemy = en.Enemy(110, 149, 1200, 500)
-            en.hollows.append(new_enemy)
+        if time.time() - last_enemy_spawn >= max(2,10-2*st.killCount):
+            while(i!=st.killCount):
+                new_enemy = en.Enemy(110+10*i, 149, 1200, 500)
+                en.hollows.append(new_enemy)
+                i+=1
+            i=0
             last_enemy_spawn = time.time()
 
 def draw_pause():
@@ -117,55 +121,54 @@ def main():
                         if event.key==pygame.K_m:
                             st.Mpause=not st.Mpause
                             st.pause_music()
-                     
-                        if event.key== pygame.K_SPACE:
-                            if not player.attacking and not player.combo:
-                                player.standing= False
-                                player.attacking= True
-                                player.signature=False
-                                player.stancephase=0
-                                player.attackCount=0
-                                player.combo = False
-                                player.comboIndex = 0
-                                player.comboTimer = 5
-                            elif player.attacking and not player.combo:
-                                player.combo= True
-                                player.comboIndex=1
-                                player.comboTimer=5
-                            elif player.combo:
-                                player.comboIndex+=1
-                                player.comboTimer=5
-                           
-                        elif event.key== pygame.K_LSHIFT:
-                            if player.vel < player.x < st.screen_width - player.width - player.vel and player.staminaGauge>=20:
-                                player.interrupt()
-                                player.x+= player.facing*40*player.incrementalFactor
-                                player.standing= False
-                                player.dashing= True
-                                player.dashCount=0
-                                player.staminaGauge-=20
-                                
-                        elif event.key== pygame.K_z:
-                            st.pressed=True
-                            if st.killCount!=0 and player.staminaGauge>=90:
-                                player.interrupt()
-                                player.standing= False
-                                player.signature= True
-                                player.attacking= True
-                                player.signatureCount=0
-                                player.staminaGauge-=80
-                                new_slash= pj.Projectile(player.x, player.feet_y-10,64,64,player.facing)   
-                                new_slash.getsugatenshou=True
-                                pj.projectiles.append(new_slash)
-                                st.pressed=False
+                        if not event.key==pygame.K_b:
+                            if event.key== pygame.K_SPACE:
+                                if not player.attacking and not player.combo:
+                                    player.standing= False
+                                    player.attacking= True
+                                    player.signature=False
+                                    player.stancephase=0
+                                    player.attackCount=0
+                                    player.combo = False
+                                    player.comboIndex = 0
+                                    player.comboTimer = 5
+                                elif player.attacking and not player.combo:
+                                    player.combo= True
+                                    player.comboIndex=1
+                                    player.comboTimer=5
+                                elif player.combo:
+                                    player.comboIndex+=1
+                                    player.comboTimer=5
+                            
+                            elif event.key== pygame.K_LSHIFT:
+                                if player.vel < player.x < st.screen_width - player.width - player.vel and player.staminaGauge>=20:
+                                    player.interrupt()
+                                    player.x+= player.facing*40*player.incrementalFactor
+                                    player.standing= False
+                                    player.dashing= True
+                                    player.dashCount=0
+                                    player.staminaGauge-=20
+                                    
+                            elif event.key== pygame.K_z:
+                                st.pressed=True
+                                if st.killCount!=0 and player.staminaGauge>=90:
+                                    player.interrupt()
+                                    player.standing= False
+                                    player.signature= True
+                                    player.attacking= True
+                                    player.signatureCount=0
+                                    player.staminaGauge-=80
+                                    new_slash= pj.Projectile(player.x, player.feet_y-10,64,64,player.facing)   
+                                    new_slash.getsugatenshou=True
+                                    pj.projectiles.append(new_slash)
+                                    st.pressed=False
+                                else:
+                                    redrawwindow()
+                                    pygame.display.update()
                             else:
-                                redrawwindow()
-                                pygame.display.update()
+                                st.pressed=False
                         elif event.key==pygame.K_b and player.ultimateGauge>=160:
-                            player.ultimateGauge=0
                             player.activateBankai()
-                        else:
-                            st.pressed=False
 
                     if event.key== pygame.K_ESCAPE:
                         if st.pause:
@@ -176,41 +179,42 @@ def main():
 
             keys = pygame.key.get_pressed()
             if not st.pause:
-                if not player.attacking and not player.combo:
-                    if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and player.x > player.vel:
-                        player.x -= player.vel
-                        player.left = True
-                        player.right = False
-                        player.standing = False
-                        player.facing= -1
-                    elif (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and player.x+ player.width+ player.vel < st.screen_width:
-                        player.x += player.vel
-                        player.left = False
-                        player.right = True
-                        player.standing = False
-                        player.facing= 1
-                    else:
-                        if not player.dashing:      
-                            player.standing = True
-                            player.dashCount=0
-                        player.walkCount = 0
+                if not player.bankai:
+                    if not player.attacking and not player.combo:
+                        if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and player.x > player.vel:
+                            player.x -= player.vel
+                            player.left = True
+                            player.right = False
+                            player.standing = False
+                            player.facing= -1
+                        elif (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and player.x+ player.width+ player.vel < st.screen_width:
+                            player.x += player.vel
+                            player.left = False
+                            player.right = True
+                            player.standing = False
+                            player.facing= 1
+                        else:
+                            if not player.dashing:      
+                                player.standing = True
+                                player.dashCount=0
+                            player.walkCount = 0
 
-                # Jump logic
-                if not player.isJump:
-                    if keys[pygame.K_UP] or keys[pygame.K_w] :
-                        player.isJump = True
-                        player.standing = False
-                else:
-                    if player.jumpCount >= -11:
-                        neg = 1
-                        if player.jumpCount < 0: neg = -1
-                        player.feet_y -= (player.jumpCount ** 2) * 0.5 * neg
-                        player.x+=player.facing*2
-                        player.jumpCount -= 1
+                    # Jump logic
+                    if not player.isJump:
+                        if keys[pygame.K_UP] or keys[pygame.K_w] :
+                            player.isJump = True
+                            player.standing = False
                     else:
-                        player.jumpCount = 11
-                        player.isJump = False
-                        player.feet_y=500
+                        if player.jumpCount >= -11:
+                            neg = 1
+                            if player.jumpCount < 0: neg = -1
+                            player.feet_y -= (player.jumpCount ** 2) * 0.5 * neg
+                            player.x+=player.facing*2
+                            player.jumpCount -= 1
+                        else:
+                            player.jumpCount = 11
+                            player.isJump = False
+                            player.feet_y=500
 
                 # Collisions
                 for p in pj.projectiles[:]:
@@ -237,7 +241,7 @@ def main():
                                 if player.facing==h.facing:
                                     h.facing*=-1
                                 h.attacking= True
-                                h.gothit()
+                                h.gothit(player)
                                 if player.combo:
                                     h.health-=40
                         else:

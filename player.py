@@ -104,17 +104,18 @@ class Player:
 
     def activateBankai(self):
         self.state= "bankai"
-        self.vel=7
+        self.vel=6
         self.damage=500
         self.stanceCount=0
         self.stanceFinal=0
-        self.incrementalFactor=3
+        self.incrementalFactor=2
         self.dashCount=0
         self.attackCount=0
         self.signatureCount=0
         self.jumpCount=11
         self.spjumpCount=0
         self.bankai=True
+        self.ultimateGauge=0
         self.draw(st.win)
         
     def draw(self, win):
@@ -127,8 +128,16 @@ class Player:
                 sprite= self.animations[self.state]["transformRight"][self.bankaiCount//4]
             else:
                 sprite= self.animations[self.state]["transformLeft"][self.bankaiCount//4]
-            if self.state=="bankai" and 16<=self.bankaiCount<=24:
-                st.win.blit(st.bankai, (self.x-self.facing*70, self.feet_y- st.bankai.get_height()+50))
+            if self.state=="bankai":
+                if 16<=self.bankaiCount<=24:
+                    st.win.blit(st.bankai, (self.x-self.facing*70, self.feet_y- st.bankai.get_height()+50))
+                if 24<=self.bankaiCount<=32:
+                    st.win.blit(st.tl,(self.x-self.facing*70, self.feet_y- st.tl.get_height()+40))
+                    st.win.blit(st.tr,(self.x+self.facing*70, self.feet_y-st.tr.get_height()+40) )
+                    # st.win.blit(st.br,(self.x+self.facing*70,self.feet_y+st.br.get_height()-60))
+                    # st.win.blit(st.bl,(self.x-self.facing*70,self.feet_y+st.bl.get_height()-60))
+                    # st.win.blit(st.br2, (self.x+self.facing*70,self.feet_y+st.br2.get_height()))
+            
             if self.bankaiCount+1>= limit:
                 self.bankaiCount=0
                 self.bankai=False

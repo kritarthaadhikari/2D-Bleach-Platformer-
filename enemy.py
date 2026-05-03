@@ -127,8 +127,8 @@ class Enemy:
             self.x+= -self.facing*4
         self.draw(win,other)
     
-    def gothit(self):
-        self.health-=20
+    def gothit(self,other):
+        self.health-=20*other.incrementalFactor
     
     def kill(self,other):
         if self in hollows:
