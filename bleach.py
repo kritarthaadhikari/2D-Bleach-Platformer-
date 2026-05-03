@@ -174,6 +174,7 @@ def main():
                                     new_slash= pj.Projectile(player.x, player.feet_y-10,64,64,player.facing)   
                                     new_slash.getsugatenshou=True
                                     pj.projectiles.append(new_slash)
+                                    st.getsugatenshoSound.play(0)
                                 else:
                                     st.show_text= True
                                     st.text_start_time= pygame.time.get_ticks()

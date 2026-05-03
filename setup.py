@@ -8,10 +8,18 @@ screen_height = 600
 win = pygame.display.set_mode((screen_width, screen_height))
 surface =pygame.Surface((screen_width,screen_height),pygame.SRCALPHA)
 #“This surface will use RGBA 
-# (Red, Green, Blue, Alpha) instead of just RGB.”
+# (Red, Green, Blue, Alpha) instead of just RGB."
 
 pygame.mixer.music.load('audio/on the precipice of death.mp3')
+pygame.mixer.music.set_volume(0.8)
 pygame.mixer.music.play(-1)
+
+bankaiSound= pygame.mixer.Sound('audio/ichigobankai.wav')
+bankaiSound.set_volume(0.3)
+
+getsugatenshoSound= pygame.mixer.Sound('audio/getsugatensho.wav')
+getsugatenshoSound.set_volume(0.3)
+
 #Alpha = transparency value:
 # 0 → fully transparent
 # 255 → fully opaque
@@ -28,7 +36,7 @@ pygame.mixer.music.load('audio/on the precipice of death.mp3')
 pygame.mixer.music.play(-1)
 
 score=0
-killCount=0
+killCount=1
 pause= False
 
 #Signature Display Parameters

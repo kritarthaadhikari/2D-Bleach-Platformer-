@@ -116,6 +116,8 @@ class Player:
         self.spjumpCount=0
         self.bankai=True
         self.ultimateGauge=0
+        self.staminaGauge/=2
+        st.bankaiSound.play(0)
         self.draw(st.win)
         
     def draw(self, win):
@@ -132,8 +134,8 @@ class Player:
                 if 16<=self.bankaiCount<=24:
                     st.win.blit(st.bankai, (self.x-self.facing*70, self.feet_y- st.bankai.get_height()+50))
                 if 24<=self.bankaiCount<=32:
-                    st.win.blit(st.tl,(self.x-self.facing*70, self.feet_y- st.tl.get_height()+40))
-                    st.win.blit(st.tr,(self.x+self.facing*70, self.feet_y-st.tr.get_height()+40) )
+                    st.win.blit(st.tl,(self.x-self.facing*50, self.feet_y- st.tl.get_height()+40))
+                    st.win.blit(st.tr,(self.x+self.facing*50, self.feet_y-st.tr.get_height()+40) )
                     # st.win.blit(st.br,(self.x+self.facing*70,self.feet_y+st.br.get_height()-60))
                     # st.win.blit(st.bl,(self.x-self.facing*70,self.feet_y+st.bl.get_height()-60))
                     # st.win.blit(st.br2, (self.x+self.facing*70,self.feet_y+st.br2.get_height()))
@@ -246,7 +248,7 @@ class Player:
                         sprite= self.animations[self.state]["getsugatenshoRight"][self.signatureCount// framesPerImg]
                     else:
                         sprite= self.animations[self.state]["getsugatenshoLeft"][self.signatureCount// framesPerImg]
-                    if 24>=self.signatureCount>=9:
+                    if 32>=self.signatureCount>=12:
                         st.win.blit(st.getsugatensho, (self.x-self.facing*50, self.feet_y- st.getsugatensho.get_height()+40))
                     self.signatureCount+=1
                     if self.signatureCount+1>=limit:
