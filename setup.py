@@ -120,7 +120,7 @@ blownLeft= [pygame.transform.flip(img, True, False) for img in blownRight]
 # --- UI & BG ---
 hud_original = pygame.image.load('images/setup/unnamed1.png').convert_alpha()
 hud_pannel = pygame.transform.smoothscale(hud_original, (430, 150))
-bg = pygame.transform.scale(pygame.image.load("images/setup/bleach.jpeg"), (screen_width, screen_height))
+bg = pygame.transform.scale(pygame.image.load("images/setup/background.jpg"), (screen_width, screen_height))
 mute= pygame.transform.smoothscale(pygame.image.load('images/setup/volume-mute.png'),(64,64))
 
 def pause_music():
