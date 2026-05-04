@@ -5,6 +5,8 @@ import enemy as en
 import player as pl
 import time
 import mainmenu as mm
+import levels as lv
+import random
 
 clock = pygame.time.Clock()
 player = pl.Player(64, 64, 10, 500)
@@ -52,12 +54,10 @@ def createEnemies():
     global last_enemy_spawn
     i=0
     if not st.game_state=="mainmenu":
-        if time.time() - last_enemy_spawn >= max(2,10-2*st.killCount):
-            while(i!=st.killCount):
-                new_enemy = en.Enemy(110+10*i, 149, 1200, 500)
-                en.hollows.append(new_enemy)
-                i+=1
-            i=0
+        if time.time() - last_enemy_spawn >= lv.delay and not len(en.hollows)==lv.hollow:
+            enemy = en.Enemy(110, 149, random.randint(0,1)*st.screen_width, 500)
+            enemy.facing=1 if enemy.x==st.screen_width else -1
+            en.hollows.append(enemy)
             last_enemy_spawn = time.time()
 
 def draw_pause():
