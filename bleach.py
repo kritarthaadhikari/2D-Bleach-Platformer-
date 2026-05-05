@@ -10,8 +10,6 @@ import random
 
 clock = pygame.time.Clock()
 player = pl.Player(64, 64, 10, 500)
-enemy = en.Enemy(110, 149, 1200, 500)
-en.hollows.append(enemy)
 
 def hudPannel():
     pygame.draw.rect(st.win,(255,0,0),(212,59,212,23))
@@ -52,14 +50,26 @@ last_enemy_spawn = time.time()
 
 def createEnemies():
     global last_enemy_spawn
-    i=0
+
     if not st.game_state=="mainmenu":
-        if time.time() - last_enemy_spawn >= lv.delay and not len(en.hollows)==lv.hollow:
-            enemy = en.Enemy(110, 149, random.randint(0,1)*st.screen_width, 500)
-            enemy.facing=1 if enemy.x==st.screen_width else -1
+        if len(lv.hollows)==0:
+            enemy = en.Enemy(110, 149, 1200, 500)
+            en.hollows.append(enemy)
+            lv.hollows.append(enemy)
+        if (time.time() - last_enemy_spawn >= lv.levels[lv.i]["spawn_delay"] )and not len(lv.hollows)==lv.hollow:
+            enemy = en.Enemy(110, 149, random.randint(0,1)*st.screen_width+random.choice([-1,1]*100), 500)
+            enemy.facing=-1 if enemy.x==st.screen_width else 1
+            lv.hollows.append(enemy)
             en.hollows.append(enemy)
             last_enemy_spawn = time.time()
-
+        if lv.hollows!=[] and st.killCount==lv.hollow:
+            st.killCount=0
+            print(lv.levels[lv.i])
+            print(lv.hollow)
+            lv.i+=1
+            lv.hollow,lv.delay=lv.increment()
+            lv.hollows.clear()
+        
 def draw_pause():
     pygame.draw.rect(st.surface,(128,128,128,150),[0,0, st.screen_width,st.screen_height])
     pygame.draw.rect(st.surface,'dark gray',[st.screen_width//2-210,160,440,50],0,12)
@@ -90,6 +100,7 @@ def reset():
     st.killCount = 0
     st.pressed = False
 
+    lv.i=1
     # Reset timers
     last_enemy_spawn = time.time()
     # Unpause
@@ -116,7 +127,6 @@ def main():
         while st.game_state=="mainmenu":
             mm.draw()
             mm.handleMenu()
-          
         if st.game_state=="start":
             createEnemies()
             if player.staminaGauge<100:

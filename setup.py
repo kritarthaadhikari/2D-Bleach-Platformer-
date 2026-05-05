@@ -36,7 +36,7 @@ pygame.mixer.music.load('audio/on the precipice of death.mp3')
 pygame.mixer.music.play(-1)
 
 score=0
-killCount=1
+killCount=0
 pause= False
 
 #Signature Display Parameters
