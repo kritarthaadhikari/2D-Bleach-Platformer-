@@ -27,7 +27,7 @@ class Enemy:
         self.blown=False #blows character when signature is hit
         self.blownCount=0
     
-    def draw(self,win,other):
+    def draw(self,win,other, scroll=0):
         framesPerImg=4
         if not self.fall and not self.blown:
             if self.attacking:
@@ -113,9 +113,9 @@ class Enemy:
         pygame.draw.rect(win, (255,0,0), self.body_hitbox,2)
         sprite_height= sprite.get_height()
         draw_y= self.feet- sprite_height+50
-        win.blit(sprite , (self.x, draw_y))
+        win.blit(sprite , (self.x - scroll, draw_y))
     
-    def move(self, win,other):
+    def move(self, win,other, scroll=0):
         if not self.blown:
             if not self.attacking and not self.health<=0:
                 if self.x-other.x>200:
@@ -125,7 +125,7 @@ class Enemy:
                 self.x+= self.facing* self.vel
         else:
             self.x+= -self.facing*4
-        self.draw(win,other)
+        self.draw(win,other, scroll)
     
     def gothit(self,other):
         self.health-=20*other.incrementalFactor

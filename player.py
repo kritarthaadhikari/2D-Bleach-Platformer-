@@ -120,7 +120,7 @@ class Player:
         st.bankaiSound.play(0)
         self.draw(st.win)
         
-    def draw(self, win):
+    def draw(self, win, scroll=0):
         framesPerImg = 3
         limit=0
         sprite = st.jumpLeft[0]
@@ -132,10 +132,10 @@ class Player:
                 sprite= self.animations[self.state]["transformLeft"][self.bankaiCount//4]
             if self.state=="bankai":
                 if 16<=self.bankaiCount<=24:
-                    st.win.blit(st.bankai, (self.x-self.facing*70, self.feet_y- st.bankai.get_height()+50))
+                    st.win.blit(st.bankai, (self.x-self.facing*70 + scroll, self.feet_y- st.bankai.get_height()+50))
                 if 24<=self.bankaiCount<=32:
-                    st.win.blit(st.tl,(self.x-self.facing*50, self.feet_y- st.tl.get_height()+40))
-                    st.win.blit(st.tr,(self.x+self.facing*50, self.feet_y-st.tr.get_height()+40) )
+                    st.win.blit(st.tl,(self.x-self.facing*50 - scroll, self.feet_y- st.tl.get_height()+40))
+                    st.win.blit(st.tr,(self.x+self.facing*50 - scroll, self.feet_y-st.tr.get_height()+40) )
                     # st.win.blit(st.br,(self.x+self.facing*70,self.feet_y+st.br.get_height()-60))
                     # st.win.blit(st.bl,(self.x-self.facing*70,self.feet_y+st.bl.get_height()-60))
                     # st.win.blit(st.br2, (self.x+self.facing*70,self.feet_y+st.br2.get_height()))
@@ -249,7 +249,7 @@ class Player:
                     else:
                         sprite= self.animations[self.state]["getsugatenshoLeft"][self.signatureCount// framesPerImg]
                     if 32>=self.signatureCount>=12:
-                        st.win.blit(st.getsugatensho, (self.x-self.facing*50, self.feet_y- st.getsugatensho.get_height()+40))
+                        st.win.blit(st.getsugatensho, (self.x-self.facing*50 - scroll, self.feet_y- st.getsugatensho.get_height()+40))
                     self.signatureCount+=1
                     if self.signatureCount+1>=limit:
                         self.signatureCount=0
@@ -305,7 +305,7 @@ class Player:
         
         sprite_height = sprite.get_height()
         draw_y = self.feet_y - sprite_height+self.y_offset+50
-        win.blit(sprite, (draw_x, draw_y))
+        win.blit(sprite, (draw_x - scroll, draw_y))
 
     def hit(self):
         self.health-=1

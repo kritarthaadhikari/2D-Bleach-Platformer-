@@ -38,7 +38,7 @@ pygame.mixer.music.play(-1)
 score=0
 killCount=0
 pause= False
-
+scroll=False
 arrow= pygame.transform.flip(pygame.transform.smoothscale(pygame.image.load('images/setup/arrow.png'),(100,100)),True, False)
 
 #Signature Display Parameters

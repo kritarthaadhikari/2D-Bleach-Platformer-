@@ -12,7 +12,7 @@ class Projectile(pygame.Rect):
         self.direction= facing
         self.hitEnemies= [] #stores hollows that have been hit and prevents repeated hits
     
-    def draw(self,win):
+    def draw(self,win, scroll=0):
         if self.getsugatenshou :
             limit= 3*len(st.slashLeft)
             if self.direction==1:
@@ -24,7 +24,7 @@ class Projectile(pygame.Rect):
                 self.getsugatenshou=False
                 self.kill()
             self.count+=1 
-        win.blit(sprite, (self.x,self.y))
+        win.blit(sprite, (self.x - scroll,self.y))
         #pygame.draw.rect(win, (255,0,0),self,2) for hitbox
 
     def move(self):

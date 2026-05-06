@@ -17,7 +17,7 @@ while run:
     clock.tick(60)
     for i in range(0,3):
         win.blit(bg,(i*Screen_width+scroll,0))
-        win.blit(arrow,(0,0))
+        win.blit(arrow,(1000+scroll,500))
     scroll-=5
     if abs(scroll)>Screen_width:
         scroll=0

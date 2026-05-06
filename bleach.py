@@ -19,19 +19,25 @@ def hudPannel():
     st.win.blit(st.hud_pannel, (10,10))
 
 def redrawwindow():
-    st.win.blit(st.bg, (0, 0))
+    if not (lv.levelComplete and st.scroll):
+        st.win.blit(st.bg, (0, 0))
     hudPannel()
     for e in en.hollows:
-        e.move(st.win,player)
+        e.move(st.win,player, lv.scroll if lv.levelComplete and st.scroll else 0)
     if lv.levelComplete:
-        st.win.blit(st.arrow,(1100,450))
-    player.draw(st.win)
+        st.win.blit(st.arrow,(1100-lv.scroll,450))
+        if not player.standing and player.facing==1:
+            st.scroll=True
+            lv.sideScrolling(player)
+        else:
+            st.scroll=False
+    player.draw(st.win, lv.scroll if lv.levelComplete and st.scroll else 0)
     text= st.font.render(f"Score: {st.score}",1,(255,255,255))
     st.win.blit(text,(st.screen_width-text.get_width()-20, 0))
     if player.signatureCount>=21:
         for p in pj.projectiles[:]:
            p.move()
-           p.draw(st.win)
+           p.draw(st.win, lv.scroll if lv.levelComplete and st.scroll else 0)
     st.current_time= pygame.time.get_ticks()
     if st.show_text:
         if st.killCount==0 and st.current_time-st.text_start_time<= st.text_duration:
@@ -44,7 +50,6 @@ def redrawwindow():
         if player.ultimateGauge>=160:
             text= st.font.render("Ultimate Ready!",1,(255,255,255))
             st.win.blit(text,(st.screen_width//2-text.get_width()//2, st.screen_height//2-text.get_height()//2))
-    
     if st.Mpause:
         st.win.blit(st.mute,(st.screen_width-100,70))
     
@@ -122,6 +127,7 @@ def main():
     run = True
     st.game_state="mainmenu"
     while run:
+        print(player.x)
         clock.tick(22)
         events= pygame.event.get()
         for event in events:
@@ -213,7 +219,7 @@ def main():
                             player.right = False
                             player.standing = False
                             player.facing= -1
-                        elif (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and player.x+ player.width+ player.vel < st.screen_width:
+                        elif (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and (player.x+ player.width+ player.vel < st.screen_width or (lv.levelComplete and st.scroll)):
                             player.x += player.vel
                             player.left = False
                             player.right = True
