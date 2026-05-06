@@ -12,9 +12,23 @@ levels= {
     4: {"hollows":9, "spawn_delay":2},
     5: {"hollows":2, "spawn_delay":1, "boss": True}
 }
+levelComplete= False
+global scroll 
+scroll=0
 hollow= levels[i]["hollows"]
 delay= levels[i]["spawn_delay"]
 def increment():
     hollow= levels[i]["hollows"]
     delay= levels[i]["spawn_delay"]
     return hollow, delay
+
+def sideScrolling():
+    for i in range(0,3):
+        st.win.blit(st.bg,(i*st.screen_width+scroll,0))
+    scroll-=5
+    if abs(scroll)>st.screen_width:
+        scroll=0
+"""Issues
+spamming space while being attacked deals infinite damage
+to enemy and also triggers permanent fall animation for 
+the player. """

@@ -39,6 +39,8 @@ score=0
 killCount=0
 pause= False
 
+arrow= pygame.transform.flip(pygame.transform.smoothscale(pygame.image.load('images/setup/arrow.png'),(100,100)),True, False)
+
 #Signature Display Parameters
 text_duration= 1000 #1s
 text_start_time= 0

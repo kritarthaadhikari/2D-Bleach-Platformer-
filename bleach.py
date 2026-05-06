@@ -23,6 +23,8 @@ def redrawwindow():
     hudPannel()
     for e in en.hollows:
         e.move(st.win,player)
+    if lv.levelComplete:
+        st.win.blit(st.arrow,(1100,450))
     player.draw(st.win)
     text= st.font.render(f"Score: {st.score}",1,(255,255,255))
     st.win.blit(text,(st.screen_width-text.get_width()-20, 0))
@@ -42,8 +44,10 @@ def redrawwindow():
         if player.ultimateGauge>=160:
             text= st.font.render("Ultimate Ready!",1,(255,255,255))
             st.win.blit(text,(st.screen_width//2-text.get_width()//2, st.screen_height//2-text.get_height()//2))
+    
     if st.Mpause:
         st.win.blit(st.mute,(st.screen_width-100,70))
+    
     pygame.display.update()   
 
 last_enemy_spawn = time.time()
@@ -51,7 +55,7 @@ last_enemy_spawn = time.time()
 def createEnemies():
     global last_enemy_spawn
 
-    if not st.game_state=="mainmenu":
+    if not st.game_state=="mainmenu" and not lv.levelComplete:
         if len(lv.hollows)==0:
             enemy = en.Enemy(110, 149, 1200, 500)
             en.hollows.append(enemy)
@@ -64,11 +68,10 @@ def createEnemies():
             last_enemy_spawn = time.time()
         if lv.hollows!=[] and st.killCount==lv.hollow:
             st.killCount=0
-            print(lv.levels[lv.i])
-            print(lv.hollow)
             lv.i+=1
             lv.hollow,lv.delay=lv.increment()
             lv.hollows.clear()
+            lv.levelComplete=True
         
 def draw_pause():
     pygame.draw.rect(st.surface,(128,128,128,150),[0,0, st.screen_width,st.screen_height])
