@@ -129,6 +129,8 @@ def main():
     restart, mainmenu = None, None
     while run:
         clock.tick(22)
+        print(player.action)
+        print(player.hit_state)
         events= pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
@@ -193,9 +195,11 @@ def main():
                                     st.show_text= True
                                     st.text_start_time= pygame.time.get_ticks()
                                     redrawwindow()
-                        elif event.key==pygame.K_b and player.ultimateGauge>=160:
-                            player.activateBankai()
-
+                        elif event.key==pygame.K_b:
+                            if player.mode=="shikai" and player.ultimateGauge>=160:
+                                player.activateDeactivateBankai()
+                            elif player.mode=="bankai":
+                                player.activateDeactivateBankai()
                     if event.key== pygame.K_ESCAPE:
                         if st.pause:
                             st.pause=False
@@ -216,10 +220,12 @@ def main():
                             player.x -= player.vel
                             player.movement_state = "left"
                             player.facing= -1
+                            player.action="knockeddown" if player.hit_state in ["got_hit", "stationary"] else player.action
                         elif (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and (player.x+ player.width+ player.vel < st.screen_width or (lv.levelComplete and st.scroll)):
                             player.x += player.vel
                             player.movement_state = "right"
                             player.facing= 1
+                            player.action="knockeddown" if player.hit_state in ["got_hit", "stationary"] else player.action
                         else:
                             if player.action not in ["dashing", "jump"]:      
                                 player.action="idle"

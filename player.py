@@ -31,7 +31,7 @@ class Player:
         self.comboTimer=0 #Time allowed for followup attack window
         self.combo_state= "none" 
         self.mode= "shikai" #shikai or bankai mode
-        self.action="idle" #current action state
+        self.action="idle" #current action state -idle, walking, jumping, dashing, attacking, hit, knockeddown, combo, signature
         self.incrementalFactor= 1 #bankai impact increase factor
         self.transform_state="inactive" #inactive, activating
         self.bankaiCount=0
@@ -95,22 +95,31 @@ class Player:
             }
         }
 
-    def activateBankai(self):
-        self.mode= "bankai"
-        self.vel=6
-        self.damage=500
-        self.stanceCount=0
-        self.stanceFinal=0
-        self.incrementalFactor=2
+    def activateDeactivateBankai(self):
+        if self.mode=="shikai":
+            self.mode= "bankai"
+            self.vel=6
+            self.damage=500
+            self.incrementalFactor=2
+            self.transform_state="activating"
+            self.ultimateGauge=0
+            st.bankaiSound.play(0)
+        else:
+            self.mode= "shikai"
+            self.vel=5
+            self.damage=200
+            self.stanceCount=0
+            self.stanceFinal=0
+            self.incrementalFactor=1
+            self.transform_state="activating"
         self.dashCount=0
         self.attackCount=0
         self.signatureCount=0
         self.jumpCount=11
         self.spjumpCount=0
-        self.transform_state="activating"
-        self.ultimateGauge=0
-        self.staminaGauge/=2
-        st.bankaiSound.play(0)
+        self.stanceCount=0
+        self.stanceFinal=0
+        self.action="idle"
         self.draw(st.win)
         
     def draw(self, win, scroll=0):
@@ -136,10 +145,11 @@ class Player:
             if self.bankaiCount+1>= limit:
                 self.bankaiCount=0
                 self.transform_state="inactive"
+                self.action="idle"
             self.bankaiCount+=1
 
-        if self.transform_state != "activating":
-            if self.action=="idle" or self.action=="dashing" or self.action=="knockeddown": #idle and dash animation
+        else:
+            if self.action in ["idle", "dashing","knockeddown"]: #idle and dash animation
                 if self.stance_state=="initial": #stance during no input
                     if self.facing==-1:
                         limit = len(self.animations[self.mode]["stanceLeft"]) * framesPerImg
@@ -179,17 +189,6 @@ class Player:
                         self.stance_state="initial"
                         self.dashCount=0
                         self.dashTimer=10
-
-                elif self.action != "knockeddown": #movement animation
-                    if self.movement_state == "left":
-                        limit = len(self.animations[self.mode]["walkLeft"]) * framesPerImg
-                        sprite = self.animations[self.mode]["walkLeft"][self.walkCount // framesPerImg]
-                    elif self.movement_state == "right":
-                        limit = len(self.animations[self.mode]["walkRight"]) * framesPerImg
-                        sprite = self.animations[self.mode]["walkRight"][self.walkCount // framesPerImg]
-                    self.walkCount += 1
-                    if self.walkCount +1 >= limit:
-                        self.walkCount = 0
                 elif self.action=="knockeddown": #Standing back up animation
                     self.hit_state= "normal"
                     if self.facing==1:
@@ -203,6 +202,16 @@ class Player:
                         self.down_state= "normal"
                         self.action = "idle"
                     self.downCount+=1
+                else:
+                    if self.movement_state == "left":
+                        limit = len(self.animations[self.mode]["walkLeft"]) * framesPerImg
+                        sprite = self.animations[self.mode]["walkLeft"][self.walkCount // framesPerImg]
+                    elif self.movement_state == "right":
+                        limit = len(self.animations[self.mode]["walkRight"]) * framesPerImg
+                        sprite = self.animations[self.mode]["walkRight"][self.walkCount // framesPerImg]
+                    self.walkCount += 1
+                    if self.walkCount +1 >= limit:
+                        self.walkCount = 0
             elif self.action=="jump": #jump animation
                 if self.air_dash:
                     if self.facing==1:
@@ -239,7 +248,6 @@ class Player:
                     if self.stationaryPhaseCount+1>= limit:
                         self.stationaryPhaseCount=0
                         self.down_state= "down"
-                        self.action = "knockeddown"
                     self.stationaryPhaseCount+=1
                     
                 elif self.hit_state=="got_hit": #falling and getting hit animation
@@ -254,8 +262,9 @@ class Player:
                         self.hit_state= "stationary"
                         self.down_state= "down"
                         self.stationaryPhaseCount=0
-                        self.action = "knockeddown"
+                        self.action = "hit"
                     self.getHitCount+=1
+
             elif self.action=="attacking" or self.action=="signature":
                 if self.action=="signature": #getsugatensho launch animation
                     limit= len(self.animations[self.mode]["getsugatenshoRight"])*framesPerImg
@@ -301,6 +310,16 @@ class Player:
                         self.comboTimer=0
                         self.y_offset=0
                         self.action="idle"
+            else:
+                if self.facing==-1:
+                    limit = len(self.animations[self.mode]["walkLeft"]) * framesPerImg
+                    sprite = self.animations[self.mode]["walkLeft"][self.walkCount // framesPerImg]
+                else:
+                    limit = len(self.animations[self.mode]["walkRight"]) * framesPerImg
+                    sprite = self.animations[self.mode]["walkRight"][self.walkCount // framesPerImg]
+                self.walkCount += 1
+                if self.walkCount +1 >= limit:
+                        self.walkCount = 0
 
         self.hitbox= pygame.Rect(self.x+10, self.feet_y-4,50, 52 )
         
@@ -317,8 +336,8 @@ class Player:
     def hit(self):
         self.health-=1
         if self.hit_state != "stationary":
-            self.interrupt()
             self.hit_state = "got_hit"
+        self.interrupt()
 
     def interrupt(self):
         self.action="hit"
