@@ -161,15 +161,10 @@ def main():
                                     player.stance_state="initial"
                                     player.attackCount=0
                                     player.comboIndex = 0
-                                    player.comboTimer = 5
+                                    player.comboTimer = 10
                                 elif player.action=="attacking":
-                                    player.action="combo"
-                                    player.comboIndex=1
-                                    player.comboTimer=5
-                                elif player.action=="combo":
-                                    player.comboIndex+=1
-                                    player.comboTimer=5
-                            
+                                    if player.comboTimer>0:
+                                        player.combo_state = "queued"
                             elif event.key== pygame.K_LSHIFT:
                                 if player.vel < player.x < st.screen_width - player.width - player.vel and player.staminaGauge>=20:
                                     player.interrupt()
@@ -204,6 +199,11 @@ def main():
 
             keys = pygame.key.get_pressed()
             if not st.pause:
+                if player.action == "attacking" and player.comboTimer > 0:
+                    player.comboTimer -= 1
+                elif player.action != "attacking":
+                    player.comboTimer = 0
+
                 if player.transform_state != "activating":
                     if player.action not in ["attacking", "combo"]:
                         if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and player.x > player.vel:

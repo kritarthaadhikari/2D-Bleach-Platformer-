@@ -14,7 +14,7 @@ class Player:
         self.stanceFinal = 0 #stance continuation
         self.stance_state = "initial" # stance animation phase
         self.jumpCount = 11 #jump parameter
-        self.spjumpCount = 0 #jump 
+        self.spjumpCount = 0 #jump  count for animation
         self.facing = 1 #direction
         self.dashTimer = 10 #dash duration
         self.hitbox = pygame.Rect(self.x+10, self.feet_y-4,50, 52 )
@@ -28,7 +28,7 @@ class Player:
         self.staminaGauge = 100
         self.ultimateGauge = 160
         self.comboIndex=0 #for combo attacks
-        self.comboTimer=5 #Time allowed for followup attack
+        self.comboTimer=0 #Time allowed for followup attack window
         self.combo_state= "none" 
         self.mode= "shikai" #shikai or bankai mode
         self.action="idle" #current action state
@@ -140,7 +140,6 @@ class Player:
 
         if self.transform_state != "activating":
             if self.action=="idle" or self.action=="dashing" or self.action=="knockeddown": #idle and dash animation
-                self.stance_state="initial"
                 if self.stance_state=="initial": #stance during no input
                     if self.facing==-1:
                         limit = len(self.animations[self.mode]["stanceLeft"]) * framesPerImg
@@ -191,7 +190,7 @@ class Player:
                     self.walkCount += 1
                     if self.walkCount +1 >= limit:
                         self.walkCount = 0
-                else: #Standing back up animation
+                elif self.action=="knockeddown": #Standing back up animation
                     self.hit_state= "normal"
                     if self.facing==1:
                         limit= len(self.animations[self.mode]["standUpRight"])* framesPerImg
@@ -202,6 +201,7 @@ class Player:
                     if self.downCount+1 >=limit:
                         self.downCount=0
                         self.down_state= "normal"
+                        self.action = "idle"
                     self.downCount+=1
             elif self.action=="jump": #jump animation
                 if self.facing==1:
@@ -224,6 +224,7 @@ class Player:
                     if self.stationaryPhaseCount+1>= limit:
                         self.stationaryPhaseCount=0
                         self.down_state= "down"
+                        self.action = "knockeddown"
                     self.stationaryPhaseCount+=1
                     
                 elif self.hit_state=="got_hit": #falling and getting hit animation
@@ -238,6 +239,7 @@ class Player:
                         self.hit_state= "stationary"
                         self.down_state= "down"
                         self.stationaryPhaseCount=0
+                        self.action = "knockeddown"
                     self.getHitCount+=1
             elif self.action=="attacking" or self.action=="signature":
                 if self.action=="signature": #getsugatensho launch animation
@@ -282,7 +284,7 @@ class Player:
                     if self.attackCount+1 >=limit:
                         self.attackCount=0
                         self.comboIndex=0   
-                        self.comboTimer=5
+                        self.comboTimer=0
                         self.y_offset=0
                         self.action="idle"
 
