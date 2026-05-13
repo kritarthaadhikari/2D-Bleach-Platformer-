@@ -237,7 +237,7 @@ class Player:
                     if self.spjumpCount +1>= limit:
                         self.spjumpCount=0
                     self.spjumpCount += 1
-            elif self.action=="hit":
+            elif self.action=="hit": 
                 if self.hit_state=="stationary":  #continuously getting hit animation
                     if self.facing==-1:
                         limit= len(self.animations[self.mode]["IdleHitLeft"])*framesPerImg
@@ -310,16 +310,6 @@ class Player:
                         self.comboTimer=0
                         self.y_offset=0
                         self.action="idle"
-            else:
-                if self.facing==-1:
-                    limit = len(self.animations[self.mode]["walkLeft"]) * framesPerImg
-                    sprite = self.animations[self.mode]["walkLeft"][self.walkCount // framesPerImg]
-                else:
-                    limit = len(self.animations[self.mode]["walkRight"]) * framesPerImg
-                    sprite = self.animations[self.mode]["walkRight"][self.walkCount // framesPerImg]
-                self.walkCount += 1
-                if self.walkCount +1 >= limit:
-                        self.walkCount = 0
 
         self.hitbox= pygame.Rect(self.x+10, self.feet_y-4,50, 52 )
         

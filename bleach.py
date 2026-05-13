@@ -151,7 +151,7 @@ def main():
                         reset()
                 if event.type == pygame.KEYDOWN:
                     if not st.pause:
-                        if event.key not in st.NON_INTERRUPT_KEYS:
+                        if event.key not in st.NON_INTERRUPT_KEYS and event.key in st.EXISTING_KEYS:
                             player.interrupt()    
                         if event.key==pygame.K_m:
                             st.Mpause=not st.Mpause

@@ -160,3 +160,17 @@ NON_INTERRUPT_KEYS= {pygame.K_SPACE,
                     pygame.K_ESCAPE,
                     pygame.K_m
                      }
+
+EXISTING_KEYS={pygame.K_SPACE,
+               pygame.K_LSHIFT,
+               pygame.K_z,
+               pygame.K_LEFT,
+               pygame.K_RIGHT
+               ,pygame.K_a,
+               pygame.K_d,
+               pygame.K_ESCAPE,
+               pygame.K_m,
+               pygame.K_UP,
+               pygame.K_w,
+               pygame.K_b,
+               }
