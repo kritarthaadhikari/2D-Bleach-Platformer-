@@ -17,6 +17,7 @@ class Player:
         self.spjumpCount = 0 #jump  count for animation
         self.facing = 1 #direction
         self.dashTimer = 10 #dash duration
+        self.air_dash = False
         self.hitbox = pygame.Rect(self.x+10, self.feet_y-4,50, 52 )
         self.getHitCount = 0 #getting hit
         self.hit_state = "normal" # normal, got_hit, stationary
@@ -27,7 +28,6 @@ class Player:
         self.signatureCount = 0
         self.staminaGauge = 100
         self.ultimateGauge = 160
-        self.comboIndex=0 #for combo attacks
         self.comboTimer=0 #Time allowed for followup attack window
         self.combo_state= "none" 
         self.mode= "shikai" #shikai or bankai mode
@@ -204,15 +204,30 @@ class Player:
                         self.action = "idle"
                     self.downCount+=1
             elif self.action=="jump": #jump animation
-                if self.facing==1:
-                    limit = len(self.animations[self.mode]["jumpRight"])* framesPerImg
-                    sprite= self.animations[self.mode]["jumpRight"][self.spjumpCount//framesPerImg]
+                if self.air_dash:
+                    if self.facing==1:
+                        limit = len(self.animations[self.mode]["dashRight"])*framesPerImg
+                        sprite = self.animations[self.mode]["dashRight"][self.dashCount//framesPerImg]
+                    else:
+                        limit = len(self.animations[self.mode]["dashLeft"])*framesPerImg
+                        sprite = self.animations[self.mode]["dashLeft"][self.dashCount//framesPerImg]
+                    self.dashCount += 1
+                    if self.dashCount + 1 >= limit:
+                        self.dashCount = 0
+                    self.dashTimer -= 1
+                    if self.dashTimer <= 0:
+                        self.air_dash = False
+                        self.dashTimer = 10
                 else:
-                    limit = len(self.animations[self.mode]["jumpLeft"])* framesPerImg
-                    sprite= self.animations[self.mode]["jumpLeft"][self.spjumpCount//framesPerImg]
-                if self.spjumpCount +1>= limit:
-                    self.spjumpCount=0
-                self.spjumpCount += 1
+                    if self.facing==1:
+                        limit = len(self.animations[self.mode]["jumpRight"])* framesPerImg
+                        sprite= self.animations[self.mode]["jumpRight"][self.spjumpCount//framesPerImg]
+                    else:
+                        limit = len(self.animations[self.mode]["jumpLeft"])* framesPerImg
+                        sprite= self.animations[self.mode]["jumpLeft"][self.spjumpCount//framesPerImg]
+                    if self.spjumpCount +1>= limit:
+                        self.spjumpCount=0
+                    self.spjumpCount += 1
             elif self.action=="hit":
                 if self.hit_state=="stationary":  #continuously getting hit animation
                     if self.facing==-1:
@@ -283,7 +298,6 @@ class Player:
                     self.attackCount+=1
                     if self.attackCount+1 >=limit:
                         self.attackCount=0
-                        self.comboIndex=0   
                         self.comboTimer=0
                         self.y_offset=0
                         self.action="idle"

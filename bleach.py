@@ -155,24 +155,30 @@ def main():
                             st.Mpause=not st.Mpause
                             st.pause_music()
                         if not event.key==pygame.K_b:
-                            if event.key== pygame.K_SPACE:
+                            if event.key== pygame.K_SPACE and player.action not in ["dashing", "jump"]:
                                 if player.action not in ["attacking", "combo"]:
                                     player.action="attacking"
                                     player.stance_state="initial"
                                     player.attackCount=0
-                                    player.comboIndex = 0
                                     player.comboTimer = 10
                                 elif player.action=="attacking":
                                     if player.comboTimer>0:
                                         player.combo_state = "queued"
                             elif event.key== pygame.K_LSHIFT:
                                 if player.vel < player.x < st.screen_width - player.width - player.vel and player.staminaGauge>=20:
-                                    player.interrupt()
-                                    player.x+= player.facing*40*player.incrementalFactor
-                                    player.action="dashing"
-                                    player.dashCount=0
-                                    player.staminaGauge-=20
-                                    
+                                    if player.action == "jump":
+                                        player.air_dash = True
+                                        player.dashCount = 0
+                                        player.dashTimer = 10
+                                        player.x += player.facing * 40 * player.incrementalFactor
+                                        player.staminaGauge -= 20
+                                    else:
+                                        player.interrupt()
+                                        player.x += player.facing * 40 * player.incrementalFactor
+                                        player.action = "dashing"
+                                        player.dashCount = 0
+                                        player.staminaGauge -= 20
+
                             elif event.key== pygame.K_z:
                                 if st.killCount!=0 and player.staminaGauge>=90:
                                     player.interrupt()
@@ -205,7 +211,7 @@ def main():
                     player.comboTimer = 0
 
                 if player.transform_state != "activating":
-                    if player.action not in ["attacking", "combo"]:
+                    if player.action not in ["attacking", "combo", "signature"] and player.transform_state!= "activating":
                         if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and player.x > player.vel:
                             player.x -= player.vel
                             player.movement_state = "left"
@@ -236,6 +242,7 @@ def main():
                             player.jumpCount = 11
                             player.action="idle"
                             player.feet_y=500
+                            player.air_dash = False
 
                 # Collisions
                 for p in pj.projectiles[:]:
