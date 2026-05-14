@@ -116,8 +116,6 @@ def reset():
 
 def enemyDamaged(enemy):
     if player.attackCount==0:
-        if player.facing==enemy.facing:
-            enemy.facing*=-1
         enemy.state="attacking"
         enemy.gothit(player)
         if player.action=="combo":
@@ -129,8 +127,6 @@ def main():
     restart, mainmenu = None, None
     while run:
         clock.tick(22)
-        print(player.action)
-        print(player.hit_state)
         events= pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:

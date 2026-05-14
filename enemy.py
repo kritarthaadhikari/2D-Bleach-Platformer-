@@ -38,7 +38,6 @@ class Enemy:
             self.walkCount+=1
             if self.walkCount+1>= limit:
                 self.walkCount=0
-            
             if self.facing==1:
                 self.body_hitbox= pygame.Rect(self.x+30, self.feet-100,68, 135 )
             elif self.facing==-1:
@@ -58,7 +57,10 @@ class Enemy:
             self.attackCount += 1
             if self.attackCount + 1 >= limit:
                 self.attackCount = 0 
-                self.state = "idle"
+                if self.body_hitbox.colliderect(other.hitbox):
+                    self.state = "hit"
+                else:
+                    self.state="idle"
             
             if self.facing==1:
                 self.body_hitbox= pygame.Rect(self.x+10, self.feet-40,130, 60 )
@@ -126,11 +128,20 @@ class Enemy:
     def move(self, win,other, scroll=0):
         if self.state!="blown":
             if self.state=="idle" and self.health>0:
-                if self.x-other.x>200:
-                    self.facing=-1
-                elif other.x-self.x>200:
-                    self.facing=1
+                # Only adjust direction based on distance when NOT colliding
+                # Handle collision by flipping direction
+                if self.x-other.x>20:
+                    if self.facing==1:
+                        self.facing=-1
+                elif other.x-self.x>40:
+                    if self.facing==-1:
+                        self.facing=1
                 self.x+= self.facing* self.vel
+            if self.body_hitbox.colliderect(other.hitbox):
+                if self.state=="idle":
+                    self.state="attacking"
+                elif self.state=="attacking":
+                    self.state="hit"
         else:
             self.x+= -self.facing*4
         
