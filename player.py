@@ -201,6 +201,7 @@ class Player:
                         self.downCount=0
                         self.down_state= "normal"
                         self.action = "idle"
+                        self.hit_state= "normal"
                     self.downCount+=1
                 else:
                     if self.movement_state == "left":

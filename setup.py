@@ -159,6 +159,8 @@ NON_INTERRUPT_KEYS= {pygame.K_SPACE,
                     pygame.K_d,
                     pygame.K_ESCAPE,
                     pygame.K_m
+                    ,pygame.K_UP,
+                    pygame.K_w
                      }
 
 EXISTING_KEYS={pygame.K_SPACE,
