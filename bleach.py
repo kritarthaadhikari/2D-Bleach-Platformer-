@@ -30,6 +30,8 @@ def redrawwindow():
             lv.sideScrolling(player)
         else:
             st.scroll=False
+    if player.mode=="bankai":
+        player.health-=1/22
     hudPannel()
     player.draw(st.win, lv.scroll if lv.levelComplete and st.scroll else 0)
     text= st.font.render(f"Score: {st.score}",1,(255,255,255))
@@ -52,7 +54,6 @@ def redrawwindow():
             st.win.blit(text,(st.screen_width//2-text.get_width()//2, st.screen_height//2-text.get_height()//2))
     if st.Mpause:
         st.win.blit(st.mute,(st.screen_width-100,70))
-    
     pygame.display.update()   
 
 last_enemy_spawn = time.time()
@@ -257,9 +258,7 @@ def main():
                                 h.state="blown"
                 
                 for h in en.hollows[:]:
-                    print(h.state)
                     if player.hitbox.colliderect(h.body_hitbox):
-                        
                         if h not in player.hollowattack:
                             player.hollowattack.append(h)
                         if h.state in ["idle"] :
