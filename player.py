@@ -99,7 +99,7 @@ class Player:
     def activateDeactivateBankai(self):
         if self.mode=="shikai":
             self.mode= "bankai"
-            self.vel=6
+            self.vel=7
             self.damage=500
             self.incrementalFactor=2
             self.transform_state="activating"
@@ -135,7 +135,7 @@ class Player:
                 sprite= self.animations[self.mode]["transformLeft"][self.bankaiCount//4]
             if self.mode=="bankai":
                 if 16<=self.bankaiCount<=24:
-                    st.win.blit(st.bankai, (self.x-self.facing*70 + scroll, self.feet_y- st.bankai.get_height()+50))
+                    st.win.blit(st.bankai, (self.x-self.facing*(70+scroll), self.feet_y- st.bankai.get_height()+50))
                 if 24<=self.bankaiCount<=32:
                     st.win.blit(st.tl,(self.x-self.facing*(50 + scroll), self.feet_y- st.tl.get_height()+40))
                     st.win.blit(st.tr,(self.x+self.facing*(50 - scroll), self.feet_y-st.tr.get_height()+40))
