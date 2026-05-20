@@ -19,12 +19,12 @@ def hudPannel():
     st.win.blit(st.hud_pannel, (10,10))
 
 def redrawwindow():
+    st.win.blit(st.bg, (0, 0))
     if not st.scroll:
-        st.win.blit(st.bg, (0, 0))
+        st.win.blit(st.ground,(0,st.feet_y_initial+10))
     for e in en.hollows:
         e.move(st.win,player)
     if lv.levelComplete:
-        st.win.blit(st.arrow,(1100-lv.scroll,450))
         if player.movement_state not in ["idle"]:
             st.scroll=True
         lv.sideScrolling(player)
@@ -69,8 +69,8 @@ def createEnemies():
             lv.hollows.append(enemy)
             en.hollows.append(enemy)
             last_enemy_spawn = time.time()
-        if lv.hollows!=[] and st.killCount==lv.hollow:
-            st.killCount=0
+        if lv.hollows!=[] and st.killCountperRound==lv.hollow:
+            st.killCountperRound=0
             lv.i+=1
             lv.hollow,lv.delay=lv.increment()
             lv.hollows.clear()

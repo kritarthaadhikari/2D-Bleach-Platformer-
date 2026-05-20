@@ -153,6 +153,7 @@ class Enemy:
             hollows.remove(self)
             st.score+=10
             st.killCount+=1
+            st.killCountperRound+=1
             if other.ultimateGauge<160:
                 other.ultimateGauge+=40
             if other.health<=80:

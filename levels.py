@@ -29,14 +29,12 @@ def sideScrolling(player):
     levelComplete= True
     global scroll
     if st.scroll:
+        st.win.blit(st.bg, (0, 0))
         for i in range(0,3):
-            st.win.blit(st.bg,(i*st.screen_width - scroll,0))
-            st.win.blit(st.arrow,(1100-scroll,450))
+            st.win.blit(st.ground,(i*st.screen_width - scroll,st.feet_y_initial+10))
+        st.win.blit(st.arrow,(1200-scroll,st.feet_y_initial-50))
         if not (player.movement_state in ["idle"] or player.facing==-1) and player.transform_state!="activating":
             scroll += 5 if not player.mode=="bankai" else 7 # Move camera right
-            print("True")
-        else:
-            print("False")
         if scroll >= st.screen_width:
             player.x-=scroll# Move player back to start of new level
             scroll = 0

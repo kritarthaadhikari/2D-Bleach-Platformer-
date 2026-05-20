@@ -1,5 +1,4 @@
 from email.iterators import walk
-
 import pygame
 
 pygame.init()
@@ -10,6 +9,7 @@ screen_height = 720
 feet_y_initial = 616
 win = pygame.display.set_mode((screen_width, screen_height))
 surface =pygame.Surface((screen_width,screen_height),pygame.SRCALPHA)
+ground= pygame.transform.smoothscale(pygame.image.load('images/setup/ground.png').convert_alpha(), (screen_width, 100))
 #“This surface will use RGBA 
 # (Red, Green, Blue, Alpha) instead of just RGB."
 
@@ -40,6 +40,7 @@ pygame.mixer.music.play(-1)
 
 score=0
 killCount=0
+killCountperRound=0
 pause= False
 scroll=False
 arrow= pygame.transform.flip(pygame.transform.smoothscale(pygame.image.load('images/setup/arrow.png'),(100,100)),True, False)
