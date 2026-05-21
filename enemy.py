@@ -23,12 +23,13 @@ class Enemy:
         self.health=500
         self.fallCount= 0
         self.blownCount=0
+        self.blown=False
     
     def draw(self,win,other):
         framesPerImg=4
         sprite = None
         
-        if self.state=="idle":
+        if self.state=="idle" and not self.blown:
             if self.facing==-1:
                 limit= len(st.HwalkLeft)* framesPerImg
                 sprite= st.HwalkLeft[self.walkCount//framesPerImg]
@@ -87,7 +88,7 @@ class Enemy:
             pygame.draw.rect(win,(255,0,0),(self.body_hitbox[0], self.body_hitbox[1]-20,70,10))
             pygame.draw.rect(win,(0,255,0),(self.body_hitbox[0], self.body_hitbox[1]-20,70-7*(500-self.health)/50,10))
         
-        elif self.state=="blown":
+        elif self.blown:
             if self.facing==1:
                 limit= len(st.blownRight)*framesPerImg
                 sprite= st.blownRight[self.blownCount// framesPerImg]
@@ -97,6 +98,7 @@ class Enemy:
             if self.blownCount+1>= limit:
                 self.blownCount=0
                 self.state="idle"
+                self.blown=False
             self.blownCount+=1
         
         elif self.state=="falling":
@@ -124,7 +126,7 @@ class Enemy:
             win.blit(sprite , (self.x , draw_y))
     
     def move(self, win,other):
-        if self.state!="blown":
+        if not self.blown:
             if self.state=="idle" and self.health>0:
                 # Only adjust direction based on distance when NOT colliding
                 # Handle collision by flipping direction
@@ -156,7 +158,5 @@ class Enemy:
             st.killCountperRound+=1
             if other.ultimateGauge<160:
                 other.ultimateGauge+=40
-            if other.health<=80:
-                other.health+=40 
 
 #Issue: Enemy movement and not attacking when player is in range

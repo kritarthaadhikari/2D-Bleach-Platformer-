@@ -1,3 +1,4 @@
+import turtle
 import pygame
 import setup as st
 import projectile as pj
@@ -10,13 +11,65 @@ import random
 
 clock = pygame.time.Clock()
 player = pl.Player(64, 64, 10, st.feet_y_initial)
+shine_x=-100
 
 def hudPannel():
-    pygame.draw.rect(st.win,(255,0,0),(212,59,212,23))
-    pygame.draw.rect(st.win,(0,255,0),(212,59,212- 53*(120-player.health)/30,22 ))
-    pygame.draw.rect(st.win,(255,255,0),(175,89,188-(100-player.staminaGauge)*1.88,14))
-    pygame.draw.rect(st.win,"cyan",(237,116,180-1.125*(160-player.ultimateGauge),18))
-    st.win.blit(st.hud_pannel, (10,10))
+    st.win.blit(st.hud_pannel, (-20,-80))
+
+def draw_bar(x, y, width, height,
+             value, max_value,
+             color1, color2,
+             glow_color,
+             animated=False):
+    global shine_x
+    fill_width = int((value / max_value) * width)
+    glow_points = [
+        (x + 20, y),
+        (x + width, y),
+        (x + width - 20, y + height),
+        (x, y + height)
+    ]
+    pygame.draw.polygon(st.win, glow_color, glow_points, 6)
+
+    #GRADIENT FILL
+    for i in range(fill_width):
+        ratio = i / width
+        r = color1[0] + (color2[0] - color1[0]) * ratio
+        g = color1[1] + (color2[1] - color1[1]) * ratio
+        b = color1[2] + (color2[2] - color1[2]) * ratio
+        line_points = [
+            (x + i + 20, y),
+            (x + i + 21, y),
+            (x + i + 1, y + height),
+            (x + i, y + height)
+        ]
+        pygame.draw.polygon(
+            st.win,
+            (int(r), int(g), int(b)),
+            line_points
+        )
+
+    #BORDER
+    pygame.draw.polygon(st.win, (220,220,220), glow_points, 2)
+
+    #ANIMATED SHINE
+    if animated:
+        shine_x += 6
+        if shine_x > width + 80:
+            shine_x = -120
+        shine_surface = pygame.Surface((width, height),
+                                    pygame.SRCALPHA)
+        pygame.draw.polygon(
+            shine_surface,
+            (255,255,255,90),
+            [
+                (shine_x, 0),
+                (shine_x + 25, 0),
+                (shine_x - 5, height),
+                (shine_x - 30, height)
+            ]
+        )
+        st.win.blit(shine_surface, (x, y))
 
 def redrawwindow():
     st.win.blit(st.bg, (0, 0))
@@ -29,7 +82,7 @@ def redrawwindow():
             st.scroll=True
         lv.sideScrolling(player)
     if player.mode=="bankai":
-        player.health-=1/22
+        player.health-=1/30
     hudPannel()
     player.draw(st.win, lv.scroll if lv.levelComplete and st.scroll else 0)
     text= st.font.render(f"Score: {st.score}",1,(255,255,255))
@@ -52,11 +105,42 @@ def redrawwindow():
             st.win.blit(text,(st.screen_width//2-text.get_width()//2, st.screen_height//2-text.get_height()//2))
     if st.Mpause:
         st.win.blit(st.mute,(st.screen_width-100,70))
+     # HP BAR
+    draw_bar(
+        290, 85,
+        350, 25,
+        player.health, 120,
+        (120,0,0),
+        (255,60,60),
+        (255,0,0)
+    )
+
+    # STAMINA BAR
+    draw_bar(
+        290, 240,
+        350, 25,
+        player.staminaGauge, 100,
+        (0,100,180),
+        (120,240,255),
+        (0,180,255)
+    )
+
+    # ENERGY BAR
+    draw_bar(
+        290, 315,
+        350, 25,
+        player.ultimateGauge, 160,
+        (70,0,120),
+        (220,120,255),
+        (170,0,255),
+        animated=True
+    )
+
     pygame.display.update()   
 
 last_enemy_spawn = time.time()
 
-def createEnemies():
+def createEnemies(): 
     global last_enemy_spawn
     if not st.game_state=="mainmenu" and not lv.levelComplete:
         if len(lv.hollows)==0:
@@ -124,7 +208,7 @@ def main():
     st.game_state="mainmenu"
     restart, mainmenu = None, None
     while run:
-        clock.tick(22)
+        clock.tick(30)
         events= pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
@@ -261,7 +345,8 @@ def main():
                                 h.health-=player.damage
                                 p.hitEnemies.append(h)
                                 h.facing=-1*player.facing
-                                h.state="blown"
+                                h.blown=True
+                                h.blownCount=0
                 
                 for h in en.hollows[:]:
                     if player.hitbox.colliderect(h.body_hitbox):
