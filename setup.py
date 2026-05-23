@@ -1,4 +1,3 @@
-from email.iterators import walk
 import pygame
 
 pygame.init()
@@ -62,6 +61,7 @@ current_time_bankai=0
 slash = [pygame.image.load(f'images/shot/fire{i}.png') for i in range(1,5)]
 slashright = [pygame.transform.smoothscale(img, (64,64)) for img in slash]
 slashLeft = [pygame.transform.flip(img, True, False) for img in slashright]
+cero = pygame.transform.smoothscale(pygame.image.load('images/shot/cero.png').convert_alpha(), (64, 64))
 
 # --- PLAYER ASSETS ---
 walkRight = [pygame.image.load(f'images/ichigo/run{i}.png') for i in range(1, 9)]
@@ -149,27 +149,30 @@ blownRight=[pygame.image.load(f'images/menosgrande/blown{i}.png')for i in range(
 blownLeft= [pygame.transform.flip(img, True, False) for img in blownRight]
 
 #Aizen ASSETS
-Aizenwalk=  [pygame.image.load(f'images/enemy/Aizen/walk{i}.png').convert_alpha() for i in range(1,9)]
-AizenwalkRight= [pygame.transform.smoothscale(img,(img.get_width(),90) )for img in Aizenwalk]
-AizenwalkLeft= [pygame.transform.flip(img, True, False) for img in AizenwalkRight]
-AizenteleportRight= [pygame.image.load(f'images/enemy/Aizen/Teleport.png')]
-AizenteleportLeft= [pygame.transform.flip(img, True, False) for img in AizenteleportRight]
-Aizenattack= [pygame.image.load(f'images/enemy/Aizen/attack{i}.png') for i in range(1,6)]
-AizenattackRight= [pygame.transform.smoothscale(img,(img.get_width(),90)) for img in Aizenattack]
+AizenattackRight= [pygame.image.load(f'images/Aizen/attack{i}.png') for i in range(1,6)]
 AizenattackLeft= [pygame.transform.flip(img, True, False) for img in AizenattackRight]
-Aizenairattack =[pygame.image.load(f'images/enemy/Aizen/airattack{i}.png') for i in range(1,6)]
-AizenairattackRight= [pygame.transform.smoothscale(img,(img.get_width(),90) ) for img in Aizenairattack]
-AizenairattackLeft= [pygame.transform.flip(img,True, False) for img in AizenairattackRight]
-AizentrongAttack= [pygame.image.load(f'images/enemy/Aizen/strongattack{i}.png') for i in range(1,8)]
-AizentrongAttackRight = [pygame.transform.smoothscale(img, (img.get_width(),90) )for img in AizentrongAttack]
-AizentrongAttackLeft= [pygame.transform.flip(img, True, False) for img in AizentrongAttackRight]
-Aizentance= [pygame.image.load(f'images/enemy/Aizen/taunt{i}.png') for i in range(1,6)]
-AizentanceRight= [pygame.transform.smoothscale(img,(img.get_width(),90))for img in Aizentance]
-AizentanceLeft= [pygame.transform.flip(img, True, False) for img in AizentanceRight]
-Aizendamage= [pygame.image.load(f'images/enemy/Aizen/damage{i}.png') for i in range(1,5)]
-AizendamageRight= [pygame.transform.smoothscale(img,(img.get_width(),90) ) for img in Aizendamage]
-AizendamageLeft= [pygame.transform.flip(img, True, False) for img in AizendamageRight]
-
+AizensecondAttackRight =[pygame.image.load('images/Aizen/attack1.png')]+[pygame.image.load(f'images/Aizen/attack2.{i}.png') for i in range(2,5)]
+AizensecondAttackLeft= [pygame.transform.flip(img, True, False) for img in AizensecondAttackRight]
+AizenStanceRight= [pygame.image.load(f'images/Aizen/stance{i}.png') for i in range(1,4)]
+AizenStanceLeft= [pygame.transform.flip(img, True, False) for img in AizenStanceRight]
+AizenHitRight= [pygame.image.load(f'images/Aizen/hit{i}.png') for i in range(1,3)]
+AizenHitLeft= [pygame.transform.flip(img, True, False) for img in AizenHitRight]
+AizenDashRight= [pygame.image.load(f'images/Aizen/dash{i}.png') for i in range(1,3)]
+AizenDashLeft= [pygame.transform.flip(img, True, False) for img in AizenDashRight]
+AizenJumpRight= [pygame.image.load(f'images/Aizen/jump{i}.png') for i in range(1,9)]
+AizenJumpLeft= [pygame.transform.flip(img, True, False) for img in AizenJumpRight] 
+AizenRunRight= [pygame.image.load(f'images/Aizen/run{i}.png') for i in range(1,3)]
+AizenRunLeft= [pygame.transform.flip(img, True, False) for img in AizenRunRight]
+AizenJumpAttackRight= [pygame.image.load(f'images/Aizen/jumpattack{i}.png') for i in range(1,4)]
+AizenJumpAttackLeft= [pygame.transform.flip(img, True, False) for img in AizenJumpAttackRight]
+AizenTeleportRight= [pygame.image.load(f'images/Aizen/teleport{i}.png') for i in range(1,15)]
+AizenTeleportLeft= [pygame.transform.flip(img, True, False) for img in AizenTeleportRight]
+AizenStanceMiddleRight= [pygame.image.load(f'images/Aizen/wait{i}.png') for i in range(1,8)]
+AizenStanceMiddleLeft= [pygame.transform.flip(img, True, False) for img in AizenStanceMiddleRight]
+AizenCeroRight= [pygame.image.load(f'images/Aizen/cero{i}.png') for i in range(1,6)]
+AizenCeroLeft= [pygame.transform.flip(img, True, False) for img in AizenCeroRight]
+AizenStanceFinalRight= [pygame.image.load(f'images/Aizen/aurafarm{i}.png') for i in range(1,6)]
+AizenStanceFinalLeft= [pygame.transform.flip(img, True, False) for img in AizenStanceFinalRight]
 
 # --- UI & BG ---
 hud_original = pygame.image.load('images/setup/hudpannel.png').convert_alpha()
