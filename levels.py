@@ -1,7 +1,5 @@
 import pygame as py
 import enemy as en
-import random
-import player
 import setup as st
 global i 
 i=1
