@@ -40,7 +40,7 @@ pygame.mixer.music.load('audio/on the precipice of death.mp3')
 pygame.mixer.music.play(-1)
 
 score=0
-killCount=0
+killCount=1
 killCountperRound=0
 pause= False
 scroll=False
@@ -62,6 +62,8 @@ slash = [pygame.image.load(f'images/shot/fire{i}.png') for i in range(1,5)]
 slashright = [pygame.transform.smoothscale(img, (64,64)) for img in slash]
 slashLeft = [pygame.transform.flip(img, True, False) for img in slashright]
 cero = pygame.transform.smoothscale(pygame.image.load('images/shot/cero.png').convert_alpha(), (64, 64))
+getsugatenshoProjectileRight = [pygame.transform.smoothscale(pygame.image.load(f'images/shot/getsuga{i}.png'), (64, 64)) for i in range(1,3)]*100
+getsugatenshoProjectileLeft = [pygame.transform.flip(img, True, False) for img in getsugatenshoProjectileRight]
 
 # --- PLAYER ASSETS ---
 walkRight = [pygame.image.load(f'images/ichigo/run{i}.png') for i in range(1, 9)]
@@ -165,8 +167,8 @@ AizenRunRight= [pygame.image.load(f'images/Aizen/run{i}.png') for i in range(1,3
 AizenRunLeft= [pygame.transform.flip(img, True, False) for img in AizenRunRight]
 AizenJumpAttackRight= [pygame.image.load(f'images/Aizen/jumpattack{i}.png') for i in range(1,4)]
 AizenJumpAttackLeft= [pygame.transform.flip(img, True, False) for img in AizenJumpAttackRight]
-AizenTeleportRight= [pygame.image.load(f'images/Aizen/teleport{i}.png') for i in range(1,15)]
-AizenTeleportLeft= [pygame.transform.flip(img, True, False) for img in AizenTeleportRight]
+# AizenTeleportRight= [pygame.image.load(f'images/Aizen/teleport{i}.png') for i in range(1,15)]
+# AizenTeleportLeft= [pygame.transform.flip(img, True, False) for img in AizenTeleportRight]
 AizenStanceMiddleRight= [pygame.image.load(f'images/Aizen/wait{i}.png') for i in range(1,8)]
 AizenStanceMiddleLeft= [pygame.transform.flip(img, True, False) for img in AizenStanceMiddleRight]
 AizenCeroRight= [pygame.image.load(f'images/Aizen/cero{i}.png') for i in range(1,6)]

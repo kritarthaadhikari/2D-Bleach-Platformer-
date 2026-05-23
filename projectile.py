@@ -1,5 +1,6 @@
 import pygame
 import setup as st
+import player as pl
 
 projectiles = []
 
@@ -10,15 +11,27 @@ class Projectile(pygame.Rect):
         self.count=0
         self.getsugatenshou=False
         self.direction= facing
-        self.hitEnemies= [] #stores hollows that have been hit and prevents repeated hits
+        self.hitEnemies= []
+        self.shot={
+            "bankai":{
+                "shotRight": st.getsugatenshoProjectileRight,
+                "shotLeft": st.getsugatenshoProjectileLeft
+            },
+            "shikai":{
+                "shotRight": st.slashright,
+                "shotLeft": st.slashLeft
+            }
+        } #stores hollows that have been hit and prevents repeated hits
     
-    def draw(self,win, scroll=0):
+    def draw(self,win, scroll=0,player=None):
+        framesPerImg=3
+        sprite=None
         if self.getsugatenshou :
-            limit= 3*len(st.slashLeft)
+            limit= 3*len(self.shot[player.mode]["shotRight"])
             if self.direction==1:
-                sprite= st.slashright[self.count//3]
+                sprite= self.shot[player.mode]["shotRight"][self.count//framesPerImg]
             else:
-                sprite= st.slashLeft[self.count//3]
+                sprite= self.shot[player.mode]["shotLeft"][self.count//framesPerImg]
             if self.count+1>=limit:
                 self.count=0
                 self.getsugatenshou=False
@@ -27,8 +40,8 @@ class Projectile(pygame.Rect):
         win.blit(sprite, (self.x - scroll,self.y))
         #pygame.draw.rect(win, (255,0,0),self,2) for hitbox
 
-    def move(self):
-        self.x+= self.direction*self.vel
+    def move(self,player):
+        self.x+= self.direction*self.vel*(player.incrementalFactor//2)
         # Note: We pass win from the main loop to this method later
     
     def kill(self):

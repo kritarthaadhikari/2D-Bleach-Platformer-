@@ -92,8 +92,8 @@ def redrawwindow():
     st.win.blit(text,(st.screen_width-text.get_width()-20, 0))
     if player.signatureCount>=21:
         for p in pj.projectiles[:]:
-           p.move()
-           p.draw(st.win, lv.scroll if lv.levelComplete and st.scroll else 0)
+           p.move(player)
+           p.draw(st.win, lv.scroll if lv.levelComplete and st.scroll else 0, player)
     st.current_time= pygame.time.get_ticks()
     if st.show_text:
         if st.killCount==0 and st.current_time-st.text_start_time<= st.text_duration:
@@ -237,6 +237,7 @@ def main():
         while st.game_state=="mainmenu":
             mm.draw()
             mm.handleMenu()
+
         if st.game_state=="start":
             createEnemies()
             if player.staminaGauge<100:
