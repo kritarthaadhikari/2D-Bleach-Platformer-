@@ -165,7 +165,7 @@ AizendamageLeft= [pygame.transform.flip(img, True, False) for img in Aizendamage
 
 # --- UI & BG ---
 hud_original = pygame.image.load('images/setup/hudpannel.png').convert_alpha()
-hud_pannel = pygame.transform.smoothscale(hud_original, (650, 355))
+hud_pannel = pygame.transform.smoothscale(hud_original, (450, 246))
 bg = pygame.transform.scale(pygame.image.load("images/setup/background.png"), (screen_width, screen_height))
 mute= pygame.transform.smoothscale(pygame.image.load('images/setup/volume-mute.png'),(64,64))
 

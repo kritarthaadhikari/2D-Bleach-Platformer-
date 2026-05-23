@@ -14,7 +14,7 @@ player = pl.Player(64, 64, 10, st.feet_y_initial)
 shine_x=-100
 
 def hudPannel():
-    st.win.blit(st.hud_pannel, (-20,-80))
+    st.win.blit(st.hud_pannel, (-20,-60))
 
 def draw_bar(x, y, width, height,
              value, max_value,
@@ -24,33 +24,34 @@ def draw_bar(x, y, width, height,
     global shine_x
     fill_width = int((value / max_value) * width)
     glow_points = [
-        (x + 5, y),
+        (x + 4, y),
         (x + width, y),
         (x + width - 10, y + height),
         (x, y + height)
     ]
-    pygame.draw.polygon(st.win, glow_color, glow_points, 6)
+    pygame.draw.polygon(st.win, glow_color, glow_points, 2)
 
     #GRADIENT FILL
-    for i in range(fill_width):
-        ratio = i / width
+
+    inner_x = x + 8
+    inner_y = y + 2
+
+    inner_width = fill_width - 7
+    inner_height = height - 4
+    for i in range(inner_width):
+        ratio = i / inner_width
         r = color1[0] + (color2[0] - color1[0]) * ratio
         g = color1[1] + (color2[1] - color1[1]) * ratio
         b = color1[2] + (color2[2] - color1[2]) * ratio
-        line_points = [
-            (x + i + 10, y),
-            (x + i + 11, y),
-            (x + i + 1, y + height),
-            (x + i, y + height)
-        ]
-        pygame.draw.polygon(
-            st.win,
-            (int(r), int(g), int(b)),
-            line_points
+        pygame.draw.line(
+        st.win,
+        (int(r), int(g), int(b)),
+        (inner_x + i-4, inner_y),
+        (inner_x + i-7, inner_y + inner_height+2)
         )
 
     #BORDER
-    pygame.draw.polygon(st.win, (220,220,220), glow_points, 2)
+    pygame.draw.polygon(st.win, (220,220,220), glow_points, 1)
 
     #ANIMATED SHINE
     if animated:
@@ -107,8 +108,8 @@ def redrawwindow():
         st.win.blit(st.mute,(st.screen_width-100,70))
      # HP BAR
     draw_bar(
-        230, 90,
-        270, 10,
+        150, 58,
+        190, 8,
         player.health, 120,
         (120,0,0),
         (255,60,60),
@@ -117,22 +118,22 @@ def redrawwindow():
 
     # STAMINA BAR
     draw_bar(
-        230, 215,
-        250, 10,
+        150, 145,
+        180, 8,
         player.staminaGauge, 100,
         (0,100,180),
         (120,240,255),
         (0,180,255)
     )
 
-    # ENERGY BAR
+    # ULTIMATE BAR
     draw_bar(
-        320, 155,
-        180, 15,
+        215, 103,
+        125, 10,
         player.ultimateGauge, 160,
-        (70,0,120),
-        (220,120,255),
-        (170,0,255),
+        (40,0,60),
+        (180,0,255),
+        (200,100,255),
         animated=True
     )
 
