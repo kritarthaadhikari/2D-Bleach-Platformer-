@@ -41,7 +41,10 @@ class Projectile(pygame.Rect):
         #pygame.draw.rect(win, (255,0,0),self,2) for hitbox
 
     def move(self,player):
-        self.x+= self.direction*self.vel*(player.incrementalFactor//2)
+        if player.mode=="bankai":
+            self.x+= self.direction*self.vel*2
+        else:
+            self.x+= self.direction*self.vel
         # Note: We pass win from the main loop to this method later
     
     def kill(self):

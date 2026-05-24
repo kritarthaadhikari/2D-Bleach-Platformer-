@@ -24,6 +24,7 @@ class Enemy:
         self.fallCount= 0
         self.blownCount=0
         self.blown=False
+        self.static_x=x
     
     def draw(self,win,other):
         framesPerImg=4

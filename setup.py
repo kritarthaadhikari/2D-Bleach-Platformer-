@@ -17,13 +17,13 @@ pygame.mixer.music.set_volume(0.4)
 pygame.mixer.music.play(-1)
 
 bankaiSound= pygame.mixer.Sound('audio/ichigobankai.wav')
-bankaiSound.set_volume(0.3)
+bankaiSound.set_volume(0.5)
 
 getsugatenshoSound= pygame.mixer.Sound('audio/getsugatensho.wav')
-getsugatenshoSound.set_volume(0.3)
+getsugatenshoSound.set_volume(0.5)
 
 hollowSound= pygame.mixer.Sound('audio/hollowscream.mp3')
-hollowSound.set_volume(0.6)
+hollowSound.set_volume(1)
 #Alpha = transparency value:
 # 0 → fully transparent
 # 255 → fully opaque
@@ -64,6 +64,13 @@ slashLeft = [pygame.transform.flip(img, True, False) for img in slashright]
 cero = pygame.transform.smoothscale(pygame.image.load('images/shot/cero.png').convert_alpha(), (64, 64))
 getsugatenshoProjectileRight = [pygame.transform.smoothscale(pygame.image.load(f'images/shot/getsuga{i}.png'), (64, 64)) for i in range(1,3)]*100
 getsugatenshoProjectileLeft = [pygame.transform.flip(img, True, False) for img in getsugatenshoProjectileRight]
+gargantaRight= [pygame.transform.smoothscale(pygame.image.load(f'images/menosgrande/garganta1.png'), (36, 190)),
+                 pygame.transform.smoothscale(pygame.image.load(f'images/menosgrande/garganta2.png'), (65, 200)),
+                 pygame.transform.smoothscale(pygame.image.load(f'images/menosgrande/garganta3.png'), (95,200)),
+                 pygame.transform.smoothscale(pygame.image.load(f'images/menosgrande/garganta4.png'), (115, 250)),
+                 pygame.transform.smoothscale(pygame.image.load(f'images/menosgrande/garganta5.png'), (95, 230)),
+                 pygame.transform.smoothscale(pygame.image.load(f'images/menosgrande/garganta6.png'), (72, 200))]
+gargantaLeft= [pygame.transform.flip(img, True, False) for img in gargantaRight]
 
 # --- PLAYER ASSETS ---
 walkRight = [pygame.image.load(f'images/ichigo/run{i}.png') for i in range(1, 9)]
@@ -188,6 +195,21 @@ def pause_music():
     else:
         pygame.mixer.music.unpause()
 
+gargantaCount=0
+gargantaH=[]
+def drawgarganta(enemy):
+    global gargantaCount
+    framesPerImg= 8
+    limit=len(gargantaRight)*framesPerImg
+    if enemy.facing==1:
+        sprite= gargantaRight[gargantaCount//framesPerImg]
+    else:
+        sprite= gargantaLeft[gargantaCount//framesPerImg]
+    if gargantaCount+1>= limit:
+        gargantaCount=0
+        gargantaH.append(enemy)
+    gargantaCount+=1
+    win.blit(sprite, (enemy.static_x-enemy.facing*20, enemy.feet-160))
 
 NON_INTERRUPT_KEYS= {pygame.K_SPACE,
                      pygame.K_LSHIFT,

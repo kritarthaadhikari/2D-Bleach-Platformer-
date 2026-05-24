@@ -79,7 +79,10 @@ def redrawwindow():
     if not st.scroll:
         st.win.blit(st.ground,(0,st.feet_y_initial+10))
     for e in en.hollows:
-        e.move(st.win,player)
+        if e not in st.gargantaH[:] :
+            st.drawgarganta(e)
+        if st.gargantaCount>=24 or e in st.gargantaH[:]:
+            e.move(st.win,player)
     if lv.levelComplete:
         if player.movement_state not in ["idle"]:
             st.scroll=True
@@ -117,7 +120,6 @@ def redrawwindow():
         (255,60,60),
         (255,0,0)
     )
-
     # STAMINA BAR
     draw_bar(
         150, 145,
@@ -127,7 +129,6 @@ def redrawwindow():
         (120,240,255),
         (0,180,255)
     )
-
     # ULTIMATE BAR
     draw_bar(
         215, 103,
@@ -138,19 +139,18 @@ def redrawwindow():
         (200,100,255),
         animated=True
     )
-
-    if DEBUG:
-        fps_surf = st.font.render(f"FPS: {int(clock.get_fps())}", True, (255,255,0))
-        st.win.blit(fps_surf, (10, 10))
-        try:
-            pygame.draw.rect(st.win, (255,0,0), player.hitbox, 1)
-            for h in en.hollows:
-                pygame.draw.rect(st.win, (0,255,0), h.body_hitbox, 1)
-                pygame.draw.rect(st.win, (255,255,0), h.attack_hitbox, 1)
-        except Exception:
-            pass
-        info = f"x:{int(player.x)} action:{player.action} walk:{getattr(player,'walkCount',0)}"
-        st.win.blit(st.font.render(info, True, (255,255,255)), (10, 30))
+    # if DEBUG:
+    #     fps_surf = st.font.render(f"FPS: {int(clock.get_fps())}", True, (255,255,0))
+    #     st.win.blit(fps_surf, (10, 10))
+    #     try:
+    #         pygame.draw.rect(st.win, (255,0,0), player.hitbox, 1)
+    #         for h in en.hollows:
+    #             pygame.draw.rect(st.win, (0,255,0), h.body_hitbox, 1)
+    #             pygame.draw.rect(st.win, (255,255,0), h.attack_hitbox, 1)
+    #     except Exception:
+    #         pass
+    #     info = f"x:{int(player.x)} action:{player.action} walk:{getattr(player,'walkCount',0)}"
+    #     st.win.blit(st.font.render(info, True, (255,255,255)), (10, 30))
 
     pygame.display.update()   
 
@@ -161,12 +161,14 @@ def createEnemies():
     if not st.game_state=="mainmenu" and not lv.levelComplete:
         if len(lv.hollows)==0:
             enemy = en.Enemy(110, 149, 1200, st.feet_y_initial)
+            enemy.static_x=1200
             st.hollowSound.play(0)
             en.hollows.append(enemy)
             lv.hollows.append(enemy)
         if (time.time() - last_enemy_spawn >= lv.levels[lv.i]["spawn_delay"]) and not len(lv.hollows)==lv.hollow:
             enemy = en.Enemy(110, 149, random.randint(0,1)*st.screen_width+random.choice([-1,1]*100), st.feet_y_initial)
             enemy.facing=-1 if enemy.x==st.screen_width else 1
+            enemy.static_x=enemy.x
             st.hollowSound.play(0)
             lv.hollows.append(enemy)
             en.hollows.append(enemy)

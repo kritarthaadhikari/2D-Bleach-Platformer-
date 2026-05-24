@@ -12,7 +12,7 @@ levels= {
     5: {"hollows":2, "spawn_delay":1, "boss": True}
 }
 
-levelComplete= True
+levelComplete= False
 global scroll 
 scroll=0
 hollow= levels[i]["hollows"]
@@ -31,7 +31,7 @@ def sideScrolling(player):
         for i in range(0,3):
             st.win.blit(st.ground,(i*st.screen_width - scroll,st.feet_y_initial+10))
         st.win.blit(st.arrow,(1200-scroll,st.feet_y_initial-50))
-        if not (player.movement_state in ["idle"] or player.facing==-1) and player.transform_state!="activating":
+        if not (player.movement_state in ["idle"] or player.facing==-1) and (player.transform_state!="activating" and player.action!="signature"):
             scroll += 5 if not player.mode=="bankai" else 7 # Move camera right
         if scroll >= st.screen_width:
             player.x-=scroll# Move player back to start of new level
