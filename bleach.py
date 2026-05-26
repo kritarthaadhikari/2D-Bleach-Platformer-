@@ -1,4 +1,3 @@
-
 import pygame
 import setup as st
 import projectile as pj
@@ -8,9 +7,11 @@ import time
 import mainmenu as mm
 import levels as lv
 import random
+import aizen
 
 clock = pygame.time.Clock()
 player = pl.Player(64, 64, 10, st.feet_y_initial)
+aizen= aizen.Aizen(900, st.feet_y_initial-64)
 shine_x=-100
 DEBUG = True
 
@@ -151,7 +152,7 @@ def redrawwindow():
     #         pass
     #     info = f"x:{int(player.x)} action:{player.action} walk:{getattr(player,'walkCount',0)}"
     #     st.win.blit(st.font.render(info, True, (255,255,255)), (10, 30))
-
+    aizen.draw(st.win)
     pygame.display.update()   
 
 last_enemy_spawn = time.time()
