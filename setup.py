@@ -54,6 +54,7 @@ show_text= False
 
 #Aizen
 lastTeleport= pygame.time.get_ticks()
+lastCero= pygame.time.get_ticks()
 
 #Bankai Display Parameters
 text_duration_bankai= 2000 #2s
@@ -168,8 +169,8 @@ AizensecondAttackRight =[pygame.image.load('images/Aizen/attack1.png')]+[pygame.
 AizensecondAttackLeft= [pygame.transform.flip(img, True, False) for img in AizensecondAttackRight]
 AizenStanceRight= [pygame.image.load(f'images/Aizen/stance{i}.png') for i in range(1,4)]
 AizenStanceLeft= [pygame.transform.flip(img, True, False) for img in AizenStanceRight]
-AizenHitRight= [pygame.image.load(f'images/Aizen/hit{i}.png') for i in range(1,3)]
-AizenHitLeft= [pygame.transform.flip(img, True, False) for img in AizenHitRight]
+AizenHitRight= [pygame.image.load(f'images/Aizen/hit1.png')]
+AizenHitLeft= [pygame.transform.flip(img, True, False) for img in AizenHitRight]*2
 AizenDashRight= [pygame.image.load(f'images/Aizen/dash{i}.png') for i in range(1,3)]
 AizenDashLeft= [pygame.transform.flip(img, True, False) for img in AizenDashRight]
 AizenJumpRight= [pygame.image.load(f'images/Aizen/jump{i}.png') for i in range(1,9)]

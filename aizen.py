@@ -45,7 +45,7 @@ class Aizen:
         self.hitbox_x=self.x+10
         self.max_health = 800
         self.health = 800
-
+        self.dx = 0
         self.vel = 7
         self.walkCount = 0
         self.facing = 1
@@ -55,7 +55,7 @@ class Aizen:
         self.hitCount = 0
         self.status = "alive"
         self.teleportCount = 0
-
+        self.cero_queued=False
         self.attack_cooldown = 0
         self.cero_started = False
         self.attack_damage = 15
@@ -176,7 +176,7 @@ class Aizen:
             animation = st.AizenHitRight if self.facing == 1 else st.AizenHitLeft
             limit = len(animation) * framesPerImg
             sprite = animation[self._frame_index(self.hitCount, framesPerImg, animation)]
-
+            self.hitbox = pygame.Rect(self.x-50, self.y, 25, 52)
             if self.hitCount + 1 >= limit:
                 self.hitCount = 0
             else:
@@ -210,20 +210,32 @@ class Aizen:
         # self.hitbox = pygame.Rect(self.x + 10, self.y, 25, 52)
         # if self.attack_cooldown > 0:
         #     self.attack_cooldown -= 1
-        dx = other.x - self.x
-        if abs(dx) > 40 and other.hit_state == "normal" and not self.action=="teleport":
+        self.dx = other.x - self.x
+        if abs(self.dx) > 40 and other.hit_state == "normal" and not self.action=="teleport":
             if self.action != "walk":
                 self.interrupt()
                 self.action = "walk"
-            self.facing = 1 if dx > 0 else -1
+            self.facing = 1 if self.dx > 0 else -1
         if self.action=="walk":
             self.x += self.facing * self.vel
-        if pygame.time.get_ticks()-st.lastTeleport>=10 and abs(dx)>100:
+            
+        if self.action in ["walk"]:
+            self.y = 635
+        else:
+            self.y = 616
+        if pygame.time.get_ticks()-st.lastTeleport>=10 and abs(self.dx)>100:
             self.action="teleport"
             st.lastTeleport=pygame.time.get_ticks()
-        if self.teleportCount>=36:
+        if self.teleportCount>=36 and self.action=="teleport" and not self.cero_queued:
             self.x=other.x-10
-            
+        
+        if pygame.time.get_ticks()-st.lastCero>=1000 and self.action not in ["cero", "teleport"]:
+            self.cero_queued=True
+            self.cero()
+        if self.cero_queued and not self.cero_started:
+            if self.teleportCount>=36:
+                self.x=other.x-self.dx
+            self.cero()
         # else:
         #     if self.action not in [
         #         "idle", "sec_idle", "third_idle", "final_idle",
@@ -238,6 +250,21 @@ class Aizen:
         #     self.attack_cooldown = 30
 
         self.draw(st.win,other)
+
+    def cero(self):
+        if self.status != "alive":
+            return
+        if self.action not in ["cero"]:
+            if abs(self.dx)<200 and not self.cero_started:
+                self.action="teleport"
+                self.cero_queued=True
+                self.cero_started=False
+            else:
+                self.interrupt()
+                self.action = "cero"
+                st.lastCero = pygame.time.get_ticks()
+                self.cero_queued=False
+                self.cero_started=True
 
     def interrupt(self):
         self.attackCount = 0

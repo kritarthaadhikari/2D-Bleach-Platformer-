@@ -397,10 +397,11 @@ def main():
                 
                 if lv.boss and aizen.status=="alive":
                     if player.hitbox.colliderect(aizen.hitbox) and player.action in ["attacking", "combo"]:
-                        aizen.hit(30 * player.incrementalFactor)
-                        if aizen.health <= 0:
-                            aizen.status = "dead"
-                            aizen.action = "hit"
+                        if player.attackCount>=9 and player.attackCount<=12:
+                            aizen.hit(20 * player.incrementalFactor)
+                            if aizen.health <= 0:
+                                aizen.status = "dead"
+                                aizen.action = "hit"
                     if aizen.hitbox.colliderect(player.hitbox) and aizen.action in ["attack", "jump_attack", "combo_attack", "cero"]:
                         player.hit()
                         player.interrupt()
@@ -414,7 +415,7 @@ def main():
                         if player.hitbox.colliderect(h.attack_hitbox):
                             if 21 <=h.attackCount <24 or h.state=="hit":
                                 player.hit()
-                            if player.attackCount==0 and (player.action in ["attacking", "combo"]):
+                            if player.attackCount>=9 and player.attackCount<=12 and (player.action in ["attacking", "combo"]):
                                 enemyDamaged(h)
                         if(player.action in ["attacking", "combo"]):
                             enemyDamaged(h)
