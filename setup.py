@@ -144,6 +144,9 @@ VisoredTransformRight= [pygame.image.load(f'images/visored/transform{i}.png') fo
 VisoredTransformLeft= [pygame.transform.flip(img, True, False) for img in VisoredTransformRight]
 VisoredToBankaiRight = [pygame.image.load(f'images/visored/transformback{i}.png') for i in range(1,5)]
 VisoredToBankaiLeft = [pygame.transform.flip(img, True, False) for img in VisoredToBankaiRight]
+VisoredWalkRight =[pygame.transform.smoothscale(pygame.image.load(f'images/visored/run{i}.png'),(64,64) )
+                   for i in range(1,4)]
+VisoredWalkLeft =[pygame.transform.flip(img, True, False) for img in VisoredWalkRight]
 
 #bankai visuals
 bankai= pygame.image.load('images/bankai/bankai.png')
@@ -200,21 +203,21 @@ def pause_music():
     else:
         pygame.mixer.music.unpause()
 
-gargantaCount=0
-gargantaH=[]
-def drawgarganta(enemy):
-    global gargantaCount
-    framesPerImg= 8
-    limit=len(gargantaRight)*framesPerImg
-    if enemy.facing==1:
-        sprite= gargantaRight[gargantaCount//framesPerImg]
-    else:
-        sprite= gargantaLeft[gargantaCount//framesPerImg]
-    if gargantaCount+1>= limit:
-        gargantaCount=0
-        gargantaH.append(enemy)
-    gargantaCount+=1
-    win.blit(sprite, (enemy.static_x-enemy.facing*20, enemy.feet-160))
+# gargantaCount=0
+# gargantaH=[]
+# def drawgarganta(enemy):
+#     global gargantaCount
+#     framesPerImg= 8
+#     limit=len(gargantaRight)*framesPerImg
+#     if enemy.facing==1:
+#         sprite= gargantaRight[gargantaCount//framesPerImg]
+#     else:
+#         sprite= gargantaLeft[gargantaCount//framesPerImg]
+#     if gargantaCount+1>= limit:
+#         gargantaCount=0
+#         gargantaH.append(enemy)
+#     gargantaCount+=1
+#     win.blit(sprite, (enemy.static_x-enemy.facing*20, enemy.feet-160))
 
 NON_INTERRUPT_KEYS= {pygame.K_SPACE,
                      pygame.K_LSHIFT,

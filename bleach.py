@@ -13,7 +13,7 @@ clock = pygame.time.Clock()
 player = pl.Player(64, 64, 10, st.feet_y_initial)
 aizen= aizen.Aizen(900, st.feet_y_initial)
 shine_x=-100
-DEBUG = True
+DEBUG = False
 
 def hudPannel():
     st.win.blit(st.hud_pannel, (-20,-60))
@@ -78,10 +78,10 @@ def redrawwindow():
     if not st.scroll:
         st.win.blit(st.ground,(0,st.feet_y_initial+10))
     for e in en.hollows:
-        if e not in st.gargantaH[:] :
-            st.drawgarganta(e)
-        if st.gargantaCount>=24 or e in st.gargantaH[:]:
-            e.move(st.win,player)
+        # if e not in st.gargantaH[:] :
+        #     st.drawgarganta(e)
+        # if st.gargantaCount>=24 or e in st.gargantaH[:]:
+        e.move(st.win,player)
     if lv.levelComplete:
         if player.movement_state not in ["idle"]:
             st.scroll=True
@@ -220,6 +220,8 @@ def reset():
 
     lv.i=1
     lv.hollow,lv.delay,lv.boss=lv.increment()
+    lv.hollows.clear()
+    st.killCountperRound=0
     # Reset timers
     last_enemy_spawn = time.time()
     # Unpause
@@ -253,7 +255,6 @@ def main():
             mm.handleMenu()
         if st.game_state=="start":
             createEnemies()
-            print(aizen.action)
             if player.staminaGauge<100:
                 player.staminaGauge+=1/3*player.incrementalFactor
             for event in events:
