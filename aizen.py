@@ -103,6 +103,10 @@ class Aizen:
             else:
                 animation = st.AizenHoldAfterCeroLeft
             sprite = animation[0]
+            self.idleCount += 1
+            if self.idleCount >= 30:  # Hold for 30 frames then return to idle
+                self.idleCount = 0
+                self.action = "idle"
         elif self.action == "cero":
             animation = st.AizenCeroRight if self.facing == 1 else st.AizenCeroLeft
             limit = len(animation) * 5
@@ -220,18 +224,21 @@ class Aizen:
         elif self.dx < -30:
             self.facing = -1
         if other.hit_state=="normal":
-            if 200>abs(self.dx)>30:
+            if 250>abs(self.dx)>30:
                 if self.action!= "walk":
                     self.interrupt()
                     self.action = "walk"
-            elif abs(self.dx)>=400:
-                if self.action != "teleport" and pygame.time.get_ticks() - st.lastCero >= 2000:
+            elif abs(self.dx)>=250:
+                if self.action!="teleport" and pygame.time.get_ticks() - st.lastCero >= 5000:
                     self.interrupt()
                     self.action ="cero"
+                    print("Cero started")
                     st.lastCero = pygame.time.get_ticks()
-            # elif pygame.time.get_ticks() - st.lastTeleport >=1000 and abs(self.dx)>=200:
-            #     self.action = "teleport"
-            #     st.lastTeleport = pygame.time.get_ticks()
+                elif pygame.time.get_ticks() - st.lastTeleport >= 1000 and self.action not in ["teleport","cero","hold_after_cero"]:
+                    self.interrupt()
+                    self.action = "teleport"
+                    st.lastTeleport = pygame.time.get_ticks()
+
             elif self.action not in ["idle", "sec_idle", "third_idle", "final_idle"
                                      ,"attack","jump_attack","combo_attack","cero","teleport"]:
                 self.action = "idle"
@@ -256,7 +263,7 @@ class Aizen:
         #     self.interrupt()
         #     self.action = "attack"
         #     self.attack_cooldown = 30
-
+        print(self.action)
         self.draw(st.win,other)
 
     def cero(self):

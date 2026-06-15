@@ -57,7 +57,7 @@ class Projectile(pygame.Rect):
 class Cero(Projectile):
     def __init__(self, x, y, width, height, facing):
         super().__init__(x, y, width, height, facing)
-        self.vel=20
+        self.vel=30
         self.start_x=x
         self.max_distance=650
     
