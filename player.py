@@ -248,7 +248,7 @@ class Player:
                     self.walkCount += 1
                     if self.walkCount +1 >= limit:
                         self.walkCount = 0
-            elif self.action=="hitbyAizen" and self.movement_state=="idle":
+            elif (self.action in ["hitbyAizen" ,"hitbyCero"])and self.movement_state=="idle":
                 framesPerImg=3
                 limit=len(self.animations[self.mode]["hitbyAizenRight"])*framesPerImg
                 if self.facing==1:
@@ -257,17 +257,18 @@ class Player:
                     sprite= self.animations[self.mode]["hitbyAizenLeft"][self.hitCount//framesPerImg]
                 self.hitCount+=1
                 if self.hitCount+1>=limit:
+                    if self.action=="hitbyCero":
+                        self.action="idle"
                     self.hitCount=0
-                    self.action="steadyhit"
-            elif self.action=="steadyhit" and self.movement_state=="idle":
-                limit= len(self.animations[self.mode]["steadyhitRight"])*framesPerImg
-                if self.facing==1:
-                    sprite= self.animations[self.mode]["steadyhitRight"][self.steadyCount//framesPerImg]
-                else:
-                    sprite= self.animations[self.mode]["steadyhitLeft"][self.steadyCount//framesPerImg]
-                self.steadyCount+=1
-                if self.steadyCount+1>=limit:
-                    self.steadyCount=0
+            # elif self.action=="steadyhit" and self.movement_state=="idle":
+            #     limit= len(self.animations[self.mode]["steadyhitRight"])*framesPerImg
+            #     if self.facing==1:
+            #         sprite= self.animations[self.mode]["steadyhitRight"][self.steadyCount//framesPerImg]
+            #     else:
+            #         sprite= self.animations[self.mode]["steadyhitLeft"][self.steadyCount//framesPerImg]
+            #     self.steadyCount+=1
+            #     if self.steadyCount+1>=limit:
+            #         self.steadyCount=0
             elif self.jump: #jump animation
                 if self.air_dash:
                     if self.facing==1:
@@ -407,7 +408,10 @@ class Player:
             st.getsugatenshoSound.stop()
 
     def aizen_hit(self):
-        self.health-=1
-        if self.action!="steadyhit":
+        if not self.action=="hitbyCero":
+            self.health-=1
             self.action="hitbyAizen"
+        else:
+            self.health-=100
+            self.x-=self.facing*20
         

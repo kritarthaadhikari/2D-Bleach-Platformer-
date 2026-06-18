@@ -107,10 +107,10 @@ attackFollowUpRight=[pygame.image.load(f'images/ichigo/fattack{i}.png') for i in
 attackFollowUpLeft= [pygame.transform.flip(img, True, False) for img in attackFollowUpRight]
 shikaiTransformRight= [pygame.image.load(f'images/bankai/shikai{i}.png') for i in range(1,8)]
 shikaiTransformLeft= [pygame.transform.flip(img, True, False) for img in shikaiTransformRight]
-hitbyAizenRight= [pygame.image.load(f'images/ichigo/hit{i}.png') for i in range(0,3)]
-hitbyAizenLeft= [pygame.transform.flip(img, True, False) for img in hitbyAizenRight]
-hitSteadyRight= [pygame.image.load('images/ichigo/hit2.png')]*10
+hitSteadyRight= [pygame.image.load('images/ichigo/hit2.png')]*3
 hitSteadyLeft= [pygame.transform.flip(img, True, False) for img in hitSteadyRight]
+hitbyAizenRight= [pygame.image.load(f'images/ichigo/hit{i}.png') for i in range(0,3)]+hitSteadyRight
+hitbyAizenLeft= [pygame.transform.flip(img, True, False) for img in hitbyAizenRight]+hitSteadyLeft
 
 # --- PLAYER BANKAI ASSETS ---
 bankaiWalkRight = [pygame.image.load(f'images/bankai/run{i}.png') for i in range(1, 9)]

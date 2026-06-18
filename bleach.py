@@ -334,55 +334,56 @@ def main():
 
             keys = pygame.key.get_pressed()
             if not st.pause:
-                if player.action == "attacking" and player.comboTimer > 0:
-                    player.comboTimer -= 1
-                elif player.action != "attacking":
-                    player.comboTimer = 0
+                if not player.action=="hitbyCero":
+                    if player.action == "attacking" and player.comboTimer > 0:
+                        player.comboTimer -= 1
+                    elif player.action != "attacking":
+                        player.comboTimer = 0
 
-                if player.transform_state != "activating":
-                    if player.action not in ["attacking", "combo", "signature"]:
-                        # Determine camera offset and player's screen position
-                        cam_offset = lv.scroll if (lv.levelComplete and st.scroll) else 0
-                        screen_x = player.x - cam_offset
-                        # Prevent player's world x from going left of the camera view
-                        min_world_x = cam_offset
-                        if player.x < min_world_x:
-                            player.x = min_world_x
+                    if player.transform_state != "activating":
+                        if player.action not in ["attacking", "combo", "signature"]:
+                            # Determine camera offset and player's screen position
+                            cam_offset = lv.scroll if (lv.levelComplete and st.scroll) else 0
+                            screen_x = player.x - cam_offset
+                            # Prevent player's world x from going left of the camera view
+                            min_world_x = cam_offset
+                            if player.x < min_world_x:
+                                player.x = min_world_x
 
-                        if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and screen_x > player.vel:
-                            player.x -= player.vel
-                            player.movement_state = "left"
-                            player.facing= -1
-                            player.action="knockeddown" if player.hit_state in ["got_hit", "stationary"] else player.action
-                        elif (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and (screen_x + player.width + player.vel < st.screen_width or (lv.levelComplete and st.scroll)):
-                            player.x += player.vel
-                            player.movement_state = "right"
-                            player.facing= 1
-                            player.action="knockeddown" if player.hit_state in ["got_hit", "stationary"] else player.action
+                            if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and screen_x > player.vel:
+                                player.x -= player.vel
+                                player.movement_state = "left"
+                                player.facing= -1
+                                player.action="knockeddown" if player.hit_state in ["got_hit", "stationary"] else player.action
+                            elif (keys[pygame.K_RIGHT] or keys[pygame.K_d]) and (screen_x + player.width + player.vel < st.screen_width or (lv.levelComplete and st.scroll)):
+                                player.x += player.vel
+                                player.movement_state = "right"
+                                player.facing= 1
+                                player.action="knockeddown" if player.hit_state in ["got_hit", "stationary"] else player.action
+                            else:
+                                if player.action not in ["dashing"] and not player.jump:      
+                                    player.action="idle"
+                                    player.dashCount=0
+                                player.movement_state = "idle"
+                                player.walkCount = 0
+
+                        # Jump logic
+                        if not player.jump:
+                            if keys[pygame.K_UP] or keys[pygame.K_w] :
+                                player.jump=True
+                                player.interrupt()
                         else:
-                            if player.action not in ["dashing"] and not player.jump:      
-                                player.action="idle"
-                                player.dashCount=0
-                            player.movement_state = "idle"
-                            player.walkCount = 0
-
-                    # Jump logic
-                    if not player.jump:
-                        if keys[pygame.K_UP] or keys[pygame.K_w] :
-                            player.jump=True
-                            player.interrupt()
-                    else:
-                        if player.jumpCount >= -11:
-                            neg = 1
-                            if player.jumpCount < 0: neg = -1
-                            player.feet_y -= (player.jumpCount ** 2) * 0.5 * neg
-                            player.x+=player.facing*2
-                            player.jumpCount -= 1
-                        else: 
-                            player.jumpCount = 11
-                            player.jump=False
-                            player.feet_y=st.feet_y_initial
-                            player.air_dash = False
+                            if player.jumpCount >= -11:
+                                neg = 1
+                                if player.jumpCount < 0: neg = -1
+                                player.feet_y -= (player.jumpCount ** 2) * 0.5 * neg
+                                player.x+=player.facing*2
+                                player.jumpCount -= 1
+                            else: 
+                                player.jumpCount = 11
+                                player.jump=False
+                                player.feet_y=st.feet_y_initial
+                                player.air_dash = False
                 # Collisions
                 for p in pj.projectiles[:]:
                     for h in en.hollows:
@@ -396,8 +397,8 @@ def main():
                 
                 for p in pj.cero[:]:
                     if p.colliderect(player.hitbox):
-                        hit(player)
-                        player.interrupt()
+                        player.action="hitbyCero"
+                        player.aizen_hit()
                         pj.cero.remove(p)
                 if lv.boss and aizen.status=="alive":
                     if player.hitbox.colliderect(aizen.hitbox) and player.action in ["attacking", "combo"]:
