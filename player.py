@@ -19,6 +19,7 @@ class Player:
         self.dashTimer = 10 #dash duration
         self.air_dash = False
         self.hitbox = pygame.Rect(self.x+10, self.feet_y-4,50, 52 )
+        self.attackhitbox= pygame.Rect(self.x,self.feet_y,20,30)
         self.getHitCount = 0 #getting hit
         self.hitCount=0 #hit by aizen
         self.hit_state = "normal" # normal, got_hit, stationary
@@ -346,7 +347,7 @@ class Player:
                     else:
                         sprite= self.animations[self.mode]["attackLeft"][self.attackCount// framesPerImg]
                     self.attackCount+=1
-
+                    self.attackhitbox=pygame.Rect(self.x+self.facing*40,self.feet_y,55,30)
                     if self.attackCount+1 >= limit:
                         self.attackCount=0
                         self.action="idle"
@@ -364,6 +365,7 @@ class Player:
                     else:
                         sprite= self.animations[self.mode]["attackFollowUpLeft"][self.attackCount//framesPerImg]
                     self.attackCount+=1
+                    self.attackhitbox=pygame.Rect(self.x+self.facing*30,self.feet_y,45,30)
                     if self.attackCount+1 >=limit:
                         self.attackCount=0
                         self.comboTimer=0
@@ -387,7 +389,6 @@ class Player:
                                            or ((self.mode == "bankai" and (self.action in ["attacking", "combo"]) and self.facing == -1))):
             if (self.facing == -1) or (self.mode == "bankai"):
                 draw_x = self.x-sprite.get_width() + 50
-        
         sprite_height = sprite.get_height()
         draw_y = self.feet_y - sprite_height+self.y_offset+50
         win.blit(sprite, (draw_x-scroll , draw_y))

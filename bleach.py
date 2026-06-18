@@ -146,6 +146,7 @@ def redrawwindow():
         st.win.blit(fps_surf, (10, 10))
         try:
             pygame.draw.rect(st.win, (255,0,0), player.hitbox, 1)
+            pygame.draw.rect(st.win, (255,0,0), player.attackhitbox, 1)
             for h in en.hollows:
                 pygame.draw.rect(st.win, (0,255,0), h.body_hitbox, 1)
                 pygame.draw.rect(st.win, (255,255,0), h.attack_hitbox, 1)
@@ -392,6 +393,8 @@ def main():
                                 h.health-=player.damage
                                 p.hitEnemies.append(h)
                                 h.facing=-1*player.facing
+                                if h.state in ["attacking","hit"]:
+                                    h.state="idle"
                                 h.blown=True
                                 h.blownCount=0
                 
@@ -401,7 +404,7 @@ def main():
                         player.aizen_hit()
                         pj.cero.remove(p)
                 if lv.boss and aizen.status=="alive":
-                    if player.hitbox.colliderect(aizen.hitbox) and player.action in ["attacking", "combo"]:
+                    if player.attackhitbox.colliderect(aizen.hitbox) and player.action in ["attacking", "combo"]:
                         if player.attackCount>=9 and player.attackCount<=12:
                             aizen.hit(20 * player.incrementalFactor)
                             if aizen.health <= 0:
@@ -417,7 +420,7 @@ def main():
                             player.hollowattack.append(h)
                         if h.state in ["idle"] :
                             h.state="attacking"
-                        if player.hitbox.colliderect(h.attack_hitbox):
+                        if player.attackhitbox.colliderect(h.attack_hitbox):
                             if 21 <=h.attackCount <24 or h.state=="hit":
                                 player.hit()
                             if player.attackCount>=9 and player.attackCount<=12 and (player.action in ["attacking", "combo"]):

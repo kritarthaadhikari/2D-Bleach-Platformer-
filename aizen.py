@@ -238,13 +238,13 @@ class Aizen:
                     self.interrupt()
                     self.action = "teleport"
                     st.lastTeleport = pygame.time.get_ticks()
-            elif self.hitbox.colliderect(other.hitbox):
+            elif self.hitbox.colliderect(other.hitbox) and self.action!="hit":
                 self.action = "attack"
                 self.attack_cooldown = 30
             elif self.action not in ["idle", "sec_idle", "third_idle", "final_idle"
                                      ,"attack","jump_attack","combo_attack","cero","teleport"]:
                 self.action = "idle"
-        elif self.hitbox.colliderect(other.hitbox) and other.hit_state!="stationary":
+        elif self.hitbox.colliderect(other.hitbox) and self.action!="hit":
                 self.action = "attack"
                 self.attack_cooldown = 30
         else:

@@ -5,8 +5,8 @@ global i
 i=1
 hollows=[]
 levels= {
-    1: {"hollows":1, "spawn_delay":1, "boss":True},
-    2: {"hollows":5, "spawn_delay":2, "boss": True},
+    1: {"hollows":1, "spawn_delay":1, "boss":False},
+    2: {"hollows":5, "spawn_delay":2, "boss": False},
     3: {"hollows":7, "spawn_delay":5, "boss":False},
     4: {"hollows":9, "spawn_delay":2, "boss":False},
     5: {"hollows":2, "spawn_delay":1, "boss": True}
