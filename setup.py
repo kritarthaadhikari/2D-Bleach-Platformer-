@@ -145,12 +145,12 @@ bankaihitsteadyRight= [pygame.image.load('images/bankai/hit3.png')]*10
 bankaihitsteadyLeft= [pygame.transform.flip(img,True, False) for img in bankaihitsteadyRight]
 
 #Visored
-VisoredTransformRight= [pygame.image.load(f'images/visored/transform{i}.png') for i in range(1,4)]
-VisoredTransformLeft= [pygame.transform.flip(img, True, False) for img in VisoredTransformRight]
 VisoredToBankaiRight = [pygame.image.load(f'images/visored/transformback{i}.png') for i in range(1,5)]
 VisoredToBankaiLeft = [pygame.transform.flip(img, True, False) for img in VisoredToBankaiRight]
 VisoredUltimateLeft=[pygame.image.load(f'images/visored/ult{i}.png') for i in range(1,7)]
 VisoredUltimateRight= [pygame.transform.flip(img, True, False) for img in VisoredUltimateLeft]
+VisoredRight= [pygame.image.load(f'images/visored/transform{i}.png') for i in range(1,4)]+VisoredUltimateRight+VisoredToBankaiRight
+VisoredLeft= [pygame.transform.flip(img, True, False) for img in VisoredRight]+VisoredUltimateLeft+VisoredToBankaiLeft
 
 #bankai visuals
 bankai= pygame.image.load('images/bankai/bankai.png')

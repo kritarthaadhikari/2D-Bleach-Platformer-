@@ -45,6 +45,8 @@ class Player:
         self.ceroHit=False
         self.damage=200
         self.jump=False
+        self.fixed_x=self.x
+        self.visoredCount=0
         self.animations= {
             "shikai":{
                 "walkRight": st.walkRight,
@@ -150,8 +152,6 @@ class Player:
         sprite = self.animations[self.mode]["stanceRight"][0]
         if self.transform_state == "activating":
             framesPerImg=4
-            if self.mode=="visored":
-                framesPerImg=6
             limit=len(self.animations[self.mode]["transformRight"])*framesPerImg
             if self.facing==1:
                 sprite= self.animations[self.mode]["transformRight"][self.bankaiCount//framesPerImg]
@@ -172,9 +172,33 @@ class Player:
                 self.transform_state="inactive"
                 self.action="idle"
             self.bankaiCount+=1
-
         else:
-            if self.action in ["idle", "dashing","knockeddown"] and not self.jump: #idle and dash animation
+            if self.action=="visored":
+                framesPerImg=4
+                limit=len(st.VisoredRight)*framesPerImg
+                if self.facing==1:
+                    sprite= st.VisoredRight[self.visoredCount//framesPerImg]
+                else:
+                    sprite=st.VisoredLeft[self.visoredCount//framesPerImg]
+                if self.visoredCount==28:
+                    self.x=self.fixed_x
+                if self.visoredCount>=20 and self.visoredCount<28:
+                    self.x+=self.facing*10
+                    self.feet_y-=4
+                elif self.visoredCount>=28 and self.visoredCount<36:
+                    self.x+=self.facing*10
+                    self.feet_y+=4
+                elif self.visoredCount>=12 and self.visoredCount<20:
+                    self.feet_y-=2
+                else:
+                    self.feet_y=st.feet_y_initial
+                
+                if self.visoredCount+1>=limit:
+                    self.visoredCount=0
+                    self.action="idle"
+                else:
+                    self.visoredCount+=1
+            elif self.action in ["idle", "dashing","knockeddown"] and not self.jump: #idle and dash animation
                 if self.stance_state=="stand": #Auto standing after hit
                     limit=len(self.animations[self.mode]["standUpAutoRight"])*framesPerImg
                     if self.facing==1:
@@ -256,15 +280,6 @@ class Player:
                         self.action="idle"
                         self.ceroHit=False
                     self.hitCount=0
-            # elif self.action=="steadyhit" and self.movement_state=="idle":
-            #     limit= len(self.animations[self.mode]["steadyhitRight"])*framesPerImg
-            #     if self.facing==1:
-            #         sprite= self.animations[self.mode]["steadyhitRight"][self.steadyCount//framesPerImg]
-            #     else:
-            #         sprite= self.animations[self.mode]["steadyhitLeft"][self.steadyCount//framesPerImg]
-            #     self.steadyCount+=1
-            #     if self.steadyCount+1>=limit:
-            #         self.steadyCount=0
             elif self.jump: #jump animation
                 if self.air_dash:
                     if self.facing==1:
@@ -376,7 +391,7 @@ class Player:
                     self.walkCount = 0
 
         self.hitbox= pygame.Rect(self.x+10, self.feet_y-4,35, 52 )
-        pygame.draw.rect(st.win, (0,0,255),self.hitbox,2)
+        # pygame.draw.rect(st.win, (0,0,255),self.hitbox,2)
         draw_x = self.x
         if not self.mode == "bankai" or (((self.animations['bankai']['stanceRight'][0] and self.facing == 1) and (self.action not in ["attacking", "combo"]))
                                            or ((self.mode == "bankai" and (self.action in ["attacking", "combo"]) and self.facing == -1))):
@@ -412,4 +427,10 @@ class Player:
             self.ceroHit=True
             self.movement_state="idle"
             self.x-=self.facing*20
+    
+    def visoredAttack(self):
+        self.interrupt()
+        self.action="visored"
+        self.fixed_x=self.x
+        self.draw(st.win)
         

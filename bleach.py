@@ -277,7 +277,7 @@ def main():
                         if event.key==pygame.K_m:
                             st.Mpause=not st.Mpause
                             st.pause_music()
-                        if not event.key==pygame.K_l:
+                        if not( event.key==pygame.K_l or event.key==pygame.K_i) :
                             if event.key== pygame.K_j and (player.action not in ["dashing"] and not player.jump):
                                 if player.action not in ["attacking", "combo"]:
                                     player.action="attacking"
@@ -326,128 +326,134 @@ def main():
                                 player.activateDeactivateBankai()
                             elif player.mode=="bankai":
                                 player.activateDeactivateBankai()
+                        elif event.key== pygame.K_i:
+                            if player.mode=="bankai":
+                                player.ultimateGauge-=150
+                                player.visoredAttack()
                     if event.key== pygame.K_ESCAPE:
                         if st.pause:
                             st.pause=False
                         else:
                             st.pause=True
                             restart, mainmenu=draw_pause()
+                    
 
             keys = pygame.key.get_pressed()
             if not st.pause:
-                if not player.action=="hitbyCero":
-                    if player.action == "attacking" and player.comboTimer > 0:
-                        player.comboTimer -= 1
-                    elif player.action != "attacking":
-                        player.comboTimer = 0
+                if player.action!="visored":
+                    if not player.action=="hitbyCero":
+                        if player.action == "attacking" and player.comboTimer > 0:
+                            player.comboTimer -= 1
+                        elif player.action != "attacking":
+                            player.comboTimer = 0
 
-                    if player.transform_state != "activating":
-                        if player.action not in ["attacking", "combo", "signature"]:
-                            # Determine camera offset and player's screen position
-                            cam_offset = lv.scroll if (lv.levelComplete and st.scroll) else 0
-                            screen_x = player.x - cam_offset
-                            # Prevent player's world x from going left of the camera view
-                            min_world_x = cam_offset
-                            if player.x < min_world_x:
-                                player.x = min_world_x
+                        if player.transform_state != "activating":
+                            if player.action not in ["attacking", "combo", "signature"]:
+                                # Determine camera offset and player's screen position
+                                cam_offset = lv.scroll if (lv.levelComplete and st.scroll) else 0
+                                screen_x = player.x - cam_offset
+                                # Prevent player's world x from going left of the camera view
+                                min_world_x = cam_offset
+                                if player.x < min_world_x:
+                                    player.x = min_world_x
 
-                            if ( keys[pygame.K_a]) and screen_x > player.vel:
-                                player.x -= player.vel
-                                player.movement_state = "left"
-                                player.facing= -1
-                                player.action="knockeddown" if player.hit_state in ["got_hit", "stationary"] else player.action
-                            elif ( keys[pygame.K_d]) and (screen_x + player.width + player.vel < st.screen_width or (lv.levelComplete and st.scroll)):
-                                player.x += player.vel
-                                player.movement_state = "right"
-                                player.facing= 1
-                                player.action="knockeddown" if player.hit_state in ["got_hit", "stationary"] else player.action
+                                if ( keys[pygame.K_a]) and screen_x > player.vel:
+                                    player.x -= player.vel
+                                    player.movement_state = "left"
+                                    player.facing= -1
+                                    player.action="knockeddown" if player.hit_state in ["got_hit", "stationary"] else player.action
+                                elif ( keys[pygame.K_d]) and (screen_x + player.width + player.vel < st.screen_width or (lv.levelComplete and st.scroll)):
+                                    player.x += player.vel
+                                    player.movement_state = "right"
+                                    player.facing= 1
+                                    player.action="knockeddown" if player.hit_state in ["got_hit", "stationary"] else player.action
+                                else:
+                                    if player.action not in ["dashing"] and not player.jump:      
+                                        player.action="idle"
+                                        player.dashCount=0
+                                    player.movement_state = "idle"
+                                    player.walkCount = 0
+
+                            # Jump logic
+                            if not player.jump:
+                                if keys[pygame.K_w] :
+                                    player.jump=True
+                                    player.interrupt()
                             else:
-                                if player.action not in ["dashing"] and not player.jump:      
-                                    player.action="idle"
-                                    player.dashCount=0
-                                player.movement_state = "idle"
-                                player.walkCount = 0
-
-                        # Jump logic
-                        if not player.jump:
-                            if keys[pygame.K_w] :
-                                player.jump=True
-                                player.interrupt()
-                        else:
-                            if player.jumpCount >= -11:
-                                neg = 1
-                                if player.jumpCount < 0: neg = -1
-                                player.feet_y -= (player.jumpCount ** 2) * 0.5 * neg
-                                player.x+=player.facing*2
-                                player.jumpCount -= 1
-                            else: 
-                                player.jumpCount = 11
-                                player.jump=False
-                                player.feet_y=st.feet_y_initial
-                                player.air_dash = False
-                # Collisions
-                for p in pj.projectiles[:]:
-                    if player.signatureCount>=21:
-                        if aizen.status=="alive" and lv.boss:
-                            if p.colliderect(aizen.hitbox):
-                                if aizen not in p.hitEnemies:
-                                    aizen.hit(player.damage)
-                                    if player.ultimateGauge<160:
-                                        player.ultimateGauge+=10
-                                        player.ultimateGauge=min(player.ultimateGauge, 160)
-                                    p.hitEnemies.append(aizen) 
-                                    if aizen.health <= 0:
-                                        aizen.status = "dead"
-                                        aizen.action = "hit"
-                        for h in en.hollows:
-                            if p.colliderect(h.body_hitbox):
-                                if h not in p.hitEnemies:
-                                    h.health-=player.damage
-                                    p.hitEnemies.append(h)
-                                    h.facing=-1*player.facing
-                                    if h.state in ["attacking","hit"]:
-                                        h.state="idle"
-                                    if player.ultimateGauge<160:
-                                        player.ultimateGauge+=5
-                                        player.ultimateGauge=min(player.ultimateGauge, 160)
-                                    h.blown=True
-                                    h.blownCount=0
-                
-                for p in pj.cero[:]:
-                    if p.colliderect(player.hitbox):
-                        player.action="hitbyCero"
-                        player.aizen_hit()
-                        pj.cero.remove(p)
-                if lv.boss and aizen.status=="alive":
-                    if player.attackhitbox.colliderect(aizen.hitbox) and player.action in ["attacking", "combo"]:
-                        if player.attackCount>=9 and player.attackCount<=12:
-                            aizen.hit(10 * player.incrementalFactor)
-                            player.ultimateGauge+=5
-                            if aizen.health <= 0:
-                                aizen.status = "dead"
-                                aizen.action = "hit"
-                    if aizen.hitbox.colliderect(player.hitbox):
-                        if aizen.action in ["attack", "jump_attack", "combo_attack"]:
+                                if player.jumpCount >= -11:
+                                    neg = 1
+                                    if player.jumpCount < 0: neg = -1
+                                    player.feet_y -= (player.jumpCount ** 2) * 0.5 * neg
+                                    player.x+=player.facing*2
+                                    player.jumpCount -= 1
+                                else: 
+                                    player.jumpCount = 11
+                                    player.jump=False
+                                    player.feet_y=st.feet_y_initial
+                                    player.air_dash = False
+                    # Collisions
+                    for p in pj.projectiles[:]:
+                        if player.signatureCount>=21:
+                            if aizen.status=="alive" and lv.boss:
+                                if p.colliderect(aizen.hitbox):
+                                    if aizen not in p.hitEnemies:
+                                        aizen.hit(player.damage)
+                                        if player.ultimateGauge<160:
+                                            player.ultimateGauge+=10
+                                            player.ultimateGauge=min(player.ultimateGauge, 160)
+                                        p.hitEnemies.append(aizen) 
+                                        if aizen.health <= 0:
+                                            aizen.status = "dead"
+                                            aizen.action = "hit"
+                            for h in en.hollows:
+                                if p.colliderect(h.body_hitbox):
+                                    if h not in p.hitEnemies:
+                                        h.health-=player.damage
+                                        p.hitEnemies.append(h)
+                                        h.facing=-1*player.facing
+                                        if h.state in ["attacking","hit"]:
+                                            h.state="idle"
+                                        if player.ultimateGauge<160:
+                                            player.ultimateGauge+=5
+                                            player.ultimateGauge=min(player.ultimateGauge, 160)
+                                        h.blown=True
+                                        h.blownCount=0
+                    
+                    for p in pj.cero[:]:
+                        if p.colliderect(player.hitbox):
+                            player.action="hitbyCero"
                             player.aizen_hit()
-        
-                for h in en.hollows[:]:
-                    if player.hitbox.colliderect(h.body_hitbox):
-                        if h not in player.hollowattack:
-                            player.hollowattack.append(h)
-                        if h.state in ["idle"] :
-                            h.state="attacking"
-                        if player.hitbox.colliderect(h.attack_hitbox):
-                            if 21 <=h.attackCount <24 or h.state=="hit":
-                                player.hit()
-                            if player.attackCount>=9 and player.attackCount<=12 and (player.action in ["attacking", "combo"]):
+                            pj.cero.remove(p)
+                    if lv.boss and aizen.status=="alive":
+                        if player.attackhitbox.colliderect(aizen.hitbox) and player.action in ["attacking", "combo"]:
+                            if player.attackCount>=9 and player.attackCount<=12:
+                                aizen.hit(10 * player.incrementalFactor)
+                                player.ultimateGauge+=5
+                                if aizen.health <= 0:
+                                    aizen.status = "dead"
+                                    aizen.action = "hit"
+                        if aizen.hitbox.colliderect(player.hitbox):
+                            if aizen.action in ["attack", "jump_attack", "combo_attack"]:
+                                player.aizen_hit()
+            
+                    for h in en.hollows[:]:
+                        if player.hitbox.colliderect(h.body_hitbox):
+                            if h not in player.hollowattack:
+                                player.hollowattack.append(h)
+                            if h.state in ["idle"] :
+                                h.state="attacking"
+                            if player.hitbox.colliderect(h.attack_hitbox):
+                                if 21 <=h.attackCount <24 or h.state=="hit":
+                                    player.hit()
+                                if player.attackCount>=9 and player.attackCount<=12 and (player.action in ["attacking", "combo"]):
+                                    enemyDamaged(h)
+                            if(player.action in ["attacking", "combo"]):
                                 enemyDamaged(h)
-                        if(player.action in ["attacking", "combo"]):
-                            enemyDamaged(h)
-                    else:
-                        if h in player.hollowattack:
-                            if h.state not in ["falling", "dead"]:
-                                h.state="idle"
-                            player.hit_state= "normal"
+                        else:
+                            if h in player.hollowattack:
+                                if h.state not in ["falling", "dead"]:
+                                    h.state="idle"
+                                player.hit_state= "normal"
                     
                 if player.health<=0:
                     st.game_state="gameover"
