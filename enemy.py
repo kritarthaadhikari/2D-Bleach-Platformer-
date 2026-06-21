@@ -146,13 +146,16 @@ class Enemy:
         self.draw(win,other)
     
     def gothit(self,other):
+        if not other.action=="visored":
+            if self.state=="idle":
+                self.state="hit"
+                self.hitCount=0
+        else:
+            self.state="idle"
         self.health-=20*other.incrementalFactor
         if other.ultimateGauge<160:
             other.ultimateGauge+=1/2
             other.ultimateGauge=min(other.ultimateGauge, 160)
-        if self.state=="idle":
-            self.state="hit"
-            self.hitCount=0
     
     def kill(self,other):
         if self in hollows:

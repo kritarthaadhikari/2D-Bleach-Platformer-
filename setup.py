@@ -47,6 +47,9 @@ pause= False
 scroll=False
 arrow= pygame.transform.flip(pygame.transform.smoothscale(pygame.image.load('images/setup/arrow.png'),(100,100)),True, False)
 
+#Ending
+ending_sequence = None
+
 #Signature Display Parameters
 text_duration= 1000 #1s
 text_start_time= 0
@@ -197,6 +200,7 @@ AizenFinalIdleLeft= [pygame.transform.flip(img,True, False) for img in AizenFina
 AizenTitle= pygame.transform.smoothscale(pygame.image.load('images/setup/aizen_title.png'),(150,30))
 AizenHoldAfterCeroRight= [pygame.image.load(f'images/Aizen/cero1.png')]
 AizenHoldAfterCeroLeft= [pygame.transform.flip(img, True, False) for img in AizenHoldAfterCeroRight]
+AizenDead= [pygame.image.load(f'images/Aizen/dead{i}.png') for i in range(1,6)]
 
 # --- UI & BG ---
 hud_original = pygame.image.load('images/setup/hudpannel.png').convert_alpha()

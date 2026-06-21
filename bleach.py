@@ -8,6 +8,7 @@ import mainmenu as mm
 import levels as lv
 import random
 import aizen
+import ending
 
 clock = pygame.time.Clock()
 player = pl.Player(64, 64, 10, st.feet_y_initial)
@@ -184,7 +185,7 @@ def createEnemies():
             st.killCountperRound=0
             lv.i+=1
             if lv.i>5 and aizen.status=="dead":    
-                gameEnded()
+                st.game_state="victory"
             if lv.i<=5:
                 lv.hollow,lv.delay,lv.boss=lv.increment()
                 lv.hollows.clear()
@@ -221,7 +222,7 @@ def reset():
     st.score = 0
     st.killCount = 0
     st.pressed = False
-
+    
     lv.i=1
     lv.hollow,lv.delay,lv.boss=lv.increment()
     lv.hollows.clear()
@@ -232,6 +233,9 @@ def reset():
     st.pause = False
 
 def enemyDamaged(enemy):
+    if player.action=="visored":
+        enemy.gothit(player)
+        return
     if player.attackCount==0:
         enemy.state="attacking"
         enemy.gothit(player)
@@ -242,9 +246,6 @@ def hit(player):
     player.health-=100
     player.hit_state="got_hit"
     player.action="hit"
-
-def gameEnded():
-    pass
 
 def main():
     run = True
@@ -411,7 +412,7 @@ def main():
                             if aizen.status=="alive" and lv.boss:
                                 if p.colliderect(aizen.hitbox):
                                     if aizen not in p.hitEnemies:
-                                        aizen.hit(player.damage)
+                                        aizen.hit(player.damage//2)
                                         if player.ultimateGauge<160:
                                             player.ultimateGauge+=10
                                             player.ultimateGauge=min(player.ultimateGauge, 160)
@@ -419,6 +420,7 @@ def main():
                                         if aizen.health <= 0:
                                             aizen.status = "dead"
                                             aizen.action = "hit"
+                                            st.game_state="victory"
                             for h in en.hollows:
                                 if p.colliderect(h.body_hitbox):
                                     if h not in p.hitEnemies:
@@ -446,6 +448,7 @@ def main():
                                 if aizen.health <= 0:
                                     aizen.status = "dead"
                                     aizen.action = "hit"
+                                    st.game_state="victory"
                         if aizen.hitbox.colliderect(player.hitbox):
                             if aizen.action in ["attack", "jump_attack", "combo_attack"]:
                                 player.aizen_hit()
@@ -468,22 +471,45 @@ def main():
                                 if h.state not in ["falling", "dead"]:
                                     h.state="idle"
                                 player.hit_state= "normal"
-                elif player.hitbox.colliderect(aizen.hitbox) and player.action in ["visored"]:
+                elif player.action in ["visored"]:
                     player.jump=False
-                    if player.visoredCount>=20 and player.visoredCount<=35:
-                        aizen.hit(20*player.incrementalFactor)
-                        player.ultimateGauge+=5
-                        aizen.action="hit"
+                    player.jumpCount=11
+                    if player.hitbox.colliderect(aizen.hitbox):
+                        if player.visoredCount>=20 and player.visoredCount<=35:
+                            aizen.hit(20*player.incrementalFactor)
+                            player.ultimateGauge+=5
+                            aizen.action="hit"
+                            if aizen.health<=0:
+                                aizen.status="dead"
+                                st.game_state="victory"
+                    else:
+                        for h in en.hollows[:]:
+                            if player.hitbox.colliderect(h.body_hitbox):
+                                if player.visoredCount>=20 and player.visoredCount<=35:
+                                    enemyDamaged(h)
                 if player.health<=0:
-                    st.game_state="gameover"
+                    st.game_state="defeat"
                 redrawwindow()
-        elif st.game_state=="gameover":
-            text=st.font.render("Game Over! Try again",1,(255,255,255))
-            st.win.blit(text,(st.screen_width//2-150, st.screen_height//2-50))
+        elif st.game_state == "victory":
+            if st.ending_sequence is None:
+                st.ending_sequence = ending.EndingSequence("victory")
+            st.ending_sequence.update(player)
+            st.ending_sequence.draw(st.win)
             pygame.display.update()
-            time.sleep(1)
-            reset()
-            st.game_state="start"
+            if st.ending_sequence.is_done():
+                st.ending_sequence = None
+                reset()
+                st.game_state = "mainmenu"
+
+        elif st.game_state == "defeat":
+            if st.ending_sequence is None:
+                st.ending_sequence = ending.EndingSequence("defeat")
+            st.ending_sequence.update(player)
+            st.ending_sequence.draw(st.win)
             pygame.display.update()
+            if st.ending_sequence.is_done():
+                st.ending_sequence = None
+                reset()
+                st.game_state = "mainmenu"
     pygame.quit()
 main()
