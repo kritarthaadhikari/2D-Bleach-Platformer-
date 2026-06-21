@@ -193,14 +193,16 @@ def createEnemies():
 def draw_pause():
     pygame.draw.rect(st.surface,(128,128,128,150),[0,0, st.screen_width,st.screen_height])
     pygame.draw.rect(st.surface,'dark gray',[st.screen_width//2-210,160,440,50],0,12)
-    reset= pygame.draw.rect(st.surface,'white',[st.screen_width//2-210,220, 210,50],0,12) 
-    save= pygame.draw.rect(st.surface,'white',[st.screen_width//2+20,220, 210,50],0,12) 
+    restart= pygame.draw.rect(st.surface,'white',[st.screen_width//2-210,220, 210,50],0,12) 
+    mainmenu= pygame.draw.rect(st.surface,'white',[st.screen_width//2+20,220, 210,50],0,12) 
+    instructions= pygame.draw.rect(st.surface, 'white',[st.screen_width//2-210,290, 430,50],0,12)
     st.surface.blit(st.font.render("Game Paused: Esc to Resume",True,'black'),(st.screen_width//2-200,160))
     st.surface.blit(st.font.render('Restart',True, 'black'),[st.screen_width//2-150,220, 210,50])
     st.surface.blit(st.font.render('Main Menu',True, 'black'),[st.screen_width//2+50,220, 210,50])
+    st.surface.blit(st.font.render('Instructions',True,'black'),[st.screen_width//2-80,290, 430,50])
     st.win.blit(st.surface,(0,0))
     pygame.display.update()
-    return reset, save
+    return restart, mainmenu,instructions
 
 def reset():
     global player,enemy, last_enemy_spawn
@@ -247,7 +249,7 @@ def gameEnded():
 def main():
     run = True
     st.game_state="mainmenu"
-    restart, mainmenu = None, None
+    restart, mainmenu,instructions = None, None,None
     while run:
         clock.tick(30)
         events= pygame.event.get()
@@ -265,7 +267,10 @@ def main():
             for event in events:
                 if event.type== pygame.KEYDOWN:
                     if event.key== pygame.K_ESCAPE:
-                        st.game_state="mainmenu"
+                        if not st.pause:
+                            st.game_state="mainmenu"
+                        else:
+                            st.game_state="start"
         if st.game_state=="start":
             createEnemies()
             if player.staminaGauge<100:
@@ -277,6 +282,8 @@ def main():
                     elif mainmenu and mainmenu.collidepoint(event.pos):
                         st.game_state="mainmenu"
                         reset()
+                    elif instructions and instructions.collidepoint(event.pos):
+                        st.game_state="instructions"
                 if event.type == pygame.KEYDOWN:
                     if not st.pause:
                         if event.key not in st.NON_INTERRUPT_KEYS and event.key in st.EXISTING_KEYS:
@@ -342,7 +349,7 @@ def main():
                             st.pause=False
                         else:
                             st.pause=True
-                            restart, mainmenu=draw_pause()
+                            restart, mainmenu,instructions=draw_pause()
                     
 
             keys = pygame.key.get_pressed()

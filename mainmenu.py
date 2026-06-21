@@ -9,9 +9,6 @@ def draw():
     play_rect=pygame.Rect(st.screen_width//2-170, st.screen_height//2+120, 340, 70)
     instruct_rect= pygame.Rect(st.screen_width//2-170,st.screen_height//2+205, 340,70)
     quit_rect = pygame.Rect(st.screen_width//2-170, st.screen_height//2+285, 340, 70)
-    pygame.draw.rect(st.win, (255,0,0), play_rect,2)
-    pygame.draw.rect(st.win, (0,0,255),instruct_rect,2)
-    pygame.draw.rect(st.win, (0,255,0), quit_rect, 2)
 
     pygame.display.update()
     return play_rect,instruct_rect,quit_rect
