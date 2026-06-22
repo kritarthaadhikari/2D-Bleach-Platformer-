@@ -140,6 +140,12 @@ class Enemy:
                 self.x+= self.facing* self.vel
         else:
             self.x+= -self.facing*4
+            if self.facing==1:
+                self.body_hitbox= pygame.Rect(self.x+10, self.feet-40,130, 60 )
+                self.attack_hitbox= pygame.Rect(self.x+100, self.feet-30,50, 60)
+            else:
+                self.body_hitbox= pygame.Rect(self.x, self.feet-40,130, 60 )
+                self.attack_hitbox= pygame.Rect(self.x, self.feet-30,50, 60)
         
         if self.health<=0 and self.state!="falling" and self.state!="dead":
             self.state="falling"
