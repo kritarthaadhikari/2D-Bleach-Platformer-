@@ -276,7 +276,6 @@ def main():
                         else:
                             st.game_state="start"
         if st.game_state=="start":
-            print(lv.levelComplete)
             createEnemies()
             if player.staminaGauge<100:
                 player.staminaGauge+=1/3*player.incrementalFactor
@@ -479,8 +478,7 @@ def main():
                     player.jump=False
                     player.jumpCount=11
                     if player.hitbox.colliderect(aizen_boss.hitbox):
-                        if player.visoredCount>=20 and player.visoredCount<=35:
-                            print(True)
+                        if player.visoredCount>=20 and player.visoredCount<=35 and lv.boss and not lv.levelComplete:
                             aizen_boss.hit(20*player.incrementalFactor)
                             player.ultimateGauge+=5
                             aizen_boss.action="hit"
