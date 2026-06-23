@@ -166,7 +166,7 @@ class Enemy:
     def kill(self,other):
         if self in hollows:
             hollows.remove(self)
-            other.hollowattack.remove(self)
+            
             st.score+=10
             st.killCount+=1
             st.killCountperRound+=1

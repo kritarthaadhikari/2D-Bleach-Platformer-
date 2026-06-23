@@ -12,9 +12,9 @@ import ending
 
 clock = pygame.time.Clock()
 player = pl.Player(64, 64, 10, st.feet_y_initial)
-aizen= aizen.Aizen(900, st.feet_y_initial)
+aizen_boss= aizen.Aizen(900, st.feet_y_initial)
 shine_x=-100
-DEBUG = True
+DEBUG = False
 
 def hudPannel():
     st.win.blit(st.hud_pannel, (-20,-60))
@@ -75,6 +75,8 @@ def draw_bar(x, y, width, height,
         st.win.blit(shine_surface, (x, y))
 
 def redrawwindow():
+    if lv.boss:
+        print(lv.scroll)
     st.win.blit(st.bg, (0, 0))
     if not st.scroll:
         st.win.blit(st.ground,(0,st.feet_y_initial+10))
@@ -96,8 +98,8 @@ def redrawwindow():
     text= st.font.render(f"Score: {st.score}",1,(255,255,255))
     st.win.blit(text,(st.screen_width-text.get_width()-20, 0))
     for p in pj.cero[:]:
-        p.move(aizen)
-        p.draw(st.win, aizen)
+        p.move(aizen_boss)
+        p.draw(st.win,aizen_boss)
     for p in pj.projectiles[:]:
         if player.signatureCount>=21:
             p.move(player)
@@ -157,8 +159,8 @@ def redrawwindow():
             pass
         info = f"x:{int(player.x)} action:{player.action} walk:{getattr(player,'walkCount',0)}"
         st.win.blit(st.font.render(info, True, (255,255,255)), (10, 30))
-    if lv.boss and not st.scroll:
-        aizen.move(player)
+    if lv.boss and not st.scroll and not lv.levelComplete:
+        aizen_boss.move(player)
     pygame.display.update()   
 
 last_enemy_spawn = time.time()
@@ -184,7 +186,7 @@ def createEnemies():
         if lv.hollows!=[] and st.killCountperRound==lv.hollow:
             st.killCountperRound=0
             lv.i+=1
-            if lv.i>5 and aizen.status=="dead":    
+            if lv.i>5 and aizen_boss.status=="dead":    
                 st.game_state="victory"
             if lv.i<=5:
                 lv.hollow,lv.delay,lv.boss=lv.increment()
@@ -206,30 +208,31 @@ def draw_pause():
     return restart, mainmenu,instructions
 
 def reset():
-    global player,enemy, last_enemy_spawn
-    # Reset player
+    global player, aizen_boss, last_enemy_spawn
     player = pl.Player(64, 64, 10, st.feet_y_initial)
-
-    # Reset enemies
+    aizen_boss = aizen.Aizen(900, st.feet_y_initial)  # after fixing #3
     en.hollows.clear()
-    enemy = en.Enemy(110, 149, 1200, st.feet_y_initial)
-    en.hollows.append(enemy)
-
-    # Reset projectiles
     pj.projectiles.clear()
-    player.ultimateGauge=0
-    # Reset stats
+    pj.cero.clear()
     st.score = 0
     st.killCount = 0
-    st.pressed = False
-    
-    lv.i=1
-    lv.hollow,lv.delay,lv.boss=lv.increment()
+    st.killCountperRound = 0
+    st.show_text = False
+    st.scroll = False
+    st.ending_sequence = None
+    st.lastTeleport = pygame.time.get_ticks()
+    st.lastCero = pygame.time.get_ticks()
+
+    st.getsugatenshoSound.stop()
+    st.bankaiSound.stop()
+
+    lv.i = 4
+    lv.scroll = 0
+    lv.levelComplete = False
+    lv.hollow, lv.delay, lv.boss = lv.increment()
     lv.hollows.clear()
-    st.killCountperRound=0
-    # Reset timers
+
     last_enemy_spawn = time.time()
-    # Unpause
     st.pause = False
 
 def enemyDamaged(enemy):
@@ -273,6 +276,7 @@ def main():
                         else:
                             st.game_state="start"
         if st.game_state=="start":
+            print(lv.levelComplete)
             createEnemies()
             if player.staminaGauge<100:
                 player.staminaGauge+=1/3*player.incrementalFactor
@@ -409,17 +413,17 @@ def main():
                     # Collisions
                     for p in pj.projectiles[:]:
                         if player.signatureCount>=21:
-                            if aizen.status=="alive" and lv.boss:
-                                if p.colliderect(aizen.hitbox):
-                                    if aizen not in p.hitEnemies:
-                                        aizen.hit(player.damage//2)
+                            if aizen_boss.status=="alive" and lv.boss:
+                                if p.colliderect(aizen_boss.hitbox):
+                                    if aizen_boss not in p.hitEnemies:
+                                        aizen_boss.hit(player.damage//2)
                                         if player.ultimateGauge<160:
                                             player.ultimateGauge+=10
                                             player.ultimateGauge=min(player.ultimateGauge, 160)
-                                        p.hitEnemies.append(aizen) 
-                                        if aizen.health <= 0:
-                                            aizen.status = "dead"
-                                            aizen.action = "hit"
+                                        p.hitEnemies.append(aizen_boss) 
+                                        if aizen_boss.health <= 0:
+                                            aizen_boss.status = "dead"
+                                            aizen_boss.action = "hit"
                                             st.game_state="victory"
                             for h in en.hollows:
                                 if p.colliderect(h.body_hitbox):
@@ -440,17 +444,17 @@ def main():
                             player.action="hitbyCero"
                             player.aizen_hit()
                             pj.cero.remove(p)
-                    if lv.boss and aizen.status=="alive":
-                        if player.attackhitbox.colliderect(aizen.hitbox) and player.action in ["attacking", "combo"]:
+                    if lv.boss and aizen_boss.status=="alive":
+                        if player.attackhitbox.colliderect(aizen_boss.hitbox) and player.action in ["attacking", "combo"]:
                             if player.attackCount>=9 and player.attackCount<=12:
-                                aizen.hit(1 * player.incrementalFactor)
+                                aizen_boss.hit(1 * player.incrementalFactor)
                                 player.ultimateGauge+=5
-                                if aizen.health <= 0:
-                                    aizen.status = "dead"
-                                    aizen.action = "hit"
+                                if aizen_boss.health <= 0:
+                                    aizen_boss.status = "dead"
+                                    aizen_boss.action = "hit"
                                     st.game_state="victory"
-                        if aizen.hitbox.colliderect(player.hitbox):
-                            if aizen.action in ["attack", "jump_attack", "combo_attack"]:
+                        if aizen_boss.hitbox.colliderect(player.hitbox):
+                            if aizen_boss.action in ["attack", "jump_attack", "combo_attack"]:
                                 player.aizen_hit()
             
                     for h in en.hollows[:]:
@@ -474,13 +478,14 @@ def main():
                 elif player.action in ["visored"]:
                     player.jump=False
                     player.jumpCount=11
-                    if player.hitbox.colliderect(aizen.hitbox):
+                    if player.hitbox.colliderect(aizen_boss.hitbox):
                         if player.visoredCount>=20 and player.visoredCount<=35:
-                            aizen.hit(20*player.incrementalFactor)
+                            print(True)
+                            aizen_boss.hit(20*player.incrementalFactor)
                             player.ultimateGauge+=5
-                            aizen.action="hit"
-                            if aizen.health<=0:
-                                aizen.status="dead"
+                            aizen_boss.action="hit"
+                            if aizen_boss.health<=0:
+                                aizen_boss.status="dead"
                                 st.game_state="victory"
                     else:
                         for h in en.hollows[:]:

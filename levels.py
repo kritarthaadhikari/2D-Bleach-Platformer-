@@ -2,7 +2,7 @@ import pygame as py
 import enemy as en
 import setup as st
 global i 
-i=1
+i=4
 hollows=[]
 levels= {
     1: {"hollows":1, "spawn_delay":1, "boss":False},
@@ -42,7 +42,3 @@ def sideScrolling(player):
             levelComplete= False
          
         # No display.update() here
-"""Issues
-spamming space while being attacked deals infinite damage
-to enemy and also triggers permanent fall animation for 
-the player. """

@@ -32,7 +32,7 @@ hollowSound.set_volume(1)
 
 Mpause= False
 
-game_state= "mainmenu"
+game_state= "victory"
 pygame.display.set_caption('Bleach')
 font= pygame.font.SysFont('Comic Sans',30, True, False)
 fontmm= pygame.font.SysFont('Arial Black',70, True, False)

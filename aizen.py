@@ -43,10 +43,10 @@ class Aizen:
         self.y = y
         self.hitbox = pygame.Rect(self.x+10, self.y-4, 10, st.AizenTitle.get_height()+20)
         self.hitbox_x=self.x+10
-        self.max_health = 1000
-        self.health = 1000
+        self.max_health = 20
+        self.health = 20
         self.dx = 0
-        self.vel = 5
+        self.vel = 6
         self.walkCount = 0
         self.facing = 1
         self.idleCount = 0
@@ -72,153 +72,154 @@ class Aizen:
 
     def draw(self, win,other):
         framesPerImg = 3
-        if self.status!="dead":
-            if self.action == "idle":
-                animation = st.AizenStanceLeft if self.facing == -1 else st.AizenStanceRight
-                limit = len(animation) * framesPerImg
-                sprite = animation[self._frame_index(self.idleCount, framesPerImg, animation)]
-                self.hitbox = pygame.Rect(self.x-50, self.y, 25, 52)
-                if self.idleCount + 1 >= limit:
-                    self.idleCount = 0
-                    self.action = "sec_idle"
-                else:
-                    self.idleCount += 1
-            elif self.action == "sec_idle":
-                animation = st.AizenStanceMiddleLeft if self.facing == -1 else st.AizenStanceMiddleRight
-                limit = len(animation) * framesPerImg
-                sprite = animation[self._frame_index(self.idleCount, framesPerImg, animation)]
-                if self.idleCount + 1 >= limit:
-                    self.idleCount = 0
-                    self.action = "third_idle"
-                else:
-                    self.idleCount += 1
-            elif self.action == "third_idle":
-                animation = st.AizenStanceFinalLeft if self.facing == -1 else st.AizenStanceFinalRight
-                limit = len(animation) * framesPerImg
-                sprite = animation[self._frame_index(self.idleCount, framesPerImg, animation)]
-                if self.idleCount + 1 >= limit:
-                    self.idleCount = 0
-                    self.action = "final_idle"
-                else:
-                    self.idleCount += 1
-            elif self.action == "final_idle":
-                animation = st.AizenFinalIdleLeft if self.facing == -1 else st.AizenFinalIdleRight
-                limit = len(animation) * framesPerImg
-                sprite = animation[self._frame_index(self.idleCount, framesPerImg, animation)]
-                if self.idleCount + 1 >= limit:
-                    self.idleCount = 0
-                else:
-                    self.idleCount += 1
-            elif self.action=="hold_after_cero":
-                if self.facing==1:
-                    animation = st.AizenHoldAfterCeroRight
-                else:
-                    animation = st.AizenHoldAfterCeroLeft
-                sprite = animation[0]
-                self.idleCount += 1
-                if self.idleCount >= 30:  # Hold for 30 frames then return to idle
-                    self.idleCount = 0
-                    self.action = "idle"
-            elif self.action == "cero":
-                animation = st.AizenCeroRight if self.facing == 1 else st.AizenCeroLeft
-                limit = len(animation) * 5
-                if not self.cero_queued:
-                    direction = 1 if self.facing == 1 else -1
-                    spawn_x = self.x + (90 if direction == 1 else -100)
-                    spawn_y = self.y - 20
-                    self.cero_projectile = pj.Cero(spawn_x, spawn_y, 80, 80, direction)
-                    pj.cero.append(self.cero_projectile)
-                    self.cero_queued = True
-                sprite = animation[self._frame_index(self.attackCount, 5, animation)]
-                if self.attackCount + 1 >= limit:
-                    self.attackCount = 0
-                    self.cero_queued = False
-                    if self.cero_projectile is not None:
-                        self.cero_projectile.active = True
-                    self.cero_started = True
-                    self.action = "hold_after_cero"
-                else:
-                    self.attackCount += 1
-            elif self.action == "attack":
-                self.facing = self.attack_facing if self.attack_facing is not None else self.facing
-                animation = st.AizenattackRight if self.facing == 1 else st.AizenattackLeft
-                limit = len(animation) * framesPerImg
-                sprite = animation[self._frame_index(self.attackCount, framesPerImg, animation)]
-                if self.attackCount + 1 >= limit:
-                    self.attackCount = 0
-                    self.action = "jump_attack"
-                else:
-                    self.attackCount += 1
-            elif self.action == "jump_attack":
-                self.facing = self.attack_facing if self.attack_facing is not None else self.facing
-                animation = st.AizenJumpAttackRight if self.facing == 1 else st.AizenJumpAttackLeft
-                limit = len(animation) * framesPerImg
-                self.x += self.facing * 1
-                if self.attackCount < limit // 2:
-                    self.y -= 10
-                else:
-                    self.y += 10
-                sprite = animation[self._frame_index(self.attackCount, framesPerImg, animation)]
-                if self.attackCount + 1 >= limit:
-                    self.attackCount = 0
-                    self.y = 616
-                    self.action = "combo_attack"
-                else:
-                    self.attackCount += 1
-            elif self.action == "combo_attack":
-                self.facing = self.attack_facing if self.attack_facing is not None else self.facing
-                animation = st.AizensecondAttackRight if self.facing == 1 else st.AizensecondAttackLeft
-                limit = len(animation) * framesPerImg
-                self.x += self.facing * 1
-                if self.attackCount < limit // 2:
-                    self.y -= 10
-                else:
-                    self.y += 10
-                sprite = animation[self._frame_index(self.attackCount, framesPerImg, animation)]
-                if self.attackCount + 1 >= limit:
-                    self.attackCount = 0
-                    self.action = "idle"
-                    self.y=616
-                    self.attack_facing = None
-                else:
-                    self.attackCount += 1
-            elif self.action == "teleport":
-                animation = st.AizenTeleportRight if self.facing == 1 else st.AizenTeleportLeft
-                limit = len(animation) * framesPerImg
-                sprite = animation[self._frame_index(self.teleportCount, framesPerImg, animation)]
-                self.hitbox = pygame.Rect(self.x-50, self.y, 25, 52)
-                if self.teleportCount + 1 >= limit:
-                    self.teleportCount = 0
-                    self.action = "idle"
-                else:
-                    self.teleportCount += 1
-            elif self.action == "walk":
-                animation = st.AizenRunRight if self.facing == 1 else st.AizenRunLeft
-                limit = len(animation) * framesPerImg
-                sprite = animation[self._frame_index(self.walkCount, framesPerImg, animation)]
-                self.hitbox = pygame.Rect(self.x-60, self.y, 45, 30)
-                if self.walkCount + 1 >= limit:
-                    self.walkCount = 0
-                else:
-                    self.walkCount += 1
-            elif self.action == "hit":
-                animation = st.AizenHitRight if self.facing == 1 else st.AizenHitLeft
-                limit = len(animation) * framesPerImg
-                sprite = animation[self._frame_index(self.hitCount, framesPerImg, animation)]
-                self.hitbox = pygame.Rect(self.x-50, self.y, 25, 52)
-                if self.hitCount + 1 >= limit:
-                    self.hitCount = 0
-                else:
-                    self.hitCount += 1
+        if self.status=="dead":
+            return
+        if self.action == "idle":
+            animation = st.AizenStanceLeft if self.facing == -1 else st.AizenStanceRight
+            limit = len(animation) * framesPerImg
+            sprite = animation[self._frame_index(self.idleCount, framesPerImg, animation)]
+            self.hitbox = pygame.Rect(self.x-50, self.y, 25, 52)
+            if self.idleCount + 1 >= limit:
+                self.idleCount = 0
+                self.action = "sec_idle"
             else:
-                animation = st.AizenFinalIdleLeft if self.facing == -1 else st.AizenFinalIdleRight
-                limit = len(animation) * framesPerImg
-                sprite = animation[self._frame_index(self.idleCount, framesPerImg, animation)]
-                if self.idleCount + 1 >= limit:
-                    self.idleCount = 0
-                    self.action = "final_idle"
-                else:
-                    self.idleCount += 1
+                self.idleCount += 1
+        elif self.action == "sec_idle":
+            animation = st.AizenStanceMiddleLeft if self.facing == -1 else st.AizenStanceMiddleRight
+            limit = len(animation) * framesPerImg
+            sprite = animation[self._frame_index(self.idleCount, framesPerImg, animation)]
+            if self.idleCount + 1 >= limit:
+                self.idleCount = 0
+                self.action = "third_idle"
+            else:
+                self.idleCount += 1
+        elif self.action == "third_idle":
+            animation = st.AizenStanceFinalLeft if self.facing == -1 else st.AizenStanceFinalRight
+            limit = len(animation) * framesPerImg
+            sprite = animation[self._frame_index(self.idleCount, framesPerImg, animation)]
+            if self.idleCount + 1 >= limit:
+                self.idleCount = 0
+                self.action = "final_idle"
+            else:
+                self.idleCount += 1
+        elif self.action == "final_idle":
+            animation = st.AizenFinalIdleLeft if self.facing == -1 else st.AizenFinalIdleRight
+            limit = len(animation) * framesPerImg
+            sprite = animation[self._frame_index(self.idleCount, framesPerImg, animation)]
+            if self.idleCount + 1 >= limit:
+                self.idleCount = 0
+            else:
+                self.idleCount += 1
+        elif self.action=="hold_after_cero":
+            if self.facing==1:
+                animation = st.AizenHoldAfterCeroRight
+            else:
+                animation = st.AizenHoldAfterCeroLeft
+            sprite = animation[0]
+            self.idleCount += 1
+            if self.idleCount >= 30:  # Hold for 30 frames then return to idle
+                self.idleCount = 0
+                self.action = "idle"
+        elif self.action == "cero":
+            animation = st.AizenCeroRight if self.facing == 1 else st.AizenCeroLeft
+            limit = len(animation) * 5
+            if not self.cero_queued:
+                direction = 1 if self.facing == 1 else -1
+                spawn_x = self.x + (90 if direction == 1 else -100)
+                spawn_y = self.y - 20
+                self.cero_projectile = pj.Cero(spawn_x, spawn_y, 80, 80, direction)
+                pj.cero.append(self.cero_projectile)
+                self.cero_queued = True
+            sprite = animation[self._frame_index(self.attackCount, 5, animation)]
+            if self.attackCount + 1 >= limit:
+                self.attackCount = 0
+                self.cero_queued = False
+                if self.cero_projectile is not None:
+                    self.cero_projectile.active = True
+                self.cero_started = True
+                self.action = "hold_after_cero"
+            else:
+                self.attackCount += 1
+        elif self.action == "attack":
+            self.facing = self.attack_facing if self.attack_facing is not None else self.facing
+            animation = st.AizenattackRight if self.facing == 1 else st.AizenattackLeft
+            limit = len(animation) * framesPerImg
+            sprite = animation[self._frame_index(self.attackCount, framesPerImg, animation)]
+            if self.attackCount + 1 >= limit:
+                self.attackCount = 0
+                self.action = "jump_attack"
+            else:
+                self.attackCount += 1
+        elif self.action == "jump_attack":
+            self.facing = self.attack_facing if self.attack_facing is not None else self.facing
+            animation = st.AizenJumpAttackRight if self.facing == 1 else st.AizenJumpAttackLeft
+            limit = len(animation) * framesPerImg
+            self.x += self.facing * 1
+            if self.attackCount < limit // 2:
+                self.y -= 10
+            else:
+                self.y += 10
+            sprite = animation[self._frame_index(self.attackCount, framesPerImg, animation)]
+            if self.attackCount + 1 >= limit:
+                self.attackCount = 0
+                self.y = 616
+                self.action = "combo_attack"
+            else:
+                self.attackCount += 1
+        elif self.action == "combo_attack":
+            self.facing = self.attack_facing if self.attack_facing is not None else self.facing
+            animation = st.AizensecondAttackRight if self.facing == 1 else st.AizensecondAttackLeft
+            limit = len(animation) * framesPerImg
+            self.x += self.facing * 1
+            if self.attackCount < limit // 2:
+                self.y -= 10
+            else:
+                self.y += 10
+            sprite = animation[self._frame_index(self.attackCount, framesPerImg, animation)]
+            if self.attackCount + 1 >= limit:
+                self.attackCount = 0
+                self.action = "idle"
+                self.y=616
+                self.attack_facing = None
+            else:
+                self.attackCount += 1
+        elif self.action == "teleport":
+            animation = st.AizenTeleportRight if self.facing == 1 else st.AizenTeleportLeft
+            limit = len(animation) * framesPerImg
+            sprite = animation[self._frame_index(self.teleportCount, framesPerImg, animation)]
+            self.hitbox = pygame.Rect(self.x-50, self.y, 25, 52)
+            if self.teleportCount + 1 >= limit:
+                self.teleportCount = 0
+                self.action = "idle"
+            else:
+                self.teleportCount += 1
+        elif self.action == "walk":
+            animation = st.AizenRunRight if self.facing == 1 else st.AizenRunLeft
+            limit = len(animation) * framesPerImg
+            sprite = animation[self._frame_index(self.walkCount, framesPerImg, animation)]
+            self.hitbox = pygame.Rect(self.x-60, self.y, 45, 30)
+            if self.walkCount + 1 >= limit:
+                self.walkCount = 0
+            else:
+                self.walkCount += 1
+        elif self.action == "hit":
+            animation = st.AizenHitRight if self.facing == 1 else st.AizenHitLeft
+            limit = len(animation) * framesPerImg
+            sprite = animation[self._frame_index(self.hitCount, framesPerImg, animation)]
+            self.hitbox = pygame.Rect(self.x-50, self.y, 25, 52)
+            if self.hitCount + 1 >= limit:
+                self.hitCount = 0
+            else:
+                self.hitCount += 1
+        else:
+            animation = st.AizenFinalIdleLeft if self.facing == -1 else st.AizenFinalIdleRight
+            limit = len(animation) * framesPerImg
+            sprite = animation[self._frame_index(self.idleCount, framesPerImg, animation)]
+            if self.idleCount + 1 >= limit:
+                self.idleCount = 0
+                self.action = "final_idle"
+            else:
+                self.idleCount += 1
         draw_x = self.x - sprite.get_width() // 2 - 40
         draw_y = self.hitbox.bottom - sprite.get_height() + 5
 
@@ -231,7 +232,6 @@ class Aizen:
     def move(self, other):
         if self.status != "alive":
             return
-        self.vel=other.vel
         if other.transform_state!="activating":
             attack_chain = self.action in ["attack", "jump_attack", "combo_attack"]
             if attack_chain and self.attack_facing is not None:
