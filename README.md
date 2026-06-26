@@ -4,10 +4,6 @@ A fan-made **2D action game** inspired by the anime **Bleach**, built using **Py
 
 Fight your way through relentless Hollow encounters, unleash Ichigo's iconic abilities, and face **Sosuke Aizen** in the final battle. This project was developed as my **first complete game development project**, with a focus on learning gameplay programming, animation systems, AI, and software engineering principles.
 
-
-# Gameplay Trailer
-<video src="Bleach.mp4" controls width="900"></video>
-
 # Features
 
 -  Fast-paced 2D combat
