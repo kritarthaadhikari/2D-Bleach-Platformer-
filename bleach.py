@@ -1,3 +1,5 @@
+#END SCREEN BAKI XA
+
 import pygame
 import setup as st
 import projectile as pj
@@ -464,7 +466,7 @@ def main():
                             player.aizen_hit()
                             pj.cero.remove(p)
                     if lv.boss and aizen_boss.status=="alive":
-                        if player.attackhitbox.colliderect(aizen_boss.hitbox) and player.action in ["attacking", "combo"]:
+                        if player.attackhitbox!=None and player.attackhitbox.colliderect(aizen_boss.hitbox) and player.action in ["attacking", "combo"]:
                             if player.attackCount>=9 and player.attackCount<=12:
                                 aizen_boss.hit(1 * player.incrementalFactor)
                                 st.previousGauge=player.ultimateGauge

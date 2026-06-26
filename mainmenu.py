@@ -1,5 +1,6 @@
 import pygame
 import setup as st
+import sys
 menu=pygame.transform.scale(pygame.image.load('images/setup/mainmenu.jpg'),(1280,720)).convert()
 
 def draw():
@@ -18,7 +19,7 @@ def handleMenu():
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
             pygame.quit()
-            quit()
+            sys.exit()
 
         if event.type==pygame.KEYDOWN:
             if event.key==pygame.K_m:

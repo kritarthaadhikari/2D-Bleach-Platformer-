@@ -13,16 +13,19 @@ class EndingSequence:
         self.fade_surface = pygame.Surface((st.screen_width, st.screen_height))
         self.fade_surface.fill((0, 0, 0))
 
-        self.dialogue_lines = ["Take heed, Struggler. ",
-        "Struggle, contend, writh...",
-        "that is the only sword",
-        "of those who resort",
-        "to the non-believer...",
-        "It is a path you carve",
-        "with your own two hands!..."]
-        self.dialogue_text= "\n".join(self.dialogue_lines)
+        self.dialogue_lines = [
+            "Take heed, Struggler.",
+            "Struggle, contend, writhe...",
+            "that is the only sword",
+            "of those who resort",
+            "to the non-believer...",
+            "It is a path you carve",
+            "with your own two hands!..."
+        ]
+        self.dialogue_line_index = 0
         self.dialogue_char_index = 0
         self.dialogue_char_timer = 0
+        self.line_hold_timer = 0
 
         self.credits_lines = [
             "BLEACH: Final Substitute Soul Reaper",
@@ -48,34 +51,39 @@ class EndingSequence:
             if self.fade_alpha >= 255:
                 self.phase = "revert"
                 self.timer = 0
-                # revert ichigo to base form using the player's own deactivation
-                # logic, so this stays in sync with however bankai is unwound
-                # elsewhere (vel/damage/incrementalFactor/counters/etc).
                 if ichigo.mode == "bankai":
                     ichigo.activateDeactivateBankai()
                 ichigo.transform_state = "inactive"
                 ichigo.action = "idle"
                 ichigo.movement_state = "idle"
-                # fade back in from black so the base-form idle stance reads
                 self.fade_alpha = 255
 
         elif self.phase == "revert":
             self.ichigo = ichigo
-            # fade the black screen back out to reveal Ichigo idling in base form
             self.fade_alpha = max(0, self.fade_alpha - 7)
             if self.fade_alpha <= 0 and self.timer > 60:
                 self.phase = "dialogue"
                 self.timer = 0
-                self.fade_alpha = 255  # fade to black again behind dialogue
+                self.fade_alpha = 255
 
         elif self.phase == "dialogue":
-            self.dialogue_char_timer += 1
-            if self.dialogue_char_timer >= 2 and self.dialogue_char_index < len(self.dialogue_text):
-                self.dialogue_char_index += 1
-                self.dialogue_char_timer = 0
-            if self.timer > 145 and self.dialogue_char_index >= len(self.dialogue_text):
-                self.phase = "credits"
-                self.timer = 0
+            current_line = self.dialogue_lines[self.dialogue_line_index]
+
+            if self.dialogue_char_index < len(current_line):
+                self.dialogue_char_timer += 1
+                if self.dialogue_char_timer >= 2:
+                    self.dialogue_char_index += 1
+                    self.dialogue_char_timer = 0
+            else:
+                # line fully revealed — hold briefly then advance
+                self.line_hold_timer += 1
+                if self.line_hold_timer >= 60:
+                    self.line_hold_timer = 0
+                    self.dialogue_line_index += 1
+                    self.dialogue_char_index = 0
+                    if self.dialogue_line_index >= len(self.dialogue_lines):
+                        self.phase = "credits"
+                        self.timer = 0
 
         elif self.phase == "credits":
             self.credits_y -= 1.6
@@ -101,7 +109,11 @@ class EndingSequence:
             self._draw_defeat(win)
 
     def _draw_victory(self, win):
-        if self.phase == "revert":
+        if self.phase == "fade_out":
+            self.fade_surface.set_alpha(self.fade_alpha)
+            win.blit(self.fade_surface, (0, 0))
+
+        elif self.phase == "revert":
             win.blit(st.bg, (0, 0))
             win.blit(st.ground, (0, st.feet_y_initial))
             if hasattr(self, "ichigo"):
@@ -109,16 +121,14 @@ class EndingSequence:
             self.fade_surface.set_alpha(self.fade_alpha)
             win.blit(self.fade_surface, (0, 0))
 
-        elif self.phase == "fade_out":
-            self.fade_surface.set_alpha(self.fade_alpha)
-            win.blit(self.fade_surface, (0, 0))
-
         elif self.phase == "dialogue":
             win.fill((0, 0, 0))
-            shown = self.dialogue_text[:self.dialogue_char_index]
-            text_surf = self.dialogue_font.render(shown, True, (230, 230, 230))
-            rect = text_surf.get_rect(center=(st.screen_width // 2, st.screen_height // 2))
-            win.blit(text_surf, rect)
+            if self.dialogue_line_index < len(self.dialogue_lines):
+                current_line = self.dialogue_lines[self.dialogue_line_index]
+                shown = current_line[:self.dialogue_char_index]
+                text_surf = self.dialogue_font.render(shown, True, (230, 230, 230))
+                rect = text_surf.get_rect(center=(st.screen_width // 2, st.screen_height // 2))
+                win.blit(text_surf, rect)
 
         elif self.phase == "credits":
             win.fill((0, 0, 0))
