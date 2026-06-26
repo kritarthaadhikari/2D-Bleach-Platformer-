@@ -4,7 +4,6 @@ import setup as st
 
 class EndingSequence:
     def __init__(self, outcome):
-        """outcome: 'victory' or 'defeat'"""
         self.outcome = outcome
         self.phase = "fade_out"
         self.timer = 0

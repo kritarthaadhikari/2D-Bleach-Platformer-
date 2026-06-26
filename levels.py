@@ -40,5 +40,3 @@ def sideScrolling(player):
             scroll = 0
             st.scroll= False
             levelComplete= False
-         
-        # No display.update() here

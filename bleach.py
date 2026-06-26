@@ -1,5 +1,3 @@
-#END SCREEN BAKI XA
-
 import pygame
 import setup as st
 import projectile as pj
@@ -11,7 +9,6 @@ import levels as lv
 import random
 import aizen
 import ending
-
 clock = pygame.time.Clock()
 player = pl.Player(64, 64, 10, st.feet_y_initial)
 aizen_boss= aizen.Aizen(900, st.feet_y_initial)
@@ -81,9 +78,6 @@ def redrawwindow():
     if not st.scroll:
         st.win.blit(st.ground,(0,st.feet_y_initial+10))
     for e in en.hollows:
-        # if e not in st.gargantaH[:] :
-        #     st.drawgarganta(e)
-        # if st.gargantaCount>=24 or e in st.gargantaH[:]:
         e.move(st.win,player)
     if lv.levelComplete:
         if player.movement_state not in ["idle"]:

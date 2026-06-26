@@ -129,8 +129,6 @@ class Enemy:
         if not self.blown:
         
             if self.state=="idle" and self.health>0:
-                # Only adjust direction based on distance when NOT colliding
-                # Handle collision by flipping direction
                 if self.x-other.x>20:
                     if self.facing==1:
                         self.facing=-1
@@ -169,14 +167,11 @@ class Enemy:
     def kill(self,other):
         if self in hollows:
             hollows.remove(self)
-            
             st.score+=10
             st.killCount+=1
             st.killCountperRound+=1
             if other.ultimateGauge<160:
                 st.previousGauge=other.ultimateGauge
-                other.ultimateGauge+=40
+                other.ultimateGauge+=10
                 st.bankaiUltimateReady(other,st.previousGauge)
                 other.ultimateGauge=min(other.ultimateGauge, 160)
-
-#Issue: Enemy movement and not attacking when player is in range

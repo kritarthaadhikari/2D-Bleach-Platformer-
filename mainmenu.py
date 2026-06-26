@@ -1,12 +1,12 @@
 import pygame
 import setup as st
 import sys
-menu=pygame.transform.scale(pygame.image.load('images/setup/mainmenu.jpg'),(1280,720)).convert()
+
 
 def draw():
-    st.win.blit(menu,(0,0))
-    playquit_text= pygame.transform.scale(pygame.image.load('images/setup/playquit.png').convert_alpha(), (400, 300))
-    st.win.blit(playquit_text,(st.screen_width//2-200, st.screen_height//2+80))
+    st.win.blit(st.menu,(0,0))
+    
+    st.win.blit(st.playquit_text,(st.screen_width//2-200, st.screen_height//2+80))
     play_rect=pygame.Rect(st.screen_width//2-170, st.screen_height//2+120, 340, 70)
     instruct_rect= pygame.Rect(st.screen_width//2-170,st.screen_height//2+205, 340,70)
     quit_rect = pygame.Rect(st.screen_width//2-170, st.screen_height//2+285, 340, 70)

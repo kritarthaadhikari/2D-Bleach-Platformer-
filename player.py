@@ -123,13 +123,6 @@ class Player:
             self.ultimateGauge-=80
             if not st.Mpause:
                 st.bankaiSound.play(0)
-        # elif self.mode=="bankai":
-        #     self.mode= "visored"
-        #     self.vel=11
-        #     self.damage=750
-        #     self.incrementalFactor=4
-        #     self.transform_state="activating"
-        #     self.ultimateGauge=0
         elif self.mode=="bankai":
             self.mode= "shikai"
             self.vel=5
@@ -164,10 +157,6 @@ class Player:
                 if 24<=self.bankaiCount<=32:
                     st.win.blit(st.tl,(self.x-(50 + scroll), self.feet_y- st.tl.get_height()+40))
                     st.win.blit(st.tr,(self.x+(50 - scroll), self.feet_y-st.tr.get_height()+40))
-                    # st.win.blit(st.br,(self.x+self.facing*70,self.feet_y+st.br.get_height()-60))
-                    # st.win.blit(st.bl,(self.x-self.facing*70,self.feet_y+st.bl.get_height()-60))
-                    # st.win.blit(st.br2, (self.x+self.facing*70,self.feet_y+st.br2.get_height()))
-            
             if self.bankaiCount+1>= limit:
                 self.bankaiCount=0
                 self.transform_state="inactive"
