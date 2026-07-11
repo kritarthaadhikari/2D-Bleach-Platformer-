@@ -20,6 +20,10 @@ Fight your way through relentless Hollow encounters, unleash Ichigo's iconic abi
 # **Preview**
 <img width="1244.44" height="700" alt="image" src="https://github.com/user-attachments/assets/e6c3cdcc-e946-4c2d-a487-56b635681a9d" />
 
+# In Game-Screenshots
+<img width="1920" height="1080" alt="Screenshot (47)" src="https://github.com/user-attachments/assets/7e90583e-09b6-46e1-a299-9cfb957b970a" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f23ccf21-103f-4449-b56f-6944da377587" />
+
 
 # Technologies Used
 
