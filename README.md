@@ -24,6 +24,11 @@ Fight your way through relentless Hollow encounters, unleash Ichigo's iconic abi
 <img width="1920" height="1080" alt="Screenshot (47)" src="https://github.com/user-attachments/assets/7e90583e-09b6-46e1-a299-9cfb957b970a" />
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f23ccf21-103f-4449-b56f-6944da377587" />
 
+# GamePlay
+https://github.com/user-attachments/assets/7c95598d-faf8-4188-82e9-cb892683b1ca
+
+
+
 
 # Technologies Used
 
